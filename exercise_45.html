@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 45 &mdash; Reverse of Reverse Is Identity</title>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+body { font-family: Georgia, "Times New Roman", serif; max-width: 860px; margin: 0 auto; padding: 0 20px 40px 20px; background: #ffffff; color: #111111; line-height: 1.55; }
+h1 { border-bottom: 2px solid #111; padding-bottom: 8px; scroll-margin-top: 100px; }
+h2 { margin-top: 40px; border-bottom: 1px solid #999; padding-bottom: 4px; scroll-margin-top: 100px; }
+h3 { margin-top: 28px; scroll-margin-top: 100px; }
+h4 { margin-top: 20px; color: #333; scroll-margin-top: 100px; }
+a { color: #0a3d91; }
+p { margin: 10px 0; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; margin: 12px 0; width: 100%; }
+th, td { border: 1px solid #bbb; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+.concept { background: #fafafa; border-left: 4px solid #888; padding: 10px 16px; margin: 14px 0; }
+.example { background: #fafafa; border-left: 4px solid #2a7a2a; padding: 10px 16px; margin: 14px 0; }
+.practice { background: #fafafa; border-left: 4px solid #1a5fb4; padding: 10px 16px; margin: 14px 0; }
+.warning { background: #fafafa; border-left: 4px solid #c0392b; padding: 10px 16px; margin: 14px 0; }
+.walkthrough { margin-top: 10px; padding: 10px 14px; background: #fffbea; border-left: 4px solid #b58900; }
+.schema-box { background: #f8f8f8; border: 1px solid #ccc; padding: 12px 16px; margin: 12px 0; font-size: 0.95em; overflow-x: auto; }
+details { margin: 10px 0; }
+summary { cursor: pointer; font-weight: bold; color: #0a3d91; }
+code, .sym { font-family: "Menlo", "Courier New", monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+.vocab { border-bottom: 1px dotted #1a5fb4; cursor: pointer; position: relative; color: #0a3d91; padding: 0 2px; }
+.vocab:hover { background-color: #fff3a3; }
+.vocab::after { content: attr(data-def); display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); background: #2a2a2a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; font-style: normal; font-weight: normal; white-space: normal; width: max-content; max-width: 280px; min-width: 180px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
+.vocab:hover::after { display: block; }
+.key { color: #1a5fb4; text-decoration: underline; text-underline-offset: 2px; }
+footer { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 0.85em; color: #666; }
+
+.section-nav { position: sticky; top: 0; z-index: 100; background: #fff; padding: 12px 0; margin: 0 0 24px 0; border-bottom: 1px solid #ccc; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.nav-item { position: relative; }
+.section-nav button { padding: 6px 10px; border: 1px solid #999; background: #fff; cursor: pointer; font-family: inherit; font-size: 0.9em; border-radius: 3px; }
+.section-nav button:hover { background: #eef; }
+.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #999; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 200px; z-index: 200; }
+.nav-item.open .nav-dropdown { display: block; }
+.nav-dropdown li { padding: 0; margin: 0; }
+.nav-dropdown a { display: block; padding: 6px 14px; text-decoration: none; color: #111; font-size: 0.9em; cursor: pointer; }
+.nav-dropdown a:hover { background: #eef; }
+.nav-link { font-size: 0.9em; color: #0a3d91; text-decoration: none; padding: 6px 10px; border: 1px solid #999; border-radius: 3px; }
+.nav-link:hover { background: #eef; }
+</style>
+</head>
+<body>
+
+<nav class="section-nav">
+  <a class="nav-link" href="exercise_44.html">&larr; Ex 44</a>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (a)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-a"><strong>Part (a)</strong></a></li>
+      <li><a href="#parta-vocab">Vocab</a></li>
+      <li><a href="#parta-symbols">Symbols</a></li>
+      <li><a href="#parta-step1">Step 1</a></li>
+      <li><a href="#parta-step2">Step 2</a></li>
+      <li><a href="#parta-step3">Step 3</a></li>
+      <li><a href="#parta-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (b)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-b"><strong>Part (b)</strong></a></li>
+      <li><a href="#partb-vocab">Vocab</a></li>
+      <li><a href="#partb-symbols">Symbols</a></li>
+      <li><a href="#partb-step1">Step 1</a></li>
+      <li><a href="#partb-step2">Step 2</a></li>
+      <li><a href="#partb-step3">Step 3</a></li>
+      <li><a href="#partb-solution">Solution</a></li>
+    </ul>
+  </div>
+  <a class="nav-link" href="exercise_46.html">Ex 46 &rarr;</a>
+  <a class="nav-link" href="index.html" style="margin-left:auto;">&larr; All Exercises</a>
+</nav>
+
+
+<h1>Exercise 45 &mdash; Reverse of Reverse Is Identity</h1>
+<p><em>Induction proof &mdash; showing that reverse is an involution on sequences.</em></p>
+
+<!-- ============================================================ -->
+<h2>The Scenario</h2>
+
+<div class="concept">
+<p>We prove by <strong>structural induction</strong> on sequences that for all sequences $s$:</p>
+$$\text{reverse}(\text{reverse}\; s) = s$$
+<p>That is, <code>reverse</code> is an <strong>involution</strong>: applying it twice gives back the original sequence. This is analogous to negation ($-(-x) = x$) or logical complement ($\neg\neg p = p$).</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Given Definitions</h2>
+
+<h3>Definition of <code>reverse</code></h3>
+
+<div class="schema-box">
+<p><strong>reverse.1:</strong> $\;\text{reverse}\;\langle\rangle = \langle\rangle$</p>
+<p><strong>reverse.2:</strong> $\;\text{reverse}(\langle x \rangle \frown s) = (\text{reverse}\; s) \frown \langle x \rangle$</p>
+</div>
+
+<div class="concept">
+<strong>Reading the definition:</strong> The empty sequence reversed is still empty. The reverse of a sequence starting with $x$ followed by $s$ is the reverse of $s$ with $x$ appended at the end.
+</div>
+
+<h3>Concatenation Laws</h3>
+
+<div class="schema-box">
+<p><strong>cat.1a:</strong> $\;\langle\rangle \frown s = s$ &nbsp;&mdash;&nbsp; empty sequence is left identity</p>
+<p><strong>cat.1b:</strong> $\;s \frown \langle\rangle = s$ &nbsp;&mdash;&nbsp; empty sequence is right identity</p>
+</div>
+
+<h3>Result from Exercise 44 (Anti-Distributivity)</h3>
+
+<div class="concept">
+<p><strong>Anti-distributive law:</strong> For all sequences $s$ and $t$:</p>
+$$\text{reverse}(s \frown t) = \text{reverse}\; t \;\frown\; \text{reverse}\; s$$
+<p>Proved in Exercise 44; used here as an established result. Unlike ordinary distributivity ($f(a \cdot b) = f(a) \cdot f(b)$), anti-distributivity <strong>swaps the order</strong> of the operands.</p>
+</div>
+
+<h3>Induction Principle for Sequences</h3>
+
+<div class="concept">
+<p>To prove $P(s)$ for all finite sequences $s$, it suffices to show:</p>
+<ol>
+<li><strong>Base case:</strong> $P(\langle\rangle)$</li>
+<li><strong>Inductive step:</strong> For every element $x$ and sequence $t$, if $P(t)$ then $P(\langle x \rangle \frown t)$</li>
+</ol>
+<p>This works because every finite sequence is either $\langle\rangle$ or can be written as $\langle x \rangle \frown t$ for some $x$ and shorter sequence $t$.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Symbol Table</h2>
+
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>join two sequences end-to-end into a single sequence</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>the sequence with no elements</td></tr>
+<tr><td>$\langle x \rangle$</td><td>singleton sequence</td><td>a sequence containing exactly one element $x$</td></tr>
+<tr><td>$\text{reverse}$</td><td>reverse</td><td>produces the sequence with elements in the opposite order</td></tr>
+<tr><td>$=$</td><td>equality</td><td>two expressions denote the same value</td></tr>
+<tr><td>$P(s)$</td><td>predicate</td><td>a property that may or may not hold for a given sequence $s$</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+</table>
+
+<p>Let $P(s) \;\equiv\; \text{reverse}(\text{reverse}\; s) = s$. We prove $P(s)$ for all sequences $s$ by structural induction, yielding two sub-problems.</p>
+
+
+<!-- ============================================================ -->
+<h2 id="part-a">Part (a) &mdash; Base Case: $s = \langle\rangle$</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Show $P(\langle\rangle)$, i.e., show the <span class="key">base case</span>:</p>
+$$\text{reverse}(\text{reverse}\;\langle\rangle) = \langle\rangle$$
+</div>
+
+<h3 id="parta-vocab">Vocab for Part (a)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Base case</td><td>The simplest instance of the induction: prove the property for the empty sequence $\langle\rangle$.</td></tr>
+<tr><td>Equational reasoning</td><td>A proof technique where we transform one expression into another by applying known laws step by step.</td></tr>
+<tr><td>reverse.1</td><td>The rule that reverse of the empty sequence is the empty sequence: reverse $\langle\rangle$ = $\langle\rangle$.</td></tr>
+</table>
+
+<h3 id="parta-symbols">Symbols for Part (a)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>the sequence with no elements</td></tr>
+<tr><td>$\text{reverse}$</td><td>reverse</td><td>produces the sequence with elements in the opposite order</td></tr>
+<tr><td>$=$</td><td>equality</td><td>two expressions denote the same value</td></tr>
+</table>
+
+<h3 id="parta-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>This is the <span class="vocab" data-def="The simplest instance of the induction: prove the property for the empty sequence.">base case</span> of our induction. We must show that applying <span class="vocab" data-def="reverse &mdash; produces the sequence with elements in the opposite order.">reverse</span> twice to the <span class="vocab" data-def="empty sequence &mdash; the sequence with no elements.">&langle;&rangle;</span> gives back <span class="vocab" data-def="empty sequence &mdash; the sequence with no elements.">&langle;&rangle;</span>. We do this by <span class="vocab" data-def="A proof technique where we transform one expression into another by applying known laws step by step.">equational reasoning</span>, simplifying from the inside out.</p>
+</div>
+
+<h3 id="parta-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>The expression reverse(reverse &langle;&rangle;) has two nested applications of <span class="vocab" data-def="reverse &mdash; produces the sequence with elements in the opposite order.">reverse</span>. We apply <span class="vocab" data-def="reverse.1 &mdash; reverse of the empty sequence is the empty sequence.">reverse.1</span> to the inner call first, then to the outer call. Two applications of the same rule reduce the expression to &langle;&rangle;.</p>
+</div>
+
+<h3 id="parta-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong>Chain:</strong> reverse(reverse &langle;&rangle;) &rarr; apply <span class="vocab" data-def="reverse.1 &mdash; reverse of the empty sequence is the empty sequence.">reverse.1</span> to inner &rarr; reverse &langle;&rangle; &rarr; apply <span class="vocab" data-def="reverse.1 &mdash; reverse of the empty sequence is the empty sequence.">reverse.1</span> again &rarr; &langle;&rangle;.</p>
+<p>The result is &langle;&rangle;, which equals $s$. The <span class="vocab" data-def="The simplest instance of the induction: prove the property for the empty sequence.">base case</span> holds.</p>
+</div>
+
+<h3 id="parta-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<p>We simplify reverse(reverse $\langle\rangle$) step by step until it equals $\langle\rangle$.</p>
+
+<h4>Build Step 1 &mdash; Start with the LHS</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{reverse}$</td><td>reverse &mdash; produces the sequence with elements in the opposite order</td><td>applied twice (nested): outer and inner</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence &mdash; the sequence with no elements</td><td>the value of $s$ in the base case</td></tr>
+</table>
+<div class="walkthrough">
+<p>Write the left-hand side of the equation we need to prove, with $s = \langle\rangle$:</p>
+$$\text{reverse}(\text{reverse}\;\langle\rangle)$$
+</div>
+
+<h4>Build Step 2 &mdash; Apply reverse.1 to the inner reverse</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{reverse}\;\langle\rangle = \langle\rangle$</td><td>reverse.1 &mdash; reverse of the empty sequence is the empty sequence</td><td>simplifies the inner reverse call to $\langle\rangle$</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="reverse.1 &mdash; reverse of the empty sequence is the empty sequence.">reverse.1</span> to the inner expression: <span class="vocab" data-def="reverse &mdash; produces the sequence with elements in the opposite order.">reverse</span> &langle;&rangle; $= $ &langle;&rangle;. This simplifies the argument of the outer reverse:</p>
+$$\text{reverse}(\text{reverse}\;\langle\rangle) \;=\; \text{reverse}\;\langle\rangle$$
+</div>
+
+<h4>Build Step 3 &mdash; Apply reverse.1 again to the outer reverse</h4>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="reverse.1 &mdash; reverse of the empty sequence is the empty sequence.">reverse.1</span> once more: <span class="vocab" data-def="reverse &mdash; produces the sequence with elements in the opposite order.">reverse</span> &langle;&rangle; $= $ &langle;&rangle;:</p>
+$$\text{reverse}\;\langle\rangle \;=\; \langle\rangle$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+<p><strong>Base case chain:</strong></p>
+$$\text{reverse}(\text{reverse}\;\langle\rangle) \;\underset{\text{reverse.1}}{=}\; \text{reverse}\;\langle\rangle \;\underset{\text{reverse.1}}{=}\; \langle\rangle$$
+</div>
+<p>We obtain $\langle\rangle$, which equals $s$. The <span class="vocab" data-def="The simplest instance of the induction: prove the property for the empty sequence.">base case</span> $P(\langle\rangle)$ holds.</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-b">Part (b) &mdash; Inductive Step: $s = \langle x \rangle \frown t$</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Assume $P(t)$ holds (the <span class="key"><strong>inductive hypothesis</strong></span>), i.e.:</p>
+$$\text{reverse}(\text{reverse}\; t) = t$$
+<p>Show $P(\langle x \rangle \frown t)$ holds for an arbitrary element $x$, i.e.:</p>
+$$\text{reverse}(\text{reverse}(\langle x \rangle \frown t)) = \langle x \rangle \frown t$$
+</div>
+
+<h3 id="partb-vocab">Vocab for Part (b)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Inductive step</td><td>The second part of an induction proof: assuming the property holds for $t$, show it holds for $\langle x \rangle \frown t$.</td></tr>
+<tr><td>Inductive hypothesis (IH)</td><td>The assumption that the property already holds for the smaller sequence $t$: reverse(reverse $t$) = $t$.</td></tr>
+<tr><td>Anti-distributive law</td><td>reverse($s$ $\frown$ $t$) = reverse $t$ $\frown$ reverse $s$. Reversing a concatenation swaps the order of the two parts. Proved in Exercise 44.</td></tr>
+<tr><td>reverse.2</td><td>reverse($\langle x \rangle$ $\frown$ $s$) = (reverse $s$) $\frown$ $\langle x \rangle$. The head moves to the end.</td></tr>
+<tr><td>cat.1a</td><td>$\langle\rangle$ $\frown$ $s$ = $s$. The empty sequence is the left identity for concatenation.</td></tr>
+<tr><td>cat.1b</td><td>$s$ $\frown$ $\langle\rangle$ = $s$. The empty sequence is the right identity for concatenation.</td></tr>
+<tr><td>Equational reasoning</td><td>A proof technique where we transform one expression into another by applying known laws step by step.</td></tr>
+</table>
+
+<h3 id="partb-symbols">Symbols for Part (b)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\langle x \rangle$</td><td>singleton sequence</td><td>a sequence containing exactly one element $x$</td></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>join two sequences end-to-end</td></tr>
+<tr><td>$\text{reverse}$</td><td>reverse</td><td>produces the sequence with elements in the opposite order</td></tr>
+<tr><td>$t$</td><td>induction variable</td><td>the sequence for which the property is assumed to hold</td></tr>
+<tr><td>$x$</td><td>element variable</td><td>an arbitrary element prepended to $t$</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>the sequence with no elements</td></tr>
+<tr><td>$=$</td><td>equality</td><td>two expressions denote the same value</td></tr>
+</table>
+
+<h3 id="partb-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>This is the <span class="vocab" data-def="The second part of an induction proof: assuming the property holds for t, show it holds for the sequence with one more element prepended.">inductive step</span>. We assume the <span class="vocab" data-def="The assumption that the property already holds for the smaller sequence t: reverse(reverse t) = t.">inductive hypothesis</span> for $t$ and must prove the equation for the larger sequence $\langle x \rangle \frown t$. Our strategy is to simplify the left-hand side reverse(reverse($\langle x \rangle$ &frown; $t$)) step by step using <span class="vocab" data-def="A proof technique where we transform one expression into another by applying known laws step by step.">equational reasoning</span> until it equals $\langle x \rangle$ &frown; $t$.</p>
+</div>
+
+<h3 id="partb-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>We work from the inside out. First, apply <span class="vocab" data-def="reverse.2 &mdash; reverse of a cons is the reverse of the tail with the head appended.">reverse.2</span> to the inner reverse. Then the key step: apply the <span class="vocab" data-def="Anti-distributive law &mdash; reverse(s cat t) = reverse t cat reverse s. Reversing a concatenation swaps the order of the two parts.">anti-distributive law</span> from Exercise 44 to the outer reverse. Next, simplify reverse &langle;x&rangle; down to &langle;x&rangle; using <span class="vocab" data-def="cat.1b &mdash; the empty sequence is the right identity for concatenation.">cat.1b</span>, <span class="vocab" data-def="reverse.2 &mdash; reverse of a cons is the reverse of the tail with the head appended.">reverse.2</span>, reverse.1, and <span class="vocab" data-def="cat.1a &mdash; the empty sequence is the left identity for concatenation.">cat.1a</span>. Finally, apply the <span class="vocab" data-def="The assumption that the property already holds for the smaller sequence t: reverse(reverse t) = t.">inductive hypothesis</span> to collapse reverse(reverse $t$) to $t$.</p>
+</div>
+
+<h3 id="partb-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p>The proof chain has 7 lines. Here is the roadmap:</p>
+<ol>
+<li>reverse(reverse(&langle;x&rangle; &frown; t)) &rarr; <span class="vocab" data-def="reverse.2 &mdash; reverse of a cons is the reverse of the tail with the head appended.">reverse.2</span> on inner &rarr; reverse((reverse t) &frown; &langle;x&rangle;)</li>
+<li>&rarr; <span class="vocab" data-def="Anti-distributive law &mdash; reverse(s cat t) = reverse t cat reverse s. Reversing a concatenation swaps the order of the two parts.">anti-distributive</span> (Ex 44) &rarr; reverse &langle;x&rangle; &frown; reverse(reverse t)</li>
+<li>&rarr; <span class="vocab" data-def="cat.1b &mdash; the empty sequence is the right identity for concatenation.">cat.1b</span> backwards on &langle;x&rangle; &rarr; reverse(&langle;x&rangle; &frown; &langle;&rangle;) &frown; reverse(reverse t)</li>
+<li>&rarr; <span class="vocab" data-def="reverse.2 &mdash; reverse of a cons is the reverse of the tail with the head appended.">reverse.2</span> &rarr; ((reverse &langle;&rangle;) &frown; &langle;x&rangle;) &frown; reverse(reverse t)</li>
+<li>&rarr; reverse.1 &rarr; (&langle;&rangle; &frown; &langle;x&rangle;) &frown; reverse(reverse t)</li>
+<li>&rarr; <span class="vocab" data-def="cat.1a &mdash; the empty sequence is the left identity for concatenation.">cat.1a</span> &rarr; &langle;x&rangle; &frown; reverse(reverse t)</li>
+<li>&rarr; <span class="vocab" data-def="The assumption that the property already holds for the smaller sequence t: reverse(reverse t) = t.">IH</span> &rarr; &langle;x&rangle; &frown; t</li>
+</ol>
+</div>
+
+<h3 id="partb-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<p>We simplify the LHS step by step until it equals $\langle x \rangle \frown t$.</p>
+
+<h4>Build Step 1 &mdash; Start with the LHS and apply reverse.2 to the inner reverse</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{reverse}$</td><td>reverse &mdash; produces the sequence with elements in the opposite order</td><td>applied twice: inner and outer</td></tr>
+<tr><td>$\langle x \rangle \frown t$</td><td>cons &mdash; element $x$ prepended to sequence $t$</td><td>the sequence $s$ in the inductive step</td></tr>
+<tr><td>$\text{reverse}(\langle x \rangle \frown s) = (\text{reverse}\; s) \frown \langle x \rangle$</td><td>reverse.2 &mdash; the head moves to the end after reversing the tail</td><td>transforms the inner reverse: $x$ goes to the end</td></tr>
+</table>
+<div class="walkthrough">
+<p>Write the LHS and apply <span class="vocab" data-def="reverse.2 &mdash; reverse of a cons is the reverse of the tail with the head appended.">reverse.2</span> to the inner <span class="vocab" data-def="reverse &mdash; produces the sequence with elements in the opposite order.">reverse</span>. Here reverse(&langle;x&rangle; &frown; t) becomes (reverse t) &frown; &langle;x&rangle;:</p>
+$$\text{reverse}(\text{reverse}(\langle x \rangle \frown t)) \;=\; \text{reverse}((\text{reverse}\; t) \frown \langle x \rangle)$$
+</div>
+
+<h4>Build Step 2 &mdash; Apply the anti-distributive law (Exercise 44)</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{reverse}(s \frown t) = \text{reverse}\; t \frown \text{reverse}\; s$</td><td>anti-distributive &mdash; reversing a concatenation swaps the order of the two parts</td><td>splits the outer reverse across the concatenation, swapping the two pieces</td></tr>
+</table>
+<div class="walkthrough">
+<p>This is the <strong>key step</strong>. The expression (reverse $t$) &frown; &langle;x&rangle; does not match the pattern &langle;y&rangle; &frown; u needed by <span class="vocab" data-def="reverse.2 &mdash; reverse of a cons is the reverse of the tail with the head appended.">reverse.2</span>, so we cannot apply reverse.2 directly. Instead, apply the <span class="vocab" data-def="Anti-distributive law &mdash; reverse(s cat t) = reverse t cat reverse s. Reversing a concatenation swaps the order of the two parts.">anti-distributive law</span> from Exercise 44, with $s :=$ reverse $t$ and $t := \langle x \rangle$:</p>
+$$\text{reverse}((\text{reverse}\; t) \frown \langle x \rangle) \;=\; \text{reverse}\;\langle x \rangle \;\frown\; \text{reverse}(\text{reverse}\; t)$$
+</div>
+
+<h4>Build Step 3 &mdash; Rewrite $\langle x \rangle$ as $\langle x \rangle \frown \langle\rangle$ using cat.1b backwards</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$s \frown \langle\rangle = s$</td><td>cat.1b &mdash; the empty sequence is the right identity for concatenation</td><td>used backwards: $\langle x \rangle = \langle x \rangle \frown \langle\rangle$, allowing reverse.2 to apply</td></tr>
+</table>
+<div class="walkthrough">
+<p>We need to simplify reverse &langle;x&rangle;, but &langle;x&rangle; is not in the form &langle;y&rangle; &frown; $s$ that <span class="vocab" data-def="reverse.2 &mdash; reverse of a cons is the reverse of the tail with the head appended.">reverse.2</span> requires. Apply <span class="vocab" data-def="cat.1b &mdash; the empty sequence is the right identity for concatenation.">cat.1b</span> backwards to introduce a trailing &langle;&rangle;:</p>
+$$\text{reverse}\;\langle x \rangle \;\frown\; \text{reverse}(\text{reverse}\; t) \;=\; \text{reverse}(\langle x \rangle \frown \langle\rangle) \;\frown\; \text{reverse}(\text{reverse}\; t)$$
+</div>
+
+<h4>Build Step 4 &mdash; Apply reverse.2 to expand reverse$(\langle x \rangle \frown \langle\rangle)$</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{reverse}(\langle x \rangle \frown s) = (\text{reverse}\; s) \frown \langle x \rangle$</td><td>reverse.2 &mdash; the head moves to the end after reversing the tail</td><td>with $s := \langle\rangle$, gives (reverse $\langle\rangle$) $\frown$ $\langle x \rangle$</td></tr>
+</table>
+<div class="walkthrough">
+<p>Now the argument matches the pattern &langle;x&rangle; &frown; $s$ with $s = \langle\rangle$. Apply <span class="vocab" data-def="reverse.2 &mdash; reverse of a cons is the reverse of the tail with the head appended.">reverse.2</span>:</p>
+$$\text{reverse}(\langle x \rangle \frown \langle\rangle) \;\frown\; \text{reverse}(\text{reverse}\; t) \;=\; ((\text{reverse}\;\langle\rangle) \frown \langle x \rangle) \;\frown\; \text{reverse}(\text{reverse}\; t)$$
+</div>
+
+<h4>Build Step 5 &mdash; Apply reverse.1 to simplify reverse $\langle\rangle$</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{reverse}\;\langle\rangle = \langle\rangle$</td><td>reverse.1 &mdash; reverse of the empty sequence is the empty sequence</td><td>simplifies reverse $\langle\rangle$ to $\langle\rangle$ inside the expression</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="reverse.1 &mdash; reverse of the empty sequence is the empty sequence.">reverse.1</span> to replace reverse &langle;&rangle; with &langle;&rangle;:</p>
+$$((\text{reverse}\;\langle\rangle) \frown \langle x \rangle) \;\frown\; \text{reverse}(\text{reverse}\; t) \;=\; (\langle\rangle \frown \langle x \rangle) \;\frown\; \text{reverse}(\text{reverse}\; t)$$
+</div>
+
+<h4>Build Step 6 &mdash; Apply cat.1a to simplify $\langle\rangle \frown \langle x \rangle$</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle\rangle \frown s = s$</td><td>cat.1a &mdash; the empty sequence is the left identity for concatenation</td><td>removes the leading $\langle\rangle$, giving $\langle x \rangle$</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="cat.1a &mdash; the empty sequence is the left identity for concatenation.">cat.1a</span>: &langle;&rangle; &frown; &langle;x&rangle; $=$ &langle;x&rangle;. This completes the simplification of reverse &langle;x&rangle; down to &langle;x&rangle;:</p>
+$$(\langle\rangle \frown \langle x \rangle) \;\frown\; \text{reverse}(\text{reverse}\; t) \;=\; \langle x \rangle \;\frown\; \text{reverse}(\text{reverse}\; t)$$
+</div>
+
+<h4>Build Step 7 &mdash; Apply the inductive hypothesis</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{reverse}(\text{reverse}\; t) = t$</td><td>IH &mdash; the inductive hypothesis assumed for $t$</td><td>collapses the double reverse to $t$, completing the proof</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply the <span class="vocab" data-def="The assumption that the property already holds for the smaller sequence t: reverse(reverse t) = t.">inductive hypothesis</span> to replace reverse(reverse $t$) with $t$:</p>
+$$\langle x \rangle \;\frown\; \text{reverse}(\text{reverse}\; t) \;=\; \langle x \rangle \;\frown\; t$$
+</div>
+
+<div class="concept">
+<p>This equals $\langle x \rangle \frown t$, which is exactly $s$. The <span class="vocab" data-def="The second part of an induction proof: assuming the property holds for t, show it holds for the sequence with one more element prepended.">inductive step</span> holds.</p>
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+<p><strong>Inductive step &mdash; full chain:</strong></p>
+$$\text{reverse}(\text{reverse}(\langle x \rangle \frown t))$$
+$$\underset{\text{reverse.2}}{=}\; \text{reverse}((\text{reverse}\; t) \frown \langle x \rangle)$$
+$$\underset{\text{anti-dist. (Ex 44)}}{=}\; \text{reverse}\;\langle x \rangle \;\frown\; \text{reverse}(\text{reverse}\; t)$$
+$$\underset{\text{cat.1b}}{=}\; \text{reverse}(\langle x \rangle \frown \langle\rangle) \;\frown\; \text{reverse}(\text{reverse}\; t)$$
+$$\underset{\text{reverse.2}}{=}\; ((\text{reverse}\;\langle\rangle) \frown \langle x \rangle) \;\frown\; \text{reverse}(\text{reverse}\; t)$$
+$$\underset{\text{reverse.1}}{=}\; (\langle\rangle \frown \langle x \rangle) \;\frown\; \text{reverse}(\text{reverse}\; t)$$
+$$\underset{\text{cat.1a}}{=}\; \langle x \rangle \;\frown\; \text{reverse}(\text{reverse}\; t)$$
+$$\underset{\text{IH}}{=}\; \langle x \rangle \;\frown\; t$$
+</div>
+<p>So reverse(reverse($\langle x \rangle \frown t$)) $= \langle x \rangle \frown t$. The <span class="vocab" data-def="The second part of an induction proof: assuming the property holds for t, show it holds for the sequence with one more element prepended.">inductive step</span> is complete.</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2>Summary</h2>
+
+<table>
+<tr><th>Part</th><th>What it proves</th><th>Key laws used</th></tr>
+<tr><td>(a) Base case</td><td>$P(\langle\rangle)$: reverse(reverse $\langle\rangle$) $= \langle\rangle$</td><td>reverse.1 (twice)</td></tr>
+<tr><td>(b) Inductive step</td><td>$P(t) \Rightarrow P(\langle x \rangle \frown t)$: LHS reduces to $\langle x \rangle \frown t$</td><td>reverse.2, anti-distributive (Ex 44), cat.1b, reverse.2, reverse.1, cat.1a, IH</td></tr>
+</table>
+
+<div class="concept">
+<p><strong>Conclusion:</strong> By the induction principle for sequences, $P(s)$ holds for all finite sequences $s$. Therefore:</p>
+$$\forall\, s \;\bullet\; \text{reverse}(\text{reverse}\; s) = s$$
+<p>The function <code>reverse</code> is an involution: applying it twice returns the original sequence.</p>
+</div>
+
+<footer>Exercise 45 &mdash; Reverse of Reverse Is Identity &mdash; Proof by Induction</footer>
+
+<script>
+function toggleDropdown(el) {
+  var item = el.closest('.nav-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  }
+});
+</script>
+</body>
+</html>

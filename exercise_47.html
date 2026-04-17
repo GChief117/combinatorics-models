@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 47 &mdash; Prove #(flatten t) = count t</title>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+body { font-family: Georgia, "Times New Roman", serif; max-width: 860px; margin: 0 auto; padding: 0 20px 40px 20px; background: #ffffff; color: #111111; line-height: 1.55; }
+h1 { border-bottom: 2px solid #111; padding-bottom: 8px; scroll-margin-top: 100px; }
+h2 { margin-top: 40px; border-bottom: 1px solid #999; padding-bottom: 4px; scroll-margin-top: 100px; }
+h3 { margin-top: 28px; scroll-margin-top: 100px; }
+h4 { margin-top: 20px; color: #333; scroll-margin-top: 100px; }
+a { color: #0a3d91; }
+p { margin: 10px 0; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; margin: 12px 0; width: 100%; }
+th, td { border: 1px solid #bbb; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+.concept { background: #fafafa; border-left: 4px solid #888; padding: 10px 16px; margin: 14px 0; }
+.example { background: #fafafa; border-left: 4px solid #2a7a2a; padding: 10px 16px; margin: 14px 0; }
+.practice { background: #fafafa; border-left: 4px solid #1a5fb4; padding: 10px 16px; margin: 14px 0; }
+.warning { background: #fafafa; border-left: 4px solid #c0392b; padding: 10px 16px; margin: 14px 0; }
+.walkthrough { margin-top: 10px; padding: 10px 14px; background: #fffbea; border-left: 4px solid #b58900; }
+.schema-box { background: #f8f8f8; border: 1px solid #ccc; padding: 12px 16px; margin: 12px 0; font-size: 0.95em; overflow-x: auto; }
+details { margin: 10px 0; }
+summary { cursor: pointer; font-weight: bold; color: #0a3d91; }
+code, .sym { font-family: "Menlo", "Courier New", monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+.vocab { border-bottom: 1px dotted #1a5fb4; cursor: pointer; position: relative; color: #0a3d91; padding: 0 2px; }
+.vocab:hover { background-color: #fff3a3; }
+.vocab::after { content: attr(data-def); display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); background: #2a2a2a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; font-style: normal; font-weight: normal; white-space: normal; width: max-content; max-width: 280px; min-width: 180px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
+.vocab:hover::after { display: block; }
+.key { color: #1a5fb4; text-decoration: underline; text-underline-offset: 2px; }
+footer { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 0.85em; color: #666; }
+
+.section-nav { position: sticky; top: 0; z-index: 100; background: #fff; padding: 12px 0; margin: 0 0 24px 0; border-bottom: 1px solid #ccc; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.nav-item { position: relative; }
+.section-nav button { padding: 6px 10px; border: 1px solid #999; background: #fff; cursor: pointer; font-family: inherit; font-size: 0.9em; border-radius: 3px; }
+.section-nav button:hover { background: #eef; }
+.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #999; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 200px; z-index: 200; }
+.nav-item.open .nav-dropdown { display: block; }
+.nav-dropdown li { padding: 0; margin: 0; }
+.nav-dropdown a { display: block; padding: 6px 14px; text-decoration: none; color: #111; font-size: 0.9em; cursor: pointer; }
+.nav-dropdown a:hover { background: #eef; }
+.nav-link { font-size: 0.9em; color: #0a3d91; text-decoration: none; padding: 6px 10px; border: 1px solid #999; border-radius: 3px; }
+.nav-link:hover { background: #eef; }
+</style>
+</head>
+<body>
+
+<nav class="section-nav">
+  <a class="nav-link" href="exercise_46.html">&larr; Ex 46</a>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (a)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-a"><strong>Part (a)</strong></a></li>
+      <li><a href="#parta-vocab">Vocab</a></li>
+      <li><a href="#parta-symbols">Symbols</a></li>
+      <li><a href="#parta-step1">Step 1</a></li>
+      <li><a href="#parta-step2">Step 2</a></li>
+      <li><a href="#parta-step3">Step 3</a></li>
+      <li><a href="#parta-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (b)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-b"><strong>Part (b)</strong></a></li>
+      <li><a href="#partb-vocab">Vocab</a></li>
+      <li><a href="#partb-symbols">Symbols</a></li>
+      <li><a href="#partb-step1">Step 1</a></li>
+      <li><a href="#partb-step2">Step 2</a></li>
+      <li><a href="#partb-step3">Step 3</a></li>
+      <li><a href="#partb-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (c)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-c"><strong>Part (c)</strong></a></li>
+      <li><a href="#partc-vocab">Vocab</a></li>
+      <li><a href="#partc-symbols">Symbols</a></li>
+      <li><a href="#partc-step1">Step 1</a></li>
+      <li><a href="#partc-step2">Step 2</a></li>
+      <li><a href="#partc-step3">Step 3</a></li>
+      <li><a href="#partc-solution">Solution</a></li>
+    </ul>
+  </div>
+  <a class="nav-link" href="exercise_48.html">Ex 48 &rarr;</a>
+  <a class="nav-link" href="index.html" style="margin-left:auto;">&larr; All Exercises</a>
+</nav>
+
+
+<h1>Exercise 47 &mdash; Prove $\#(\text{flatten}\;t) = \text{count}\;t$</h1>
+<p><em>Induction proof &mdash; establishing that flattening a tree preserves its leaf count.</em></p>
+
+<!-- ============================================================ -->
+<h2>The Scenario</h2>
+
+<div class="concept">
+<p>The <code>flatten</code> function converts a tree into a sequence of its leaf values, while <code>count</code> counts the number of leaves. We prove by <span class="vocab" data-def="Induction that follows the recursive structure of a data type. For Tree: prove for stalk, for leaf n, then assume the property for subtrees and prove it for branch(t1, t2).">structural induction</span> on $\text{Tree}$ that for any tree $t$:</p>
+$$\#(\text{flatten}\;t) = \text{count}\;t$$
+<p>That is, the length of the flattened sequence equals the number of leaves.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Given Definitions</h2>
+
+<h3>Free Type (from Exercise 46)</h3>
+
+<div class="schema-box">
+$$\text{Tree} ::= \text{stalk} \mid \text{leaf}\langle\!\langle \mathbb{N} \rangle\!\rangle \mid \text{branch}\langle\!\langle \text{Tree} \times \text{Tree} \rangle\!\rangle$$
+</div>
+
+<h3>Definition of <code>count</code></h3>
+
+<div class="schema-box">
+<p><strong>count.1:</strong> $\;\text{count}\;\text{stalk} = 0$</p>
+<p><strong>count.2:</strong> $\;\forall\, n : \mathbb{N} \bullet \text{count}(\text{leaf}\;n) = 1$</p>
+<p><strong>count.3:</strong> $\;\forall\, t_1, t_2 : \text{Tree} \bullet \text{count}(\text{branch}(t_1, t_2)) = \text{count}\;t_1 + \text{count}\;t_2$</p>
+</div>
+
+<h3>Definition of <code>flatten</code></h3>
+
+<div class="schema-box">
+<p><strong>flatten.1:</strong> $\;\text{flatten}\;\text{stalk} = \langle\rangle$</p>
+<p><strong>flatten.2:</strong> $\;\forall\, n : \mathbb{N} \bullet \text{flatten}(\text{leaf}\;n) = \langle n \rangle$</p>
+<p><strong>flatten.3:</strong> $\;\forall\, t_1, t_2 : \text{Tree} \bullet \text{flatten}(\text{branch}(t_1, t_2)) = \text{flatten}\;t_1 \;\frown\; \text{flatten}\;t_2$</p>
+</div>
+
+<h3>Sequence Length Facts</h3>
+
+<div class="schema-box">
+<p><strong>len.1:</strong> $\;\#\langle\rangle = 0$ &nbsp;&mdash;&nbsp; empty sequence has length zero</p>
+<p><strong>len.2:</strong> $\;\#\langle n \rangle = 1$ &nbsp;&mdash;&nbsp; singleton sequence has length one</p>
+<p><strong>len.3:</strong> $\;\#(s \frown t) = \#s + \#t$ &nbsp;&mdash;&nbsp; length <span class="vocab" data-def="A function f distributes over an operation when f(a op b) = f(a) op' f(b). Here, # distributes concatenation into addition: the length of two sequences joined equals the sum of their individual lengths.">distributes</span> over concatenation</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Induction Principle for Tree</h2>
+
+<div class="concept">
+<p>To prove a property $P(t)$ for all trees $t$, we must show <strong>three</strong> things:</p>
+
+<table>
+<tr><th>Obligation</th><th>What to Show</th></tr>
+<tr><td>Base case 1</td><td>$P(\text{stalk})$</td></tr>
+<tr><td>Base case 2</td><td>$\forall\, n : \mathbb{N} \;\bullet\; P(\text{leaf}\;n)$</td></tr>
+<tr><td>Inductive step</td><td>$\forall\, t_1, t_2 : \text{Tree} \;\bullet\; P(t_1) \wedge P(t_2) \;\Rightarrow\; P(\text{branch}(t_1, t_2))$</td></tr>
+</table>
+
+<p>Formally:</p>
+$$\dfrac{P(\text{stalk}) \qquad \forall\, n : \mathbb{N} \;\bullet\; P(\text{leaf}\;n) \qquad \forall\, t_1, t_2 \;\bullet\; P(t_1) \wedge P(t_2) \Rightarrow P(\text{branch}(t_1, t_2))}{\forall\, t : \text{Tree} \;\bullet\; P(t)}$$
+</div>
+
+<div class="warning">
+<p><strong>Three cases, not two:</strong> Unlike sequence induction (which has a single base case &langle;&rangle;), tree induction has <em>two</em> base cases: <code>stalk</code> and <code>leaf</code>. This is because the free type has two non-recursive <span class="vocab" data-def="A constructor that does not refer back to the type being defined. stalk and leaf are non-recursive (they do not contain Trees), while branch is recursive (it contains two Trees).">constructors</span>. The inductive step covers <code>branch</code>, the only recursive constructor.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Symbol Table</h2>
+
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\#$</td><td>size / length</td><td>returns the number of elements in a sequence; $\#\langle 3,7,1 \rangle = 3$</td></tr>
+<tr><td>$=$</td><td>equality</td><td>both sides denote the same value</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>the sequence containing no elements</td></tr>
+<tr><td>$\langle n \rangle$</td><td>singleton sequence</td><td>a sequence containing exactly one element $n$</td></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>joins two sequences end-to-end into a single sequence</td></tr>
+<tr><td>$+$</td><td>addition</td><td>standard addition on natural numbers</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all" &mdash; the statement holds for every value in the specified set</td></tr>
+<tr><td>$\wedge$</td><td>conjunction</td><td>"and" &mdash; both sides must be true</td></tr>
+<tr><td>$\Rightarrow$</td><td>implication</td><td>"if ... then ..." &mdash; whenever the left side is true, the right side must also be true</td></tr>
+<tr><td>$P(t)$</td><td>predicate</td><td>a property that may or may not hold for a given tree $t$</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>Statement to Prove</h2>
+
+<div class="practice">
+<strong>Task:</strong> Prove by <span class="key">structural induction</span> on $\text{Tree}$ that for all trees $t$:
+$$\#(\text{flatten}\;t) = \text{count}\;t$$
+</div>
+
+<p>Let $P(t)$ be the predicate:</p>
+$$P(t) \;\equiv\; \#(\text{flatten}\;t) = \text{count}\;t$$
+
+<p>We prove $P(t)$ for all trees $t$ by structural induction. This yields three sub-problems:</p>
+
+
+<!-- ============================================================ -->
+<h2 id="part-a">Part (a) &mdash; Base Case 1: $t = \text{stalk}$</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Show $P(\text{stalk})$, i.e., show the <span class="key">base case</span>:</p>
+$$\#(\text{flatten}\;\text{stalk}) = \text{count}\;\text{stalk}$$
+</div>
+
+<h3 id="parta-vocab">Vocab for Part (a)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Base case</td><td>The simplest instance of the induction: prove the property for a non-recursive constructor (here, stalk).</td></tr>
+<tr><td>Equational reasoning</td><td>A proof technique where we transform one expression into another by applying known laws step by step.</td></tr>
+<tr><td>stalk</td><td>The empty tree &mdash; a tree with no leaves and no branches.</td></tr>
+</table>
+
+<h3 id="parta-symbols">Symbols for Part (a)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\#$</td><td>size / length</td><td>returns the number of elements in a sequence</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>the sequence with no elements</td></tr>
+<tr><td>$=$</td><td>equality</td><td>two expressions denote the same value</td></tr>
+<tr><td>$0$</td><td>zero</td><td>both #&langle;&rangle; and count stalk equal this</td></tr>
+</table>
+
+<h3 id="parta-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>This is the first <span class="vocab" data-def="The simplest instance of the induction: prove the property for a non-recursive constructor.">base case</span> of our induction. We must show that the anti-length-count equation holds when $t$ is <span class="vocab" data-def="The empty tree &mdash; a tree with no leaves and no branches.">stalk</span>. We do this by simplifying both sides using <span class="vocab" data-def="A proof technique where we transform one expression into another by applying known laws step by step.">equational reasoning</span> and showing they meet in the middle.</p>
+</div>
+
+<h3 id="parta-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>We will work from the left-hand side. First apply <span class="vocab" data-def="flatten.1 &mdash; flatten stalk = the empty sequence.">flatten.1</span> to replace flatten stalk with &langle;&rangle;, then apply <span class="vocab" data-def="len.1 &mdash; the length of the empty sequence is 0.">len.1</span> to get 0, and finally use <span class="vocab" data-def="count.1 &mdash; count stalk = 0.">count.1</span> backwards to recognise 0 as count stalk.</p>
+</div>
+
+<h3 id="parta-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p>The chain of reasoning:</p>
+<ul>
+<li>#(flatten stalk) &rarr; <span class="vocab" data-def="flatten.1 &mdash; flatten stalk = the empty sequence.">flatten.1</span> &rarr; #&langle;&rangle; &rarr; <span class="vocab" data-def="len.1 &mdash; the length of the empty sequence is 0.">len.1</span> &rarr; 0 &rarr; <span class="vocab" data-def="count.1 &mdash; count stalk = 0.">count.1</span> &rarr; count stalk</li>
+</ul>
+<p>Three steps, each applying a single definition.</p>
+</div>
+
+<h3 id="parta-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<p>We show the LHS equals the RHS by a chain of equalities.</p>
+
+<h4>Build Step 1 &mdash; Start with the LHS and apply flatten.1</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{flatten}\;\text{stalk} = \langle\rangle$</td><td>flatten.1 &mdash; flattening the empty tree produces the empty sequence</td><td>replaces flatten stalk with &langle;&rangle; inside #</td></tr>
+</table>
+<div class="walkthrough">
+<p>Write the left-hand side, substituting $t = \text{stalk}$, and apply <span class="vocab" data-def="flatten.1 &mdash; flatten stalk = the empty sequence.">flatten.1</span>:</p>
+$$\#(\text{flatten}\;\text{stalk}) \;=\; \#\langle\rangle$$
+</div>
+
+<h4>Build Step 2 &mdash; Apply len.1 to evaluate #&langle;&rangle;</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\#\langle\rangle = 0$</td><td>len.1 &mdash; the empty sequence has length zero</td><td>evaluates #&langle;&rangle; to 0</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="len.1 &mdash; the length of the empty sequence is 0.">len.1</span>: the length of the <span class="vocab" data-def="Empty sequence &mdash; the sequence with no elements.">empty sequence</span> is 0:</p>
+$$\#\langle\rangle \;=\; 0$$
+</div>
+
+<h4>Build Step 3 &mdash; Recognise 0 as count stalk using count.1</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{count}\;\text{stalk} = 0$</td><td>count.1 &mdash; the empty tree has zero leaves</td><td>used backwards: 0 = count stalk, completing the chain to the RHS</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="count.1 &mdash; count stalk = 0.">count.1</span> backwards: $0 = \text{count}\;\text{stalk}$. This completes the chain:</p>
+$$0 \;=\; \text{count}\;\text{stalk}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+<p><strong>Case 1 chain:</strong></p>
+$$\#(\text{flatten}\;\text{stalk}) \;\underset{\text{flatten.1}}{=}\; \#\langle\rangle \;\underset{\text{len.1}}{=}\; 0 \;\underset{\text{count.1}}{=}\; \text{count}\;\text{stalk}$$
+</div>
+<p>Both sides equal $0$. The <span class="vocab" data-def="The simplest instance of the induction: prove the property for a non-recursive constructor.">base case</span> $P(\text{stalk})$ holds.</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-b">Part (b) &mdash; Base Case 2: $t = \text{leaf}\;n$</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Show $P(\text{leaf}\;n)$ for arbitrary $n : \mathbb{N}$, i.e., show the <span class="key">leaf base case</span>:</p>
+$$\#(\text{flatten}(\text{leaf}\;n)) = \text{count}(\text{leaf}\;n)$$
+</div>
+
+<h3 id="partb-vocab">Vocab for Part (b)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Base case</td><td>The simplest instance of the induction: prove the property for a non-recursive constructor (here, leaf).</td></tr>
+<tr><td>leaf n</td><td>A tree consisting of a single leaf holding the natural number n.</td></tr>
+<tr><td>Singleton sequence</td><td>A sequence containing exactly one element, written &langle;n&rangle;.</td></tr>
+</table>
+
+<h3 id="partb-symbols">Symbols for Part (b)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\#$</td><td>size / length</td><td>returns the number of elements in a sequence</td></tr>
+<tr><td>$\langle n \rangle$</td><td>singleton sequence</td><td>a sequence containing exactly one element $n$</td></tr>
+<tr><td>$=$</td><td>equality</td><td>two expressions denote the same value</td></tr>
+<tr><td>$1$</td><td>one</td><td>both #&langle;n&rangle; and count(leaf n) equal this</td></tr>
+<tr><td>$n$</td><td>free variable</td><td>an arbitrary natural number (held fixed)</td></tr>
+</table>
+
+<h3 id="partb-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>This is the second <span class="vocab" data-def="The simplest instance of the induction: prove the property for a non-recursive constructor.">base case</span>. We must show that the equation holds when $t$ is <span class="vocab" data-def="A tree consisting of a single leaf holding the natural number n.">leaf n</span>, for an arbitrary $n : \mathbb{N}$. As with the stalk case, we use <span class="vocab" data-def="A proof technique where we transform one expression into another by applying known laws step by step.">equational reasoning</span> to simplify both sides to the same value.</p>
+</div>
+
+<h3 id="partb-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>We work from the left-hand side. Apply <span class="vocab" data-def="flatten.2 &mdash; flatten(leaf n) = the singleton sequence containing n.">flatten.2</span> to replace flatten(leaf n) with &langle;n&rangle;, then <span class="vocab" data-def="len.2 &mdash; the length of a singleton sequence is 1.">len.2</span> to get 1, then <span class="vocab" data-def="count.2 &mdash; count(leaf n) = 1.">count.2</span> backwards to recognise 1 as count(leaf n).</p>
+</div>
+
+<h3 id="partb-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p>The chain of reasoning:</p>
+<ul>
+<li>#(flatten(leaf n)) &rarr; <span class="vocab" data-def="flatten.2 &mdash; flatten(leaf n) = the singleton sequence containing n.">flatten.2</span> &rarr; #&langle;n&rangle; &rarr; <span class="vocab" data-def="len.2 &mdash; the length of a singleton sequence is 1.">len.2</span> &rarr; 1 &rarr; <span class="vocab" data-def="count.2 &mdash; count(leaf n) = 1.">count.2</span> &rarr; count(leaf n)</li>
+</ul>
+<p>Three steps, mirroring part (a) exactly.</p>
+</div>
+
+<h3 id="partb-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<p>We show the LHS equals the RHS by a chain of equalities.</p>
+
+<h4>Build Step 1 &mdash; Start with the LHS and apply flatten.2</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{flatten}(\text{leaf}\;n) = \langle n \rangle$</td><td>flatten.2 &mdash; flattening a leaf produces a singleton sequence</td><td>replaces flatten(leaf n) with &langle;n&rangle; inside #</td></tr>
+</table>
+<div class="walkthrough">
+<p>Write the left-hand side, substituting $t = \text{leaf}\;n$, and apply <span class="vocab" data-def="flatten.2 &mdash; flatten(leaf n) = the singleton sequence containing n.">flatten.2</span>:</p>
+$$\#(\text{flatten}(\text{leaf}\;n)) \;=\; \#\langle n \rangle$$
+</div>
+
+<h4>Build Step 2 &mdash; Apply len.2 to evaluate #&langle;n&rangle;</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\#\langle n \rangle = 1$</td><td>len.2 &mdash; a singleton sequence has length one</td><td>evaluates #&langle;n&rangle; to 1</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="len.2 &mdash; the length of a singleton sequence is 1.">len.2</span>: the length of a <span class="vocab" data-def="A sequence containing exactly one element.">singleton sequence</span> is 1:</p>
+$$\#\langle n \rangle \;=\; 1$$
+</div>
+
+<h4>Build Step 3 &mdash; Recognise 1 as count(leaf n) using count.2</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{count}(\text{leaf}\;n) = 1$</td><td>count.2 &mdash; a leaf has exactly one leaf (itself)</td><td>used backwards: 1 = count(leaf n), completing the chain to the RHS</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="count.2 &mdash; count(leaf n) = 1.">count.2</span> backwards: $1 = \text{count}(\text{leaf}\;n)$. This completes the chain:</p>
+$$1 \;=\; \text{count}(\text{leaf}\;n)$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+<p><strong>Case 2 chain:</strong></p>
+$$\#(\text{flatten}(\text{leaf}\;n)) \;\underset{\text{flatten.2}}{=}\; \#\langle n \rangle \;\underset{\text{len.2}}{=}\; 1 \;\underset{\text{count.2}}{=}\; \text{count}(\text{leaf}\;n)$$
+</div>
+<p>Both sides equal $1$. The <span class="vocab" data-def="The simplest instance of the induction: prove the property for a non-recursive constructor.">base case</span> $P(\text{leaf}\;n)$ holds for all $n : \mathbb{N}$.</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-c">Part (c) &mdash; Inductive Step: $t = \text{branch}(t_1, t_2)$</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Assume $P(t_1)$ and $P(t_2)$ (the <span class="key"><strong>inductive hypotheses</strong></span>):</p>
+<ul>
+<li><strong>IH1:</strong> $\;\#(\text{flatten}\;t_1) = \text{count}\;t_1$</li>
+<li><strong>IH2:</strong> $\;\#(\text{flatten}\;t_2) = \text{count}\;t_2$</li>
+</ul>
+<p>Show $P(\text{branch}(t_1, t_2))$, i.e., show that:</p>
+$$\#(\text{flatten}(\text{branch}(t_1, t_2))) = \text{count}(\text{branch}(t_1, t_2))$$
+</div>
+
+<h3 id="partc-vocab">Vocab for Part (c)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Inductive step</td><td>The third part of the tree induction: assuming the property holds for both subtrees, show it holds for branch(t1, t2).</td></tr>
+<tr><td>Inductive hypothesis (IH)</td><td>The assumption that the property already holds for both subtrees: #(flatten t1) = count t1 and #(flatten t2) = count t2.</td></tr>
+<tr><td>branch(t1, t2)</td><td>A tree with left subtree t1 and right subtree t2.</td></tr>
+<tr><td>Distributivity of # over concatenation</td><td>The key property len.3: #(s &frown; t) = #s + #t. The length of two sequences joined equals the sum of their individual lengths.</td></tr>
+</table>
+
+<h3 id="partc-symbols">Symbols for Part (c)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\#$</td><td>size / length</td><td>returns the number of elements in a sequence</td></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>joins two sequences end-to-end</td></tr>
+<tr><td>$+$</td><td>addition</td><td>standard addition on natural numbers</td></tr>
+<tr><td>$=$</td><td>equality</td><td>two expressions denote the same value</td></tr>
+<tr><td>$t_1, t_2$</td><td>subtree variables</td><td>the left and right subtrees of the branch</td></tr>
+<tr><td>$\wedge$</td><td>conjunction</td><td>"and" &mdash; both IH1 and IH2 are assumed simultaneously</td></tr>
+<tr><td>$\Rightarrow$</td><td>implication</td><td>"if ... then ..." &mdash; from the two hypotheses, derive the conclusion</td></tr>
+</table>
+
+<h3 id="partc-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>This is the <span class="vocab" data-def="The third part of the tree induction: assuming the property holds for both subtrees, show it holds for branch(t1, t2).">inductive step</span>. We have <em>two</em> <span class="vocab" data-def="The assumption that the property already holds for both subtrees.">inductive hypotheses</span> (one for each subtree), and we must show the property for <span class="vocab" data-def="A tree with left subtree t1 and right subtree t2.">branch(t1, t2)</span>. The crucial ingredient is <span class="vocab" data-def="The key property len.3: #(s &frown; t) = #s + #t. The length of two sequences joined equals the sum of their individual lengths.">len.3</span>, which bridges the &frown; produced by flatten with the $+$ used by count.</p>
+</div>
+
+<h3 id="partc-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>We work from the left-hand side in a single chain:</p>
+<ol>
+<li>Apply <span class="vocab" data-def="flatten.3 &mdash; flatten(branch(t1, t2)) = flatten t1 &frown; flatten t2.">flatten.3</span> to expand flatten(branch(t1, t2)) into flatten t1 &frown; flatten t2.</li>
+<li>Apply <span class="vocab" data-def="The key property len.3: #(s &frown; t) = #s + #t.">len.3</span> to distribute # over &frown;, converting concatenation to addition.</li>
+<li>Apply both <span class="vocab" data-def="The assumption that the property already holds for both subtrees.">inductive hypotheses</span> to replace #(flatten ti) with count ti.</li>
+<li>Apply <span class="vocab" data-def="count.3 &mdash; count(branch(t1, t2)) = count t1 + count t2.">count.3</span> backwards to fold back into count(branch(t1, t2)).</li>
+</ol>
+</div>
+
+<h3 id="partc-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p>The chain of reasoning:</p>
+<ul>
+<li>#(flatten(branch(t1, t2))) &rarr; <span class="vocab" data-def="flatten.3 &mdash; flatten(branch(t1, t2)) = flatten t1 &frown; flatten t2.">flatten.3</span> &rarr; #(flatten t1 &frown; flatten t2) &rarr; <span class="vocab" data-def="The key property len.3: #(s &frown; t) = #s + #t.">len.3</span> &rarr; #(flatten t1) + #(flatten t2) &rarr; <span class="vocab" data-def="The assumption that the property already holds for both subtrees.">IH1 &and; IH2</span> &rarr; count t1 + count t2 &rarr; <span class="vocab" data-def="count.3 &mdash; count(branch(t1, t2)) = count t1 + count t2.">count.3</span> &rarr; count(branch(t1, t2))</li>
+</ul>
+<p>Four steps. The <span class="vocab" data-def="The key property len.3: #(s &frown; t) = #s + #t.">len.3</span> step is the key move &mdash; it is what converts the &frown; structure into the $+$ structure.</p>
+</div>
+
+<h3 id="partc-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<p>We show the LHS equals the RHS by a chain of equalities, working left to right.</p>
+
+<h4>Build Step 1 &mdash; Start with the LHS and apply flatten.3</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{flatten}(\text{branch}(t_1, t_2)) = \text{flatten}\;t_1 \frown \text{flatten}\;t_2$</td><td>flatten.3 &mdash; flattening a branch concatenates the flattened subtrees</td><td>expands the flatten of a branch into a concatenation</td></tr>
+</table>
+<div class="walkthrough">
+<p>Write the left-hand side, substituting $t = \text{branch}(t_1, t_2)$, and apply <span class="vocab" data-def="flatten.3 &mdash; flatten(branch(t1, t2)) = flatten t1 &frown; flatten t2.">flatten.3</span>:</p>
+$$\#(\text{flatten}(\text{branch}(t_1, t_2))) \;=\; \#(\text{flatten}\;t_1 \;\frown\; \text{flatten}\;t_2)$$
+</div>
+
+<h4>Build Step 2 &mdash; Apply len.3 to distribute # over &frown;</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\#(s \frown t) = \#s + \#t$</td><td>len.3 &mdash; length distributes over concatenation</td><td>converts the concatenation &frown; inside # into a sum +</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="The key property len.3: #(s &frown; t) = #s + #t. The length of two sequences joined equals the sum of their individual lengths.">len.3</span> with $s := \text{flatten}\;t_1$ and $t := \text{flatten}\;t_2$. This is the <strong>crucial step</strong> &mdash; it converts the &frown; produced by flatten into the $+$ used by count:</p>
+$$\#(\text{flatten}\;t_1 \;\frown\; \text{flatten}\;t_2) \;=\; \#(\text{flatten}\;t_1) + \#(\text{flatten}\;t_2)$$
+</div>
+
+<h4>Build Step 3 &mdash; Apply both inductive hypotheses (IH1 and IH2)</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\#(\text{flatten}\;t_1) = \text{count}\;t_1$</td><td>IH1 &mdash; the inductive hypothesis for the left subtree</td><td>replaces #(flatten t1) with count t1</td></tr>
+<tr><td>$\#(\text{flatten}\;t_2) = \text{count}\;t_2$</td><td>IH2 &mdash; the inductive hypothesis for the right subtree</td><td>replaces #(flatten t2) with count t2</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply both <span class="vocab" data-def="The assumption that the property already holds for both subtrees.">inductive hypotheses</span> simultaneously. IH1 replaces $\#(\text{flatten}\;t_1)$ with $\text{count}\;t_1$, and IH2 replaces $\#(\text{flatten}\;t_2)$ with $\text{count}\;t_2$:</p>
+$$\#(\text{flatten}\;t_1) + \#(\text{flatten}\;t_2) \;=\; \text{count}\;t_1 + \text{count}\;t_2$$
+</div>
+
+<h4>Build Step 4 &mdash; Recognise count t1 + count t2 as count(branch(t1, t2)) using count.3</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{count}(\text{branch}(t_1, t_2)) = \text{count}\;t_1 + \text{count}\;t_2$</td><td>count.3 &mdash; counting a branch sums the counts of its subtrees</td><td>used backwards: count t1 + count t2 = count(branch(t1, t2)), completing the chain to the RHS</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="count.3 &mdash; count(branch(t1, t2)) = count t1 + count t2.">count.3</span> backwards: $\text{count}\;t_1 + \text{count}\;t_2 = \text{count}(\text{branch}(t_1, t_2))$. This completes the chain:</p>
+$$\text{count}\;t_1 + \text{count}\;t_2 \;=\; \text{count}(\text{branch}(t_1, t_2))$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+<p><strong>Case 3 chain:</strong></p>
+$$\#(\text{flatten}(\text{branch}(t_1, t_2))) \;\underset{\text{flatten.3}}{=}\; \#(\text{flatten}\;t_1 \frown \text{flatten}\;t_2) \;\underset{\text{len.3}}{=}\; \#(\text{flatten}\;t_1) + \#(\text{flatten}\;t_2) \;\underset{\text{IH}}{=}\; \text{count}\;t_1 + \text{count}\;t_2 \;\underset{\text{count.3}}{=}\; \text{count}(\text{branch}(t_1, t_2))$$
+</div>
+<p>Both sides equal $\text{count}\;t_1 + \text{count}\;t_2$. The <span class="vocab" data-def="The third part of the tree induction: assuming the property holds for both subtrees, show it holds for branch(t1, t2).">inductive step</span> is complete.</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2>Summary</h2>
+
+<table>
+<tr><th>Part</th><th>What it proves</th><th>Key laws used</th></tr>
+<tr><td>(a) Base case 1</td><td>$P(\text{stalk})$: both sides equal $0$</td><td>flatten.1, len.1, count.1</td></tr>
+<tr><td>(b) Base case 2</td><td>$P(\text{leaf}\;n)$: both sides equal $1$</td><td>flatten.2, len.2, count.2</td></tr>
+<tr><td>(c) Inductive step</td><td>$P(t_1) \wedge P(t_2) \Rightarrow P(\text{branch}(t_1, t_2))$: both sides equal $\text{count}\;t_1 + \text{count}\;t_2$</td><td>flatten.3, <strong>len.3</strong>, IH1 &amp; IH2, count.3</td></tr>
+</table>
+
+<div class="warning">
+<p><strong>The distributivity of $\#$ is crucial:</strong> The entire branch case hinges on len.3: $\#(s \frown t) = \#s + \#t$. Without this property, we could not decompose $\#(\text{flatten}\;t_1 \frown \text{flatten}\;t_2)$ into separate parts matching the recursive structure of count. The len.3 step bridges the &frown; world (flatten) and the $+$ world (count).</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Conclusion</h2>
+
+<div class="concept">
+<p><strong>Conclusion:</strong> By the induction principle for $\text{Tree}$ (all three obligations discharged), we have:</p>
+$$\forall\, t : \text{Tree} \;\bullet\; \#(\text{flatten}\;t) = \text{count}\;t$$
+<p>The proof works because count and flatten share the same recursive structure, and $\#$ is a <span class="vocab" data-def="A structure-preserving map between algebraic structures. Here, # preserves the combining operation: it maps concatenation to addition, bridging flatten and count.">homomorphism</span> from $(\text{seq}\;\mathbb{N},\;\frown)$ to $(\mathbb{N},\;+)$: it maps the concatenation used by flatten into the addition used by count.</p>
+</div>
+
+<footer>Exercise 47 &mdash; Prove #(flatten t) = count t &mdash; Proof by Structural Induction on Tree</footer>
+
+<script>
+function toggleDropdown(el) {
+  var item = el.closest('.nav-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  }
+});
+</script>
+</body>
+</html>

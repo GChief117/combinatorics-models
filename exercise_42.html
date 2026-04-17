@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 42 &mdash; Supermarket Checkouts</title>
+<style>
+body { font-family: Georgia, "Times New Roman", serif; max-width: 860px; margin: 0 auto; padding: 0 20px 40px 20px; background: #ffffff; color: #111111; line-height: 1.55; }
+h1 { border-bottom: 2px solid #111; padding-bottom: 8px; scroll-margin-top: 100px; }
+h2 { margin-top: 40px; border-bottom: 1px solid #999; padding-bottom: 4px; scroll-margin-top: 100px; }
+h3 { margin-top: 28px; scroll-margin-top: 100px; }
+h4 { margin-top: 20px; color: #333; scroll-margin-top: 100px; }
+a { color: #0a3d91; }
+p { margin: 10px 0; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; margin: 12px 0; width: 100%; }
+th, td { border: 1px solid #bbb; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+.concept { background: #fafafa; border-left: 4px solid #888; padding: 10px 16px; margin: 14px 0; }
+.example { background: #fafafa; border-left: 4px solid #2a7a2a; padding: 10px 16px; margin: 14px 0; }
+.practice { background: #fafafa; border-left: 4px solid #1a5fb4; padding: 10px 16px; margin: 14px 0; }
+.warning { background: #fafafa; border-left: 4px solid #c0392b; padding: 10px 16px; margin: 14px 0; }
+.walkthrough { margin-top: 10px; padding: 10px 14px; background: #fffbea; border-left: 4px solid #b58900; }
+.schema-box { background: #f8f8f8; border: 1px solid #ccc; padding: 12px 16px; margin: 12px 0; font-size: 0.95em; overflow-x: auto; }
+details { margin: 10px 0; }
+summary { cursor: pointer; font-weight: bold; color: #0a3d91; }
+code, .sym { font-family: "Menlo", "Courier New", monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+.vocab { border-bottom: 1px dotted #1a5fb4; cursor: pointer; position: relative; color: #0a3d91; padding: 0 2px; }
+.vocab:hover { background-color: #fff3a3; }
+.vocab::after { content: attr(data-def); display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); background: #2a2a2a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; font-style: normal; font-weight: normal; white-space: normal; width: max-content; max-width: 280px; min-width: 180px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
+.vocab:hover::after { display: block; }
+.key { color: #1a5fb4; text-decoration: underline; text-underline-offset: 2px; }
+footer { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 0.85em; color: #666; }
+
+.section-nav { position: sticky; top: 0; z-index: 100; background: #fff; padding: 12px 0; margin: 0 0 24px 0; border-bottom: 1px solid #ccc; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.nav-item { position: relative; }
+.section-nav button { padding: 6px 10px; border: 1px solid #999; background: #fff; cursor: pointer; font-family: inherit; font-size: 0.9em; border-radius: 3px; }
+.section-nav button:hover { background: #eef; }
+.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #999; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 200px; z-index: 200; }
+.nav-item.open .nav-dropdown { display: block; }
+.nav-dropdown li { padding: 0; margin: 0; }
+.nav-dropdown a { display: block; padding: 6px 14px; text-decoration: none; color: #111; font-size: 0.9em; cursor: pointer; }
+.nav-dropdown a:hover { background: #eef; }
+.nav-link { font-size: 0.9em; color: #0a3d91; text-decoration: none; padding: 6px 10px; border: 1px solid #999; border-radius: 3px; }
+.nav-link:hover { background: #eef; }
+</style>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <a class="nav-link" href="exercise_41.html">&larr; Ex 41</a>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (a)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-a"><strong>Part (a)</strong></a></li>
+      <li><a href="#parta-vocab">Vocab</a></li>
+      <li><a href="#parta-symbols">Symbols</a></li>
+      <li><a href="#parta-step1">Step 1</a></li>
+      <li><a href="#parta-step2">Step 2</a></li>
+      <li><a href="#parta-step3">Step 3</a></li>
+      <li><a href="#parta-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (b)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-b"><strong>Part (b)</strong></a></li>
+      <li><a href="#partb-vocab">Vocab</a></li>
+      <li><a href="#partb-symbols">Symbols</a></li>
+      <li><a href="#partb-step1">Step 1</a></li>
+      <li><a href="#partb-step2">Step 2</a></li>
+      <li><a href="#partb-step3">Step 3</a></li>
+      <li><a href="#partb-solution">Solution</a></li>
+    </ul>
+  </div>
+  <a class="nav-link" href="exercise_43.html">Ex 43 &rarr;</a>
+  <a class="nav-link" href="index.html" style="margin-left:auto;">&larr; All Exercises</a>
+</nav>
+
+
+<h1>Exercise 42 &mdash; Supermarket Checkouts</h1>
+<p><em>Modelling exercise &mdash; building a formal specification step by step.</em></p>
+
+<!-- ============================================================ -->
+<h2>The Scenario</h2>
+
+<div class="concept">
+<p>We model the checkout component of a supermarket: the collection of checkout points at which customers queue to pay. At each checkout, we track the sequence of people queueing to be served.</p>
+<ul>
+  <li>A supermarket is modelled as a <strong>sequence of checkouts</strong>.</li>
+  <li>A checkout is modelled as a <strong>sequence of people</strong> (a queue).</li>
+  <li>There may be any number of people in a queue, and any number of checkouts.</li>
+  <li>No one person may be in more than one queue at the same time.</li>
+</ul>
+</div>
+
+<h3>Given Types</h3>
+<table>
+<tr><th>Declaration</th><th>What it is</th><th>Notes</th></tr>
+<tr><td>$[\text{Person}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Abstract set of all possible people</td></tr>
+</table>
+
+<div class="warning">
+<p><strong>Key detail:</strong> each individual queue must be <strong>injective</strong> (no person twice in the same queue), and across all queues, no person may appear in two different queues.</p>
+</div>
+
+<p>The overall state is a sequence of queues. Each queue is an injective sequence of Person, and the whole structure is a sequence of such queues:</p>
+$$\text{seq}(\text{iseq}\ \text{Person})$$
+
+
+<!-- ============================================================ -->
+<h2>Symbol Table</h2>
+
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\mathbb{P}$</td><td>power set</td><td>the set of all subsets of a given set</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>an ordered list (function from $\{1,\ldots,n\}$ to values)</td></tr>
+<tr><td>$\text{iseq}$</td><td>injective sequence</td><td>a sequence where every element is distinct &mdash; no repeats</td></tr>
+<tr><td>$\text{dom}$</td><td>domain</td><td>the set of valid input indices for a function or sequence</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of all output values produced by a function or sequence</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates constraint from expression in quantifiers</td></tr>
+<tr><td>$|$</td><td>filter bar</td><td>restricts which elements are considered</td></tr>
+<tr><td>$\cap$</td><td>intersection</td><td>the elements that two sets have in common</td></tr>
+<tr><td>$\emptyset$</td><td>empty set</td><td>the set with no members</td></tr>
+<tr><td>$\ne$</td><td>not equal</td><td>two values are different</td></tr>
+<tr><td>$\in$</td><td>element of</td><td>a value belongs to (is a member of) a set</td></tr>
+<tr><td>$\notin$</td><td>not element of</td><td>a value does not belong to a set</td></tr>
+<tr><td>$\bigcup$</td><td>generalised union</td><td>merge all sets in a collection into one big set</td></tr>
+<tr><td>$\oplus$</td><td>functional override</td><td>update a function at one point, leaving the rest unchanged</td></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>join two sequences end-to-end into a single sequence</td></tr>
+<tr><td>$\mapsto$</td><td>maplet</td><td>"$a$ maps to $b$" &mdash; a single input-output pair</td></tr>
+<tr><td>$\pfun$</td><td>partial function</td><td>a function that may not be defined for every possible input</td></tr>
+<tr><td>$\times$</td><td>Cartesian product</td><td>combines types into tuples</td></tr>
+<tr><td>$\wedge$</td><td>conjunction</td><td>"and" &mdash; both sides must be true</td></tr>
+<tr><td>$\langle\rangle$</td><td>angle brackets</td><td>enclose the elements of a sequence</td></tr>
+</table>
+
+
+<!-- ============================================================ -->
+<h2 id="part-a">Part (a) &mdash; Axiomatic Definition of State</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Using an <span class="vocab" data-def="Declares a variable and constrains it with a predicate, rather than giving an explicit construction.">axiomatic definition</span>, define the set State, comprising all possible values of the <span class="key">sequence of sequences</span> representing the checkouts. Each queue must be an <span class="vocab" data-def="A sequence where every element is distinct &mdash; no repeats allowed.">injective sequence</span> of Person, and <span class="key">no person may appear in two different queues</span>.</p>
+</div>
+
+<h3 id="parta-vocab">Vocab for Part (a)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Axiomatic definition</td><td>Declares a variable above a line, with predicates below that must always hold.</td></tr>
+<tr><td>Predicate</td><td>A statement that is either true or false.</td></tr>
+<tr><td>Invariant</td><td>A condition that must be satisfied in every valid state of the system.</td></tr>
+<tr><td>Injective sequence</td><td>A sequence where every element is distinct &mdash; no repeats allowed.</td></tr>
+<tr><td>Disjoint</td><td>Two sets are disjoint when they share no elements &mdash; their intersection is empty.</td></tr>
+</table>
+
+<h3 id="parta-symbols">Symbols for Part (a)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\mathbb{P}$</td><td>power set</td><td>the set of all subsets of a given set</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>an ordered list (function from $\{1,\ldots,n\}$ to values)</td></tr>
+<tr><td>$\text{iseq}$</td><td>injective sequence</td><td>a sequence where every element is distinct &mdash; no repeats</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\text{dom}$</td><td>domain</td><td>the set of valid input indices for a function or sequence</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of all output values produced by a function or sequence</td></tr>
+<tr><td>$\cap$</td><td>intersection</td><td>the elements that two sets have in common</td></tr>
+<tr><td>$\emptyset$</td><td>empty set</td><td>the set with no members</td></tr>
+<tr><td>$\ne$</td><td>not equal</td><td>two values are different</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates constraint from expression in quantifiers</td></tr>
+<tr><td>$|$</td><td>filter bar</td><td>restricts which elements are considered</td></tr>
+</table>
+
+<h3 id="parta-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need to write an <span class="vocab" data-def="Declares a variable above a line, with predicates below that must always hold.">axiomatic definition</span>. The declaration (State and its type) goes above the line. Below the line, we write <span class="vocab" data-def="A statement that is either true or false.">predicates</span> &mdash; <span class="vocab" data-def="A condition that must be satisfied in every valid state of the system.">invariants</span> that every valid supermarket configuration must satisfy.</p>
+</div>
+
+<h3 id="parta-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>We have two English constraints to encode:</p>
+<ol>
+<li>"No person appears twice in the same queue" &rarr; make each queue an <span class="vocab" data-def="A sequence where every element is distinct &mdash; no repeats allowed.">injective sequence</span></li>
+<li>"No person appears in two different queues" &rarr; the ranges of any two distinct queues must be <span class="vocab" data-def="Two sets are disjoint when they share no elements &mdash; their intersection is empty.">disjoint</span></li>
+</ol>
+<p>Constraint 1 is handled at the type level by using <span class="vocab" data-def="injective sequence &mdash; a sequence where every element is distinct &mdash; no repeats">iseq</span>. Constraint 2 requires a separate <span class="vocab" data-def="A statement that is either true or false.">predicate</span>.</p>
+</div>
+
+<h3 id="parta-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong>Type:</strong> The state is a member of <span class="vocab" data-def="power set &mdash; the set of all subsets of a given set">P</span>(<span class="vocab" data-def="sequence &mdash; an ordered list (function from {1,...,n} to values)">seq</span>(<span class="vocab" data-def="injective sequence &mdash; a sequence where every element is distinct &mdash; no repeats">iseq</span> Person)) &mdash; the power set ensures State is a <em>set</em> of valid configurations.</p>
+<p><strong>Disjointness <span class="vocab" data-def="A statement that is either true or false.">predicate</span>:</strong> <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> s : State, <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> i, j : <span class="vocab" data-def="domain &mdash; the set of valid input indices for a function or sequence">dom</span> s <span class="vocab" data-def="filter bar &mdash; restricts which elements are considered">|</span> i <span class="vocab" data-def="not equal &mdash; two values are different">&ne;</span> j, check that <span class="vocab" data-def="range &mdash; the set of all output values produced by a function or sequence">ran</span>(s i) <span class="vocab" data-def="intersection &mdash; the elements that two sets have in common">&cap;</span> <span class="vocab" data-def="range &mdash; the set of all output values produced by a function or sequence">ran</span>(s j) = <span class="vocab" data-def="empty set &mdash; the set with no members">&empty;</span>.</p>
+</div>
+
+<h3 id="parta-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Write the declaration (above the line)</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$[\text{Person}]$</td><td>basic type &mdash; abstract set of all people</td><td>introduces the basic type used throughout</td></tr>
+<tr><td>$\text{State}$</td><td>variable name &mdash; the set of valid supermarket configurations</td><td>the variable we are defining</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares what type State has</td></tr>
+<tr><td>$\mathbb{P}$</td><td>power set &mdash; the set of all subsets of a given set</td><td>makes State a <em>set</em> of valid configurations</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence &mdash; an ordered list (function from $\{1,\ldots,n\}$ to values)</td><td>a supermarket is a sequence of queues</td></tr>
+<tr><td>$\text{iseq}$</td><td>injective sequence &mdash; a sequence where every element is distinct</td><td>each queue has no duplicate people</td></tr>
+</table>
+<div class="walkthrough">
+<p>We declare the basic type <span class="vocab" data-def="Abstract set of all people.">[Person]</span>. Then name our variable <span class="vocab" data-def="The set of valid supermarket configurations.">State</span>, use <span class="vocab" data-def="type declaration &mdash; &quot;is of type&quot;">:</span> to declare its type. The type is <span class="vocab" data-def="power set &mdash; the set of all subsets of a given set">P</span>(<span class="vocab" data-def="sequence &mdash; an ordered list (function from {1,...,n} to values)">seq</span>(<span class="vocab" data-def="injective sequence &mdash; a sequence where every element is distinct">iseq</span> Person)) &mdash; the set of all sequences-of-injective-sequences:</p>
+$$[\text{Person}]$$
+$$\text{State} : \mathbb{P}(\text{seq}(\text{iseq}\ \text{Person}))$$
+</div>
+
+<h4>Build Step 2 &mdash; Start the disjointness <span class="vocab" data-def="A statement that is either true or false.">predicate</span> with <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>the constraint must hold for every valid state</td></tr>
+<tr><td>$s$</td><td>bound variable &mdash; represents each state</td><td>stands for each supermarket configuration</td></tr>
+<tr><td>$\text{State}$</td><td>the set we just declared</td><td>$s$ is drawn from State</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates constraint from expression</td><td>connects "for all $s$" to the inner predicate</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> to say "for every state <span class="vocab" data-def="Bound variable &mdash; represents each supermarket configuration.">s</span> in State":</p>
+$$\forall\, s : \text{State} \bullet \ldots$$
+</div>
+
+<h4>Build Step 3 &mdash; Quantify over pairs of distinct queue indices</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>constraint must hold for every pair of queues</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; an index of one queue</td><td>the first checkout position</td></tr>
+<tr><td>$j$</td><td>bound variable &mdash; an index of another queue</td><td>the second checkout position</td></tr>
+<tr><td>$\text{dom}$</td><td>domain &mdash; the set of valid indices</td><td>gives the checkout positions $\{1,\ldots,n\}$</td></tr>
+<tr><td>$|$</td><td>filter bar &mdash; restricts which elements are considered</td><td>restricts to pairs where $i \ne j$</td></tr>
+<tr><td>$\ne$</td><td>not equal &mdash; two values are different</td><td>ensures we compare <em>different</em> queues</td></tr>
+</table>
+<div class="walkthrough">
+<p>Inside the outer <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span>, use another <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> to iterate over all pairs of indices <span class="vocab" data-def="Bound variable &mdash; the first checkout position.">i</span> and <span class="vocab" data-def="Bound variable &mdash; the second checkout position.">j</span> drawn from <span class="vocab" data-def="domain &mdash; the set of valid indices">dom</span> s, <span class="vocab" data-def="filter bar &mdash; restricts which elements are considered">filtered</span> to those where i <span class="vocab" data-def="not equal &mdash; two values are different">&ne;</span> j:</p>
+$$\forall\, s : \text{State} \bullet \forall\, i, j : \text{dom}\; s\ |\ i \ne j \bullet \ldots$$
+</div>
+
+<h4>Build Step 4 &mdash; Add the disjointness condition</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{ran}$</td><td>range &mdash; the set of all output values</td><td>extracts the set of people in a queue</td></tr>
+<tr><td>$s\,i$</td><td>function application &mdash; apply $s$ to index $i$</td><td>gets queue $i$ from the state</td></tr>
+<tr><td>$s\,j$</td><td>function application &mdash; apply $s$ to index $j$</td><td>gets queue $j$ from the state</td></tr>
+<tr><td>$\cap$</td><td>intersection &mdash; the elements two sets have in common</td><td>finds people shared by both queues</td></tr>
+<tr><td>$\emptyset$</td><td>empty set &mdash; the set with no members</td><td>requires no shared people</td></tr>
+<tr><td>$=$</td><td>equality &mdash; the left side equals the right side</td><td>the intersection must be empty</td></tr>
+</table>
+<div class="walkthrough">
+<p>After the inner <span class="vocab" data-def="spot &mdash; separates constraint from expression">&bull;</span>, require that the people in queue <span class="vocab" data-def="Bound variable &mdash; the first checkout position.">i</span> and queue <span class="vocab" data-def="Bound variable &mdash; the second checkout position.">j</span> share nobody. Use <span class="vocab" data-def="range &mdash; the set of all output values">ran</span> to extract the people from each queue, <span class="vocab" data-def="intersection &mdash; the elements two sets have in common">&cap;</span> to find any overlap, and require equality with <span class="vocab" data-def="empty set &mdash; the set with no members">&empty;</span>:</p>
+$$\forall\, s : \text{State} \bullet \forall\, i, j : \text{dom}\; s\ |\ i \ne j \bullet \text{ran}(s\,i) \cap \text{ran}(s\,j) = \emptyset$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$[\text{Person}]$$
+<hr>
+$$\text{State} : \mathbb{P}(\text{seq}(\text{iseq}\ \text{Person}))$$
+<hr>
+$$\forall\, s : \text{State} \bullet \forall\, i, j : \text{dom}\; s\ |\ i \ne j \bullet \text{ran}(s\,i) \cap \text{ran}(s\,j) = \emptyset$$
+</div>
+<p>"State is the set of all sequences-of-injective-sequences-of-Person such that any two <em>different</em> queues have no people in common."</p>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p><strong>Valid state:</strong> $s = \langle \langle \text{Alice}, \text{Bob} \rangle,\ \langle \text{Carol} \rangle,\ \langle \text{Dave}, \text{Eve} \rangle \rangle$</p>
+<table>
+<tr><th>Check</th><th>Detail</th><th>Result</th></tr>
+<tr><td>Injective?</td><td>Each queue has no repeats: $\langle A, B \rangle$, $\langle C \rangle$, $\langle D, E \rangle$</td><td>&check;</td></tr>
+<tr><td>$i=1, j=2$</td><td>$\{A, B\} \cap \{C\} = \emptyset$</td><td>&check;</td></tr>
+<tr><td>$i=1, j=3$</td><td>$\{A, B\} \cap \{D, E\} = \emptyset$</td><td>&check;</td></tr>
+<tr><td>$i=2, j=3$</td><td>$\{C\} \cap \{D, E\} = \emptyset$</td><td>&check;</td></tr>
+</table>
+<p>All pairs disjoint &mdash; valid state &check;</p>
+
+<p><strong>Invalid state:</strong> $s = \langle \langle \text{Alice}, \text{Bob} \rangle,\ \langle \text{Bob}, \text{Carol} \rangle \rangle$</p>
+<table>
+<tr><th>Check</th><th>Detail</th><th>Result</th></tr>
+<tr><td>$i=1, j=2$</td><td>$\{A, B\} \cap \{B, C\} = \{B\} \ne \emptyset$</td><td>&cross;</td></tr>
+</table>
+<p>Bob is in two queues &mdash; fails the disjointness invariant &cross;</p>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-b">Part (b) &mdash; Function to Add a Person to a Queue</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define a <span class="vocab" data-def="A function that may not be defined for every possible input &mdash; it has preconditions.">partial function</span> $\text{add}$ that takes a queue number, a person, and a supermarket state, and returns a new state. The function models a <span class="key">person joining the back of a specified queue</span>. Specify its signature, <span class="vocab" data-def="Conditions that must be true before the function can be applied.">preconditions</span>, and effect.</p>
+</div>
+
+<h3 id="partb-vocab">Vocab for Part (b)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Partial function</td><td>A function that may not be defined for every possible input &mdash; it has preconditions.</td></tr>
+<tr><td>Precondition</td><td>A condition that must be true before the function can be applied.</td></tr>
+<tr><td>Functional override</td><td>Replaces one mapping in a function while leaving all other mappings unchanged.</td></tr>
+<tr><td>Concatenation</td><td>Joining two sequences end-to-end to form a single longer sequence.</td></tr>
+<tr><td>Generalised union</td><td>Merges all sets (or relations) in a collection into one combined set (or relation).</td></tr>
+</table>
+
+<h3 id="partb-symbols">Symbols for Part (b)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\pfun$</td><td>partial function</td><td>a function not defined for every input</td></tr>
+<tr><td>$\times$</td><td>Cartesian product</td><td>combines types into tuples</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers</td><td>the set $\{0, 1, 2, 3, \ldots\}$</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\in$</td><td>element of</td><td>a value belongs to a set</td></tr>
+<tr><td>$\notin$</td><td>not element of</td><td>a value does not belong to a set</td></tr>
+<tr><td>$\text{dom}$</td><td>domain</td><td>the set of valid input indices for a function or sequence</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of all output values produced by a function or sequence</td></tr>
+<tr><td>$\bigcup$</td><td>generalised union</td><td>merge all sets in a collection into one big set</td></tr>
+<tr><td>$\wedge$</td><td>conjunction</td><td>"and" &mdash; both sides must be true</td></tr>
+<tr><td>$\oplus$</td><td>functional override</td><td>update a function at one point, leaving the rest unchanged</td></tr>
+<tr><td>$\mapsto$</td><td>maplet</td><td>"$a$ maps to $b$"</td></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>join two sequences end-to-end</td></tr>
+<tr><td>$\langle\ \rangle$</td><td>angle brackets</td><td>enclose the elements of a sequence</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates constraint from expression in quantifiers</td></tr>
+<tr><td>$|$</td><td>filter bar</td><td>restricts which elements are considered</td></tr>
+</table>
+
+<h3 id="partb-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a function that modifies the supermarket state by adding one person to the back of one queue. The function takes three inputs: a queue number, a person, and the current state. It returns a new state. Since the function has <span class="vocab" data-def="Conditions that must be true before the function can be applied.">preconditions</span> (not every combination of inputs makes sense), it is a <span class="vocab" data-def="A function that may not be defined for every possible input &mdash; it has preconditions.">partial function</span>.</p>
+</div>
+
+<h3 id="partb-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Three sub-problems to solve:</p>
+<ol>
+<li><strong>Type signature:</strong> declare the input types and output type, using <span class="vocab" data-def="partial function &mdash; a function not defined for every input">&pfun;</span> because there are <span class="vocab" data-def="Conditions that must be true before the function can be applied.">preconditions</span>.</li>
+<li><strong><span class="vocab" data-def="Conditions that must be true before the function can be applied.">Preconditions</span>:</strong> two conditions must hold for the function to be defined &mdash; the queue must exist, and the person must not already be in any queue.</li>
+<li><strong>Effect:</strong> use <span class="vocab" data-def="Replaces one mapping in a function while leaving all other mappings unchanged.">functional override</span> <span class="vocab" data-def="functional override &mdash; update a function at one point, leaving the rest unchanged">&oplus;</span> to replace one queue with the extended version, leaving the rest unchanged.</li>
+</ol>
+</div>
+
+<h3 id="partb-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong>Signature:</strong> add <span class="vocab" data-def="type declaration &mdash; &quot;is of type&quot;">:</span> <span class="vocab" data-def="natural numbers &mdash; the set {0, 1, 2, 3, ...}">N</span> <span class="vocab" data-def="Cartesian product &mdash; combines types into tuples">&times;</span> Person <span class="vocab" data-def="Cartesian product &mdash; combines types into tuples">&times;</span> State <span class="vocab" data-def="partial function &mdash; a function not defined for every input">&pfun;</span> State.</p>
+<p><strong><span class="vocab" data-def="Conditions that must be true before the function can be applied.">Precondition</span> 1:</strong> n <span class="vocab" data-def="element of &mdash; a value belongs to a set">&isin;</span> <span class="vocab" data-def="domain &mdash; the set of valid input indices for a function or sequence">dom</span> s &mdash; queue n must exist.</p>
+<p><strong><span class="vocab" data-def="Conditions that must be true before the function can be applied.">Precondition</span> 2:</strong> p <span class="vocab" data-def="not element of &mdash; a value does not belong to a set">&notin;</span> <span class="vocab" data-def="range &mdash; the set of all output values produced by a function or sequence">ran</span>(<span class="vocab" data-def="generalised union &mdash; merge all sets in a collection into one big set">&bigcup;</span>(<span class="vocab" data-def="range &mdash; the set of all output values produced by a function or sequence">ran</span> s)) &mdash; person p must not be in any queue.</p>
+<p><strong>Effect:</strong> s <span class="vocab" data-def="functional override &mdash; update a function at one point, leaving the rest unchanged">&oplus;</span> {n <span class="vocab" data-def="maplet &mdash; &quot;a maps to b&quot;">&mapsto;</span> (s n)<span class="vocab" data-def="concatenation &mdash; join two sequences end-to-end">&frown;</span>&langle;p&rangle;} &mdash; replace queue n with queue n plus p appended.</p>
+</div>
+
+<h3 id="partb-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Type signature</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{add}$</td><td>function name &mdash; the function we are defining</td><td>names the add-person operation</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares the input and output types of add</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers &mdash; the set $\{0, 1, 2, 3, \ldots\}$</td><td>the type of the queue index $n$</td></tr>
+<tr><td>$\times$</td><td>Cartesian product &mdash; combines types into tuples</td><td>builds the input triple: $\mathbb{N} \times \text{Person} \times \text{State}$</td></tr>
+<tr><td>$\text{Person}$</td><td>basic type &mdash; an element from the Person set</td><td>the type of the person $p$</td></tr>
+<tr><td>$\text{State}$</td><td>the set of valid supermarket configurations (from part a)</td><td>the input state and the output type</td></tr>
+<tr><td>$\pfun$</td><td>partial function &mdash; a function not defined for every input</td><td>add has preconditions, so it is partial</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the function <span class="vocab" data-def="The function we are defining.">add</span>, use <span class="vocab" data-def="type declaration &mdash; &quot;is of type&quot;">:</span> to declare its type. The input is a triple built with <span class="vocab" data-def="Cartesian product &mdash; combines types into tuples">&times;</span>: a queue index (<span class="vocab" data-def="natural numbers &mdash; the set {0, 1, 2, 3, ...}">N</span>), a <span class="vocab" data-def="Basic type &mdash; an element from the Person set.">Person</span>, and a <span class="vocab" data-def="The set of valid supermarket configurations.">State</span>. The output is a <span class="vocab" data-def="The set of valid supermarket configurations.">State</span>. Connected by <span class="vocab" data-def="partial function &mdash; a function not defined for every input">&pfun;</span> because there are <span class="vocab" data-def="Conditions that must be true before the function can be applied.">preconditions</span>:</p>
+$$\text{add} : \mathbb{N} \times \text{Person} \times \text{State} \pfun \text{State}$$
+</div>
+
+<h4>Build Step 2 &mdash; Precondition 1: queue must exist</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>defines the function for all valid input triples</td></tr>
+<tr><td>$n$</td><td>bound variable &mdash; the queue index</td><td>names the checkout we are targeting</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers &mdash; the set $\{0, 1, 2, 3, \ldots\}$</td><td>$n$ is drawn from the naturals</td></tr>
+<tr><td>$;$</td><td>separator &mdash; separates declarations</td><td>separates $n$, $p$, and $s$</td></tr>
+<tr><td>$p$</td><td>bound variable &mdash; the person to add</td><td>names the person joining the queue</td></tr>
+<tr><td>$s$</td><td>bound variable &mdash; the current state</td><td>the supermarket configuration before the operation</td></tr>
+<tr><td>$|$</td><td>filter bar &mdash; restricts which elements are considered</td><td>introduces the preconditions</td></tr>
+<tr><td>$n$</td><td>bound variable &mdash; the queue index</td><td>the queue we want to add to</td></tr>
+<tr><td>$\in$</td><td>element of &mdash; a value belongs to a set</td><td>checks that queue $n$ exists</td></tr>
+<tr><td>$\text{dom}$</td><td>domain &mdash; the set of valid indices</td><td>the set of checkout positions $\{1,\ldots,k\}$</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> to introduce the variables: <span class="vocab" data-def="Bound variable &mdash; the queue index.">n</span> : <span class="vocab" data-def="natural numbers &mdash; the set {0, 1, 2, 3, ...}">N</span>; <span class="vocab" data-def="Bound variable &mdash; the person to add.">p</span> : Person; <span class="vocab" data-def="Bound variable &mdash; the current state.">s</span> : State. Then use <span class="vocab" data-def="filter bar &mdash; restricts which elements are considered">|</span> to state the first <span class="vocab" data-def="Conditions that must be true before the function can be applied.">precondition</span>: <span class="vocab" data-def="Bound variable &mdash; the queue index.">n</span> <span class="vocab" data-def="element of &mdash; a value belongs to a set">&isin;</span> <span class="vocab" data-def="domain &mdash; the set of valid indices">dom</span> s &mdash; queue n must be a valid checkout position:</p>
+$$\forall\, n : \mathbb{N};\ p : \text{Person};\ s : \text{State}\ |\ n \in \text{dom}\; s\ \wedge\ \ldots$$
+</div>
+
+<h4>Build Step 3 &mdash; Precondition 2: person not in any queue</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$p$</td><td>bound variable &mdash; the person to add</td><td>the person we are checking</td></tr>
+<tr><td>$\notin$</td><td>not element of &mdash; a value does not belong to a set</td><td>requires $p$ to be absent from all queues</td></tr>
+<tr><td>$\text{ran}$</td><td>range &mdash; the set of all output values</td><td>used twice: inner extracts queues, outer extracts people</td></tr>
+<tr><td>$\bigcup$</td><td>generalised union &mdash; merge all into one</td><td>combines all queues into one big relation</td></tr>
+</table>
+<div class="walkthrough">
+<p>The second <span class="vocab" data-def="Conditions that must be true before the function can be applied.">precondition</span> says "person p is not already in any queue." We build this in layers:</p>
+<ol>
+<li><span class="vocab" data-def="range &mdash; the set of all output values">ran</span> s = the set of all queues (each queue is a sequence, i.e. a function)</li>
+<li><span class="vocab" data-def="generalised union &mdash; merge all into one">&bigcup;</span>(<span class="vocab" data-def="range &mdash; the set of all output values">ran</span> s) = union of all those functions into one big relation</li>
+<li><span class="vocab" data-def="range &mdash; the set of all output values">ran</span>(<span class="vocab" data-def="generalised union &mdash; merge all into one">&bigcup;</span>(<span class="vocab" data-def="range &mdash; the set of all output values">ran</span> s)) = the set of all people across all queues</li>
+</ol>
+<p>Require <span class="vocab" data-def="Bound variable &mdash; the person to add.">p</span> <span class="vocab" data-def="not element of &mdash; a value does not belong to a set">&notin;</span> this set. Combined with precondition 1 using <span class="vocab" data-def="conjunction &mdash; &quot;and&quot; &mdash; both sides must be true">&and;</span>:</p>
+$$\forall\, n : \mathbb{N};\ p : \text{Person};\ s : \text{State}\ |\ n \in \text{dom}\; s \wedge p \notin \text{ran}(\bigcup(\text{ran}\; s))\ \bullet\ \ldots$$
+</div>
+
+<div class="warning">
+<p><strong>Why <span class="vocab" data-def="range &mdash; the set of all output values">ran</span>(<span class="vocab" data-def="generalised union &mdash; merge all into one">&bigcup;</span>(<span class="vocab" data-def="range &mdash; the set of all output values">ran</span> s))?</strong></p>
+<ul>
+<li>$s$ is a sequence of queues, so $\text{ran}\; s$ gives the <em>set</em> of all queues (as sequences).</li>
+<li>Each queue is a function $\{1,\ldots,k\} \to \text{Person}$. Taking $\bigcup$ merges all these functions into one big relation.</li>
+<li>Taking $\text{ran}$ of that combined relation gives the set of all people appearing in any queue.</li>
+<li>If $p$ is not in this set, $p$ is not in any queue &mdash; safe to add.</li>
+</ul>
+</div>
+
+<h4>Build Step 4 &mdash; The effect: override with appended queue</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{add}(n, p, s)$</td><td>function application &mdash; apply add to inputs $n$, $p$, $s$</td><td>the left side of the definition</td></tr>
+<tr><td>$=$</td><td>equality &mdash; the left side equals the right side</td><td>defines the result</td></tr>
+<tr><td>$s$</td><td>bound variable &mdash; the current state</td><td>the state we are modifying</td></tr>
+<tr><td>$\oplus$</td><td>functional override &mdash; update one point, leave rest unchanged</td><td>replaces only queue $n$, all other queues stay</td></tr>
+<tr><td>$\{\ \}$</td><td>set braces &mdash; enclose a singleton set</td><td>wraps the single new mapping</td></tr>
+<tr><td>$n$</td><td>bound variable &mdash; the queue index</td><td>the position being updated</td></tr>
+<tr><td>$\mapsto$</td><td>maplet &mdash; "$a$ maps to $b$"</td><td>pairs queue index $n$ with the new queue</td></tr>
+<tr><td>$s\,n$</td><td>function application &mdash; apply $s$ to $n$</td><td>gets the current queue at position $n$</td></tr>
+<tr><td>$\frown$</td><td>concatenation &mdash; join two sequences end-to-end</td><td>appends $\langle p \rangle$ to the end of queue $n$</td></tr>
+<tr><td>$\langle p \rangle$</td><td>singleton sequence &mdash; a sequence containing just $p$</td><td>wraps $p$ in a one-element sequence for concatenation</td></tr>
+</table>
+<div class="walkthrough">
+<p>After the <span class="vocab" data-def="spot &mdash; separates constraint from expression">&bull;</span>, define the result. We want to replace queue <span class="vocab" data-def="Bound variable &mdash; the queue index.">n</span> with the old queue plus <span class="vocab" data-def="Bound variable &mdash; the person to add.">p</span> appended, leaving all other queues unchanged. Break it down piece by piece:</p>
+<ol>
+<li><span class="vocab" data-def="Bound variable &mdash; the current state.">s</span> <span class="vocab" data-def="Bound variable &mdash; the queue index.">n</span> = the current queue at position n (e.g. $\langle A, B \rangle$)</li>
+<li>(<span class="vocab" data-def="Bound variable &mdash; the current state.">s</span> <span class="vocab" data-def="Bound variable &mdash; the queue index.">n</span>)<span class="vocab" data-def="concatenation &mdash; join two sequences end-to-end">&frown;</span>&langle;<span class="vocab" data-def="Bound variable &mdash; the person to add.">p</span>&rangle; = append p to the end of that queue (e.g. $\langle A, B, p \rangle$)</li>
+<li>{<span class="vocab" data-def="Bound variable &mdash; the queue index.">n</span> <span class="vocab" data-def="maplet &mdash; &quot;a maps to b&quot;">&mapsto;</span> (<span class="vocab" data-def="Bound variable &mdash; the current state.">s</span> <span class="vocab" data-def="Bound variable &mdash; the queue index.">n</span>)<span class="vocab" data-def="concatenation &mdash; join two sequences end-to-end">&frown;</span>&langle;<span class="vocab" data-def="Bound variable &mdash; the person to add.">p</span>&rangle;} = create a new mapping from index n to the extended queue</li>
+<li><span class="vocab" data-def="Bound variable &mdash; the current state.">s</span> <span class="vocab" data-def="functional override &mdash; update one point, leave rest unchanged">&oplus;</span> {<span class="vocab" data-def="Bound variable &mdash; the queue index.">n</span> <span class="vocab" data-def="maplet &mdash; &quot;a maps to b&quot;">&mapsto;</span> ...} = override: replace the mapping at n, keep everything else</li>
+</ol>
+<p>Putting it all together:</p>
+$$\text{add}(n, p, s) = s \oplus \{n \mapsto (s\,n) \frown \langle p \rangle\}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\text{add} : \mathbb{N} \times \text{Person} \times \text{State} \pfun \text{State}$$
+<hr>
+$$\forall\, n : \mathbb{N};\ p : \text{Person};\ s : \text{State}\ |\ n \in \text{dom}\; s \wedge p \notin \text{ran}(\bigcup(\text{ran}\; s)) \bullet$$
+$$\text{add}(n,\, p,\, s) = s \oplus \{n \mapsto (s\,n) \frown \langle p \rangle\}$$
+</div>
+<p>"For every valid queue index <span class="vocab" data-def="Bound variable &mdash; the queue index.">n</span>, person <span class="vocab" data-def="Bound variable &mdash; the person to add.">p</span> not in any queue, and state <span class="vocab" data-def="Bound variable &mdash; the current state.">s</span>: the result of add is the state with queue n replaced by queue n with p appended at the back."</p>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p><strong>Input:</strong> $s = \langle \langle A, B \rangle,\ \langle C \rangle,\ \langle \rangle \rangle$, call $\text{add}(2, D, s)$.</p>
+<table>
+<tr><th>Step</th><th>What happens</th><th>Result</th></tr>
+<tr><td>1. Check precondition 1</td><td>$2 \in \text{dom}\; s = \{1, 2, 3\}$?</td><td>Yes &check;</td></tr>
+<tr><td>2. Compute all people</td><td>$\text{ran}\; s = \{\langle A, B \rangle,\ \langle C \rangle,\ \langle \rangle\}$<br>$\bigcup(\text{ran}\; s) = \{1 \mapsto A,\ 2 \mapsto B,\ 1 \mapsto C\}$<br>$\text{ran}(\bigcup(\text{ran}\; s)) = \{A, B, C\}$</td><td>All people: $\{A, B, C\}$</td></tr>
+<tr><td>3. Check precondition 2</td><td>$D \notin \{A, B, C\}$?</td><td>Yes &check;</td></tr>
+<tr><td>4. Get current queue 2</td><td>$s\,2 = \langle C \rangle$</td><td>$\langle C \rangle$</td></tr>
+<tr><td>5. Append $D$</td><td>$(s\,2) \frown \langle D \rangle = \langle C \rangle \frown \langle D \rangle$</td><td>$\langle C, D \rangle$</td></tr>
+<tr><td>6. Create maplet</td><td>$\{2 \mapsto \langle C, D \rangle\}$</td><td>$\{2 \mapsto \langle C, D \rangle\}$</td></tr>
+<tr><td>7. Apply override</td><td>$s \oplus \{2 \mapsto \langle C, D \rangle\}$</td><td>$\langle \langle A, B \rangle,\ \langle C, D \rangle,\ \langle \rangle \rangle$ &check;</td></tr>
+</table>
+<p>Queue 1 and queue 3 unchanged. Queue 2 now has D at the back. &check;</p>
+
+<p><strong>Invalid call:</strong> $\text{add}(2, B, s)$ &mdash; B is already in queue 1.</p>
+<table>
+<tr><th>Step</th><th>What happens</th><th>Result</th></tr>
+<tr><td>1. Check precondition 1</td><td>$2 \in \{1, 2, 3\}$?</td><td>Yes &check;</td></tr>
+<tr><td>2. Check precondition 2</td><td>$B \notin \{A, B, C\}$?</td><td>No &cross; &mdash; B is in queue 1</td></tr>
+</table>
+<p>Precondition fails &mdash; add is undefined for this input. This prevents B from being in two queues. &cross;</p>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2>Summary</h2>
+
+<table>
+<tr><th>Part</th><th>What it models</th><th>Key technique</th></tr>
+<tr><td>(a)</td><td>System state &mdash; valid supermarket configurations</td><td>Axiomatic definition with $\text{iseq}$ + disjointness invariant</td></tr>
+<tr><td>(b)</td><td>Adding a person to a queue</td><td>Partial function with $\oplus$ override + $\frown$ concatenation</td></tr>
+</table>
+
+<footer>Exercise 42 &mdash; Supermarket Checkouts &mdash; Z Specification</footer>
+
+<script>
+function toggleDropdown(el) {
+  var item = el.closest('.nav-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  }
+});
+</script>
+</body>
+</html>

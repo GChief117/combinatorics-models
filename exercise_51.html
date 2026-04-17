@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 51 &mdash; Streamify: Song Length and Popularity</title>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+body { font-family: Georgia, "Times New Roman", serif; max-width: 860px; margin: 0 auto; padding: 0 20px 40px 20px; background: #ffffff; color: #111111; line-height: 1.55; }
+h1 { border-bottom: 2px solid #111; padding-bottom: 8px; scroll-margin-top: 100px; }
+h2 { margin-top: 40px; border-bottom: 1px solid #999; padding-bottom: 4px; scroll-margin-top: 100px; }
+h3 { margin-top: 28px; scroll-margin-top: 100px; }
+h4 { margin-top: 20px; color: #333; scroll-margin-top: 100px; }
+a { color: #0a3d91; }
+p { margin: 10px 0; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; margin: 12px 0; width: 100%; }
+th, td { border: 1px solid #bbb; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+.concept { background: #fafafa; border-left: 4px solid #888; padding: 10px 16px; margin: 14px 0; }
+.example { background: #fafafa; border-left: 4px solid #2a7a2a; padding: 10px 16px; margin: 14px 0; }
+.practice { background: #fafafa; border-left: 4px solid #1a5fb4; padding: 10px 16px; margin: 14px 0; }
+.warning { background: #fafafa; border-left: 4px solid #c0392b; padding: 10px 16px; margin: 14px 0; }
+.walkthrough { margin-top: 10px; padding: 10px 14px; background: #fffbea; border-left: 4px solid #b58900; }
+.schema-box { background: #f8f8f8; border: 1px solid #ccc; padding: 12px 16px; margin: 12px 0; font-size: 0.95em; overflow-x: auto; }
+details { margin: 10px 0; }
+summary { cursor: pointer; font-weight: bold; color: #0a3d91; }
+code, .sym { font-family: "Menlo", "Courier New", monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+.vocab { border-bottom: 1px dotted #1a5fb4; cursor: pointer; position: relative; color: #0a3d91; padding: 0 2px; }
+.vocab:hover { background-color: #fff3a3; }
+.vocab::after { content: attr(data-def); display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); background: #2a2a2a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; font-style: normal; font-weight: normal; white-space: normal; width: max-content; max-width: 280px; min-width: 180px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
+.vocab:hover::after { display: block; }
+.key { color: #1a5fb4; text-decoration: underline; text-underline-offset: 2px; }
+footer { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 0.85em; color: #666; }
+
+.section-nav { position: sticky; top: 0; z-index: 100; background: #fff; padding: 12px 0; margin: 0 0 24px 0; border-bottom: 1px solid #ccc; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.nav-item { position: relative; }
+.section-nav button { padding: 6px 10px; border: 1px solid #999; background: #fff; cursor: pointer; font-family: inherit; font-size: 0.9em; border-radius: 3px; }
+.section-nav button:hover { background: #eef; }
+.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #999; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 200px; z-index: 200; }
+.nav-item.open .nav-dropdown { display: block; }
+.nav-dropdown li { padding: 0; margin: 0; }
+.nav-dropdown a { display: block; padding: 6px 14px; text-decoration: none; color: #111; font-size: 0.9em; cursor: pointer; }
+.nav-dropdown a:hover { background: #eef; }
+.nav-link { font-size: 0.9em; color: #0a3d91; text-decoration: none; padding: 6px 10px; border: 1px solid #999; border-radius: 3px; }
+.nav-link:hover { background: #eef; }
+</style>
+</head>
+<body>
+
+<nav class="section-nav">
+  <a class="nav-link" href="exercise_50.html">&larr; Ex 50</a>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (a)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-a"><strong>Part (a)</strong></a></li>
+      <li><a href="#parta-vocab">Vocab</a></li>
+      <li><a href="#parta-symbols">Symbols</a></li>
+      <li><a href="#parta-step1">Step 1</a></li>
+      <li><a href="#parta-step2">Step 2</a></li>
+      <li><a href="#parta-step3">Step 3</a></li>
+      <li><a href="#parta-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (b)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-b"><strong>Part (b)</strong></a></li>
+      <li><a href="#partb-vocab">Vocab</a></li>
+      <li><a href="#partb-symbols">Symbols</a></li>
+      <li><a href="#partb-step1">Step 1</a></li>
+      <li><a href="#partb-step2">Step 2</a></li>
+      <li><a href="#partb-step3">Step 3</a></li>
+      <li><a href="#partb-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (c)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-c"><strong>Part (c)</strong></a></li>
+      <li><a href="#partc-vocab">Vocab</a></li>
+      <li><a href="#partc-symbols">Symbols</a></li>
+      <li><a href="#partc-step1">Step 1</a></li>
+      <li><a href="#partc-step2">Step 2</a></li>
+      <li><a href="#partc-step3">Step 3</a></li>
+      <li><a href="#partc-solution">Solution</a></li>
+    </ul>
+  </div>
+  <a class="nav-link" href="exercise_52.html">Ex 52 &rarr;</a>
+  <a class="nav-link" href="index.html" style="margin-left:auto;">&larr; All Exercises</a>
+</nav>
+
+
+<h1>Exercise 51 &mdash; Streamify: Song Length and Popularity</h1>
+<p><em>Software Engineering Mathematics &mdash; Z Notation Modelling (Part 4 of a 5-exercise series)</em></p>
+
+<!-- ============================================================ -->
+<h2>The Scenario</h2>
+
+<div class="concept">
+<p>Two further functions are introduced to the Streamify platform. The first, <span class="vocab" data-def="A partial function mapping each song identifier to its duration in seconds.">length</span>, maps a given song identifier to its length in seconds. The second, <span class="vocab" data-def="A partial function mapping each song identifier to a computed popularity score based on user sentiment and playlist exposure.">popularity</span>, assigns a popularity score to each song identifier.</p>
+$$length : SongId \pfun \mathbb{N}$$
+$$popularity : SongId \pfun \mathbb{N}$$
+</div>
+
+<!-- ============================================================ -->
+<h2>Context from Exercises 48&ndash;50</h2>
+
+<div class="schema-box">
+<p>From the combined Streamify model, we have:</p>
+<ul>
+<li>$songs : \mathbb{F}\; SongId$ &mdash; the finite set of all songs on the platform</li>
+<li>$users : \mathbb{F}\; UserId$ &mdash; the finite set of all registered users</li>
+<li>$playlists : PlaylistId \pfun Playlist$ where $Playlist == \text{iseq}_1\; SongId$ &mdash; each playlist is a non-empty injective sequence of songs</li>
+<li>$playlist\_owner : PlaylistId \pfun UserId$ &mdash; who owns each playlist</li>
+<li>$playlist\_subscribers : PlaylistId \pfun \mathbb{F}_1\; UserId$ &mdash; who subscribes to each playlist</li>
+<li>$hated : UserId \pfun \mathbb{F}\; SongId$ &mdash; songs each user hates</li>
+<li>$loved : UserId \pfun \mathbb{F}\; SongId$ &mdash; songs each user loves</li>
+</ul>
+</div>
+
+<!-- ============================================================ -->
+<h2>New Declarations</h2>
+
+<div class="schema-box">
+<p>Two new <span class="vocab" data-def="A partial function may not be defined for every element of its source type. Songs that have been uploaded but not yet processed might lack a length value.">partial functions</span> map songs to natural numbers:</p>
+$$length : SongId \pfun \mathbb{N}$$
+$$popularity : SongId \pfun \mathbb{N}$$
+<p>$length$ gives the duration of a song in seconds. $popularity$ computes a score based on user reactions and playlist appearances.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Master Symbol Table</h2>
+
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\pfun$</td><td>partial function</td><td>a mapping where not every element of the source type needs a value</td></tr>
+<tr><td>$\text{dom}$</td><td>domain</td><td>the set of all input values for which a function is defined</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of all output values that a function actually produces</td></tr>
+<tr><td>$\subseteq$</td><td>subset or equal</td><td>every element of the left set also belongs to the right set</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all" &mdash; asserts a property holds for every element in a set</td></tr>
+<tr><td>$\bullet$</td><td>spot / separator</td><td>separates the bound variable from the body of a quantified expression</td></tr>
+<tr><td>$\#$</td><td>cardinality</td><td>the number of elements in a finite set</td></tr>
+<tr><td>$\in$</td><td>element of</td><td>"belongs to" &mdash; a value is a member of a set</td></tr>
+<tr><td>$\geq$</td><td>greater than or equal</td><td>left side is at least as large as right side</td></tr>
+<tr><td>$<$</td><td>strictly less than</td><td>left side is smaller than right side</td></tr>
+<tr><td>$\Rightarrow$</td><td>implies</td><td>"if ... then ..." &mdash; when the left side is true, the right side must also be true</td></tr>
+<tr><td>$\land$</td><td>conjunction</td><td>"and" &mdash; both sides must be true simultaneously</td></tr>
+<tr><td>$-$</td><td>subtraction</td><td>arithmetic difference of two numbers</td></tr>
+<tr><td>$\times$</td><td>multiplication</td><td>arithmetic product of two numbers</td></tr>
+<tr><td>$=$</td><td>equals</td><td>left side and right side have the same value</td></tr>
+<tr><td>$\neq$</td><td>not equal</td><td>two values are different</td></tr>
+<tr><td>$>$</td><td>strictly greater than</td><td>left side exceeds right side</td></tr>
+<tr><td>$\exists_1$</td><td>unique existence</td><td>"there exists exactly one" &mdash; precisely one element satisfies a property</td></tr>
+<tr><td>$\mu$</td><td>mu (unique selector)</td><td>returns the unique element satisfying a property; undefined if zero or more than one qualifies</td></tr>
+<tr><td>$\lnot$</td><td>negation</td><td>"not" &mdash; reverses a truth value</td></tr>
+<tr><td>$|$</td><td>such that / filter bar</td><td>used inside set comprehension or quantification to introduce a filtering condition</td></tr>
+<tr><td>$==$</td><td>abbreviation</td><td>introduces a shorthand name for an expression</td></tr>
+</table>
+
+
+<!-- ============================================================ -->
+<h2 id="part-a">Part (a) &mdash; Complete the Popularity Definition</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Complete the definition so that:</p>
+<ol>
+<li>Songs appearing in <span class="vocab" data-def="A partial function mapping each song identifier to its duration in seconds.">length</span> and <span class="vocab" data-def="A partial function mapping each song identifier to a computed popularity score.">popularity</span> must appear in <span class="vocab" data-def="The finite set of all songs on the platform.">songs</span>.</li>
+<li>The <span class="vocab" data-def="A partial function mapping each song identifier to a computed popularity score.">popularity</span> of a song is: (<span class="key">number who love it $-$ number who hate it</span>), <em><span class="key">capped at 0</span></em> if negative, <span class="key">multiplied by the number of playlists</span> in which it appears.</li>
+</ol>
+<p><strong>Example 1:</strong> a song liked by 6, hated by 3, in 10 playlists $\Rightarrow$ $(6 - 3) \times 10 = 30$.</p>
+<p><strong>Example 2:</strong> a song liked by 3, hated by 6, in 10 playlists $\Rightarrow$ $0 \times 10 = 0$ (capped at 0).</p>
+</div>
+
+<h3 id="parta-vocab">Vocab for Part (a)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Helper function</td><td>A separately defined function used inside the main definition to keep things readable.</td></tr>
+<tr><td>Capped at zero</td><td>If the result would be negative, use 0 instead. Ensures the value is always a natural number.</td></tr>
+<tr><td>Love-hate score</td><td>The net positive sentiment for a song: max(lovers &minus; haters, 0).</td></tr>
+<tr><td>Playlist count</td><td>How many playlists feature a given song.</td></tr>
+</table>
+
+<h3 id="parta-symbols">Symbols for Part (a)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>dom</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>&sube;</td><td>subset</td><td>every element of the left set is also in the right set</td></tr>
+<tr><td>&forall;</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>&bull;</td><td>spot</td><td>separates the bound variable from the body in a quantified expression</td></tr>
+<tr><td>#</td><td>cardinality</td><td>the number of elements in a finite set</td></tr>
+<tr><td>&isin;</td><td>element of</td><td>"belongs to" &mdash; a value is a member of a set</td></tr>
+<tr><td>&ge;</td><td>greater than or equal</td><td>left side is at least as large as right side</td></tr>
+<tr><td>&lt;</td><td>strictly less than</td><td>left side is smaller than right side</td></tr>
+<tr><td>&rArr;</td><td>implies</td><td>"if ... then ..."</td></tr>
+<tr><td>&and;</td><td>conjunction</td><td>"and" &mdash; both sides must be true</td></tr>
+<tr><td>&minus;</td><td>subtraction</td><td>arithmetic difference</td></tr>
+<tr><td>&times;</td><td>multiplication</td><td>arithmetic product</td></tr>
+<tr><td>ran</td><td>range</td><td>the set of output values of a function</td></tr>
+<tr><td>songs</td><td>state variable</td><td>the finite set of all songs on the platform</td></tr>
+<tr><td>loved</td><td>state variable</td><td>maps each user to the set of songs they love</td></tr>
+<tr><td>hated</td><td>state variable</td><td>maps each user to the set of songs they hate</td></tr>
+<tr><td>playlists</td><td>state variable</td><td>maps each playlist ID to its sequence of songs</td></tr>
+</table>
+
+<h3 id="parta-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need to complete the definition of <span class="vocab" data-def="A partial function mapping each song identifier to its duration in seconds.">length</span> and <span class="vocab" data-def="A partial function mapping each song identifier to a computed popularity score.">popularity</span> by adding constraints below the line. There are two aspects: (1) domain constraints that tie these functions to <span class="vocab" data-def="The finite set of all songs on the platform.">songs</span>, and (2) a formula for <span class="vocab" data-def="A partial function mapping each song identifier to a computed popularity score.">popularity</span> that combines user sentiment with playlist exposure. Since the formula is complex, we define two <span class="vocab" data-def="A separately defined function used inside the main definition to keep things readable.">helper functions</span> first.</p>
+</div>
+
+<h3 id="parta-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>The popularity formula has two independent pieces:</p>
+<ul>
+<li><strong>Net sentiment</strong> &mdash; how many more people love a song than hate it, <span class="vocab" data-def="If the result would be negative, use 0 instead. Ensures the value is always a natural number.">capped at zero</span> to stay in $\mathbb{N}$.</li>
+<li><strong>Exposure</strong> &mdash; how many <span class="vocab" data-def="Maps each playlist ID to its sequence of songs.">playlists</span> feature the song.</li>
+</ul>
+<p>We define a <span class="vocab" data-def="The net positive sentiment for a song: max(lovers minus haters, 0).">love_hate_score</span> helper for sentiment and a <span class="vocab" data-def="How many playlists feature a given song.">playlist_count</span> helper for exposure. Then the main definition multiplies them.</p>
+</div>
+
+<h3 id="parta-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ol>
+<li><strong>Domain constraints:</strong> <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> length <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">&sube;</span> songs and <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> popularity <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">&sube;</span> songs.</li>
+<li><strong>Helper 1 (love_hate_score):</strong> two conditional clauses using <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> and <span class="vocab" data-def="Implies &mdash; if ... then ...">&rArr;</span> &mdash; one for the non-negative case, one for the negative case.</li>
+<li><strong>Helper 2 (playlist_count):</strong> count playlists containing a song using <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">#</span> and a set comprehension over <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> playlists.</li>
+<li><strong>Main formula:</strong> <span class="vocab" data-def="A partial function mapping each song identifier to a computed popularity score.">popularity</span> $i$ = love_hate_score $i$ <span class="vocab" data-def="Multiplication &mdash; arithmetic product.">&times;</span> playlist_count $i$.</li>
+</ol>
+</div>
+
+<h3 id="parta-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Domain constraints: <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">&sube;</span> <span class="vocab" data-def="The finite set of all songs on the platform.">songs</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>extracts the set of song IDs for which length / popularity is defined</td></tr>
+<tr><td>&sube;</td><td>subset &mdash; every element of the left set is also in the right set</td><td>ensures only known songs have length or popularity values</td></tr>
+<tr><td>songs</td><td>state variable &mdash; the finite set of all songs on the platform</td><td>the reference set that both domains must stay within</td></tr>
+</table>
+<div class="walkthrough">
+<p>Both functions must only be defined for songs that actually exist in the system. Use <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> on each function and assert <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">&sube;</span> <span class="vocab" data-def="The finite set of all songs on the platform.">songs</span>:</p>
+$$\text{dom}\; length \;\subseteq\; songs$$
+$$\text{dom}\; popularity \;\subseteq\; songs$$
+</div>
+
+<h4>Build Step 2 &mdash; Define <span class="vocab" data-def="The net positive sentiment for a song: max(lovers minus haters, 0).">love_hate_score</span> &mdash; Case 1: lovers <span class="vocab" data-def="Greater than or equal &mdash; left side is at least as large as right side.">&ge;</span> haters</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&forall;</td><td>universal quantifier &mdash; "for all"</td><td>the clause must hold for every song</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; represents each song ID in turn</td><td>stands for each song as we iterate</td></tr>
+<tr><td>songs</td><td>state variable &mdash; the finite set of all songs</td><td>the set we iterate over</td></tr>
+<tr><td>&bull;</td><td>spot &mdash; separates the bound variable from the body</td><td>connects "for all $i$" to the condition</td></tr>
+<tr><td>#</td><td>cardinality &mdash; the number of elements in a set</td><td>counts users who love or hate the song</td></tr>
+<tr><td>&ge;</td><td>greater than or equal</td><td>tests whether lovers outnumber haters</td></tr>
+<tr><td>&rArr;</td><td>implies &mdash; "if ... then ..."</td><td>when the condition holds, the score is the difference</td></tr>
+<tr><td>&minus;</td><td>subtraction &mdash; arithmetic difference</td><td>computes lovers minus haters</td></tr>
+</table>
+<div class="walkthrough">
+<p>For every song <span class="vocab" data-def="Bound variable &mdash; represents each song ID in turn.">i</span> in <span class="vocab" data-def="The finite set of all songs on the platform.">songs</span>, if the number of users who love it is at least as large as the number who hate it, the score is the difference. Use <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">#</span> with a set comprehension to count lovers and haters:</p>
+$$\forall\; i : songs \;\bullet$$
+$$\quad \#\{u : UserId \mid i \in loved\;u\} \;\geq\; \#\{u : UserId \mid i \in hated\;u\}$$
+$$\quad \Rightarrow\; love\_hate\_score\;i \;=\; \#\{u : UserId \mid i \in loved\;u\} - \#\{u : UserId \mid i \in hated\;u\}$$
+<p>This reads: "For every song $i$, if the lover count <span class="vocab" data-def="Greater than or equal &mdash; left side is at least as large as right side.">&ge;</span> the hater count, <span class="vocab" data-def="Implies &mdash; if ... then ...">&rArr;</span> the score is lovers <span class="vocab" data-def="Subtraction &mdash; arithmetic difference.">&minus;</span> haters."</p>
+</div>
+
+<h4>Build Step 3 &mdash; Define <span class="vocab" data-def="The net positive sentiment for a song: max(lovers minus haters, 0).">love_hate_score</span> &mdash; Case 2: lovers <span class="vocab" data-def="Strictly less than &mdash; left side is smaller than right side.">&lt;</span> haters (<span class="vocab" data-def="If the result would be negative, use 0 instead. Ensures the value is always a natural number.">capped at zero</span>)</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&and;</td><td>conjunction &mdash; "and"</td><td>joins this case to the previous one</td></tr>
+<tr><td>&lt;</td><td>strictly less than &mdash; left side is smaller</td><td>tests whether haters outnumber lovers</td></tr>
+<tr><td>&rArr;</td><td>implies &mdash; "if ... then ..."</td><td>when more people hate it, the score is clamped to 0</td></tr>
+</table>
+<div class="walkthrough">
+<p>The second clause is joined by <span class="vocab" data-def="Conjunction &mdash; both sides must be true.">&and;</span>. When more users hate the song than love it, the score is <span class="vocab" data-def="If the result would be negative, use 0 instead. Ensures the value is always a natural number.">capped at 0</span> instead of going negative:</p>
+$$\land$$
+$$\forall\; i : songs \;\bullet$$
+$$\quad \#\{u : UserId \mid i \in loved\;u\} \;<\; \#\{u : UserId \mid i \in hated\;u\}$$
+$$\quad \Rightarrow\; love\_hate\_score\;i \;=\; 0$$
+<p>These two cases are <strong>exhaustive</strong> ($\geq$ or $<$ cover all possibilities) and <strong>mutually exclusive</strong>, so every song gets exactly one value.</p>
+</div>
+
+<h4>Build Step 4 &mdash; Worked examples for <span class="vocab" data-def="The net positive sentiment for a song: max(lovers minus haters, 0).">love_hate_score</span></h4>
+<div class="walkthrough">
+<p><strong>Example 1:</strong> Song $i$ is loved by 6 users, hated by 3.</p>
+<ol>
+<li><strong>Count lovers:</strong> $\#\{u : UserId \mid i \in loved\;u\} = 6$</li>
+<li><strong>Count haters:</strong> $\#\{u : UserId \mid i \in hated\;u\} = 3$</li>
+<li><strong>Compare:</strong> $6 \geq 3$ &mdash; Case 1 applies.</li>
+<li><strong>love_hate_score:</strong> $love\_hate\_score\;i = 6 - 3 = 3$</li>
+</ol>
+<p><strong>Example 2:</strong> Song $j$ is loved by 3 users, hated by 6.</p>
+<ol>
+<li><strong>Count lovers:</strong> $\#\{u : UserId \mid j \in loved\;u\} = 3$</li>
+<li><strong>Count haters:</strong> $\#\{u : UserId \mid j \in hated\;u\} = 6$</li>
+<li><strong>Compare:</strong> $3 < 6$ &mdash; Case 2 applies.</li>
+<li><strong>love_hate_score:</strong> $love\_hate\_score\;j = 0$ (capped at zero).</li>
+</ol>
+</div>
+
+<h4>Build Step 5 &mdash; Define <span class="vocab" data-def="How many playlists feature a given song.">playlist_count</span> using <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">#</span> and a nested set comprehension</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>#</td><td>cardinality &mdash; the number of elements in a set</td><td>counts the playlists that contain the song</td></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>gives the set of all playlist IDs</td></tr>
+<tr><td>playlists</td><td>state variable &mdash; maps each playlist ID to its sequence of songs</td><td>the function we iterate over</td></tr>
+<tr><td>ran</td><td>range &mdash; the set of output values of a function</td><td>extracts the set of songs from a playlist sequence</td></tr>
+<tr><td>&isin;</td><td>element of &mdash; "belongs to"</td><td>checks whether the song appears in a playlist</td></tr>
+</table>
+<div class="walkthrough">
+<p>For each song <span class="vocab" data-def="Bound variable &mdash; represents each song ID in turn.">i</span>, count how many playlists contain it. A playlist $p$ contains song $i$ if $i \in \text{ran}(playlists\;p)$. Wrap that set comprehension in <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">#</span> to get the count:</p>
+$$\forall\; i : songs \;\bullet\; playlist\_count\;i \;=\; \#\{p : \text{dom}\;playlists \mid i \in \text{ran}(playlists\;p)\}$$
+<p>This reads: "For every song $i$, the <span class="vocab" data-def="How many playlists feature a given song.">playlist count</span> is the number of playlist IDs $p$ whose <span class="vocab" data-def="Range &mdash; the set of output values of a function.">range</span> contains $i$."</p>
+</div>
+
+<h4>Build Step 6 &mdash; Combine: <span class="vocab" data-def="A partial function mapping each song identifier to a computed popularity score.">popularity</span> = <span class="vocab" data-def="The net positive sentiment for a song: max(lovers minus haters, 0).">love_hate_score</span> <span class="vocab" data-def="Multiplication &mdash; arithmetic product.">&times;</span> <span class="vocab" data-def="How many playlists feature a given song.">playlist_count</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&forall;</td><td>universal quantifier &mdash; "for all"</td><td>the formula holds for every song</td></tr>
+<tr><td>&times;</td><td>multiplication &mdash; arithmetic product</td><td>multiplies sentiment by exposure</td></tr>
+</table>
+<div class="walkthrough">
+<p>The final piece ties the two helpers together. For each song, <span class="vocab" data-def="A partial function mapping each song identifier to a computed popularity score.">popularity</span> is the product of its <span class="vocab" data-def="The net positive sentiment for a song: max(lovers minus haters, 0).">love_hate_score</span> and its <span class="vocab" data-def="How many playlists feature a given song.">playlist_count</span>:</p>
+$$\forall\; i : songs \;\bullet\; popularity\;i \;=\; love\_hate\_score\;i \;\times\; playlist\_count\;i$$
+<p>Now we can complete the worked examples:</p>
+<ul>
+<li><strong>Example 1:</strong> $love\_hate\_score\;i = 3$, $playlist\_count\;i = 10$. So $popularity\;i = 3 \times 10 = 30$.</li>
+<li><strong>Example 2:</strong> $love\_hate\_score\;j = 0$, $playlist\_count\;j = 10$. So $popularity\;j = 0 \times 10 = 0$.</li>
+</ul>
+<p>Even though song $j$ appears in many playlists, its popularity is zero because more people hate it than love it.</p>
+</div>
+
+<h4>Complete answer</h4>
+
+<p><strong>Helper 1: love_hate_score</strong></p>
+<div class="schema-box">
+$$love\_hate\_score : SongId \pfun \mathbb{N}$$
+<hr style="border-top: 1px solid #999; margin: 8px 0;">
+$$\forall\; i : songs \;\bullet$$
+$$\quad \#\{u : UserId \mid i \in loved\;u\} \;\geq\; \#\{u : UserId \mid i \in hated\;u\}$$
+$$\quad \Rightarrow\; love\_hate\_score\;i \;=\; \#\{u : UserId \mid i \in loved\;u\} - \#\{u : UserId \mid i \in hated\;u\}$$
+$$\;\land$$
+$$\forall\; i : songs \;\bullet$$
+$$\quad \#\{u : UserId \mid i \in loved\;u\} \;<\; \#\{u : UserId \mid i \in hated\;u\}$$
+$$\quad \Rightarrow\; love\_hate\_score\;i \;=\; 0$$
+</div>
+
+<p><strong>Helper 2: playlist_count</strong></p>
+<div class="schema-box">
+$$playlist\_count : SongId \pfun \mathbb{N}$$
+<hr style="border-top: 1px solid #999; margin: 8px 0;">
+$$\forall\; i : songs \;\bullet\; playlist\_count\;i \;=\; \#\{p : \text{dom}\;playlists \mid i \in \text{ran}(playlists\;p)\}$$
+</div>
+
+<p><strong>Main definition</strong></p>
+<div class="schema-box">
+$$length : SongId \pfun \mathbb{N}$$
+$$popularity : SongId \pfun \mathbb{N}$$
+<hr style="border-top: 1px solid #999; margin: 8px 0;">
+$$\text{dom}\;length \;\subseteq\; songs$$
+$$\text{dom}\;popularity \;\subseteq\; songs$$
+$$\forall\; i : songs \;\bullet\; popularity\;i \;=\; love\_hate\_score\;i \;\times\; playlist\_count\;i$$
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-b">Part (b) &mdash; Most Popular Song (Axiomatic Definition)</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define, via an <span class="vocab" data-def="An axiomatic definition introduces a constant whose value is constrained by predicates rather than computed by a formula.">axiomatic definition</span>, the <span class="key">most popular song</span> in <span class="vocab" data-def="The finite set of all songs on the platform.">songs</span>. If no unique most popular song exists, return <span class="key"><span class="vocab" data-def="A sentinel value indicating that no single most-popular song exists.">null_song</span></span>.</p>
+</div>
+
+<h3 id="partb-vocab">Vocab for Part (b)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Unique existence ($\exists_1$)</td><td>There is exactly one element satisfying the predicate. True when precisely one witness exists, false otherwise.</td></tr>
+<tr><td>Sentinel value</td><td>A fallback value used when no valid result exists. Here, null_song signals "no unique winner."</td></tr>
+<tr><td>Case split</td><td>Defining a value differently depending on whether a condition holds. The cases must be exhaustive.</td></tr>
+</table>
+
+<h3 id="partb-symbols">Symbols for Part (b)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>&exist;</td><td>unique existence ($\exists_1$)</td><td>"there exists exactly one"</td></tr>
+<tr><td>&mu;</td><td>mu (unique selector)</td><td>returns the unique element satisfying a property</td></tr>
+<tr><td>&not;</td><td>negation</td><td>"not" &mdash; reverses a truth value</td></tr>
+<tr><td>&rArr;</td><td>implies</td><td>"if ... then ..."</td></tr>
+<tr><td>&and;</td><td>conjunction</td><td>"and" &mdash; both sides must be true</td></tr>
+<tr><td>&forall;</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>&ne;</td><td>not equal</td><td>two values are different</td></tr>
+<tr><td>&gt;</td><td>strictly greater than</td><td>left side exceeds right side</td></tr>
+<tr><td>&bull;</td><td>spot</td><td>separates constraint from expression</td></tr>
+<tr><td>popularity</td><td>state variable</td><td>maps each song to its computed popularity score</td></tr>
+<tr><td>songs</td><td>state variable</td><td>the finite set of all songs on the platform</td></tr>
+<tr><td>most_popular</td><td>the constant being defined</td><td>the song with the highest popularity, or null_song</td></tr>
+<tr><td>null_song</td><td>sentinel value</td><td>fallback when no unique most popular song exists</td></tr>
+</table>
+
+<h3 id="partb-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need an <span class="vocab" data-def="An axiomatic definition introduces a constant whose value is constrained by predicates rather than computed by a formula.">axiomatic definition</span> that declares a constant <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span> of type $SongId$, with predicates below the line that determine its value. There are two cases: either there is a unique song that beats all others (use <span class="vocab" data-def="Returns the unique element satisfying a property.">$\mu$</span> to extract it), or there is not (return <span class="vocab" data-def="A sentinel value indicating that no single most-popular song exists.">null_song</span>).</p>
+</div>
+
+<h3 id="partb-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>A <span class="vocab" data-def="Defining a value differently depending on whether a condition holds. The cases must be exhaustive.">case split</span> using two <span class="vocab" data-def="Implies &mdash; if ... then ...">implications</span> joined by <span class="vocab" data-def="Conjunction &mdash; both sides must be true.">&and;</span>:</p>
+<ul>
+<li><strong>Case 1:</strong> <span class="vocab" data-def="There is exactly one element satisfying the predicate.">$\exists_1$</span> confirms a unique winner exists &mdash; use <span class="vocab" data-def="Returns the unique element satisfying a property.">$\mu$</span> to pick it out.</li>
+<li><strong>Case 2:</strong> <span class="vocab" data-def="Negation &mdash; reverses a truth value.">$\lnot$</span><span class="vocab" data-def="There is exactly one element satisfying the predicate.">$\exists_1$</span> &mdash; no unique winner (tie or empty) &mdash; use <span class="vocab" data-def="A sentinel value indicating that no single most-popular song exists.">null_song</span>.</li>
+</ul>
+<p>Together these cover all possibilities, making the definition <strong>total</strong>.</p>
+</div>
+
+<h3 id="partb-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ol>
+<li><strong>Declare:</strong> <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span> $: SongId$</li>
+<li><strong>Uniqueness test:</strong> <span class="vocab" data-def="There is exactly one element satisfying the predicate.">$\exists_1$</span> $i : songs$ such that <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> $j : songs \mid i \neq j$ <span class="vocab" data-def="Spot &mdash; separates constraint from expression.">&bull;</span> <span class="vocab" data-def="Maps each song to its computed popularity score.">popularity</span> $i$ <span class="vocab" data-def="Strictly greater than &mdash; left side exceeds right side.">&gt;</span> <span class="vocab" data-def="Maps each song to its computed popularity score.">popularity</span> $j$</li>
+<li><strong>Case 1:</strong> uniqueness holds <span class="vocab" data-def="Implies &mdash; if ... then ...">&rArr;</span> use <span class="vocab" data-def="Returns the unique element satisfying a property.">&mu;</span></li>
+<li><strong>Case 2:</strong> uniqueness fails <span class="vocab" data-def="Implies &mdash; if ... then ...">&rArr;</span> <span class="vocab" data-def="A sentinel value indicating that no single most-popular song exists.">null_song</span></li>
+</ol>
+</div>
+
+<h3 id="partb-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Declare <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>most_popular</td><td>the constant we are defining</td><td>will hold the song ID of the most popular song, or null_song</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares the type of the constant</td></tr>
+<tr><td>$SongId$</td><td>basic type &mdash; song identifiers</td><td>the type that most_popular takes</td></tr>
+</table>
+<div class="walkthrough">
+<p>Above the line, declare the constant:</p>
+$$most\_popular : SongId$$
+</div>
+
+<h4>Build Step 2 &mdash; Case 1: unique winner exists &mdash; use <span class="vocab" data-def="There is exactly one element satisfying the predicate.">$\exists_1$</span> and <span class="vocab" data-def="Returns the unique element satisfying a property.">$\mu$</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&exist; (with subscript 1)</td><td>unique existence &mdash; "there exists exactly one"</td><td>tests whether exactly one song beats all others</td></tr>
+<tr><td>&forall;</td><td>universal quantifier &mdash; "for all"</td><td>requires the winner to beat every other song</td></tr>
+<tr><td>&ne;</td><td>not equal &mdash; two values are different</td><td>excludes the candidate from comparison with itself</td></tr>
+<tr><td>&gt;</td><td>strictly greater than</td><td>the winner's popularity must strictly exceed every other song's</td></tr>
+<tr><td>&rArr;</td><td>implies &mdash; "if ... then ..."</td><td>if the unique winner exists, then most_popular equals it</td></tr>
+<tr><td>&mu;</td><td>mu &mdash; unique selector</td><td>extracts the unique song satisfying the predicate</td></tr>
+</table>
+<div class="walkthrough">
+<p>The first <span class="vocab" data-def="Implies &mdash; if ... then ...">implication</span>: if there exists exactly one song whose <span class="vocab" data-def="Maps each song to its computed popularity score.">popularity</span> strictly exceeds every other song's, then <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span> is that unique song (selected via <span class="vocab" data-def="Returns the unique element satisfying a property.">$\mu$</span>):</p>
+$$(\exists_1\; i : songs \;\bullet\; (\forall\; j : songs \mid i \neq j \;\bullet\; popularity\;i > popularity\;j))$$
+$$\;\Rightarrow\; most\_popular \;=\; (\mu\; i : songs \mid (\forall\; j : songs \mid i \neq j \;\bullet\; popularity\;i > popularity\;j))$$
+</div>
+
+<h4>Build Step 3 &mdash; Case 2: no unique winner &mdash; default to <span class="vocab" data-def="A sentinel value indicating that no single most-popular song exists.">null_song</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&not;</td><td>negation &mdash; "not"</td><td>reverses the uniqueness test</td></tr>
+<tr><td>&rArr;</td><td>implies &mdash; "if ... then ..."</td><td>when no unique winner exists, fall back to sentinel</td></tr>
+<tr><td>null_song</td><td>sentinel value &mdash; "no valid result"</td><td>the fallback value</td></tr>
+</table>
+<div class="walkthrough">
+<p>The second <span class="vocab" data-def="Implies &mdash; if ... then ...">implication</span>: if the uniqueness condition <strong>fails</strong> &mdash; either two songs tie for the top, or <span class="vocab" data-def="The finite set of all songs on the platform.">songs</span> is empty &mdash; then <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span> is the <span class="vocab" data-def="A sentinel value indicating that no single most-popular song exists.">sentinel</span>:</p>
+$$\lnot(\exists_1\; i : songs \;\bullet\; (\forall\; j : songs \mid i \neq j \;\bullet\; popularity\;i > popularity\;j))$$
+$$\;\Rightarrow\; most\_popular \;=\; null\_song$$
+</div>
+
+<h4>Build Step 4 &mdash; Combine with <span class="vocab" data-def="Conjunction &mdash; both sides must be true.">&and;</span></h4>
+<div class="walkthrough">
+<p>The two cases are joined by <span class="vocab" data-def="Conjunction &mdash; both sides must be true.">&and;</span>. Since a statement either has a unique witness or it does not, exactly one <span class="vocab" data-def="Implies &mdash; if ... then ...">implication</span> has a true antecedent in any given state, making <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span> always defined.</p>
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$most\_popular : SongId$$
+<hr style="border-top: 1px solid #999; margin: 8px 0;">
+$$(\exists_1\; i : songs \;\bullet\; (\forall\; j : songs \mid i \neq j \;\bullet\; popularity\;i > popularity\;j))$$
+$$\;\Rightarrow\; most\_popular \;=\; (\mu\; i : songs \mid (\forall\; j : songs \mid i \neq j \;\bullet\; popularity\;i > popularity\;j))$$
+$$\;\land$$
+$$\lnot(\exists_1\; i : songs \;\bullet\; (\forall\; j : songs \mid i \neq j \;\bullet\; popularity\;i > popularity\;j))$$
+$$\;\Rightarrow\; most\_popular \;=\; null\_song$$
+</div>
+
+<div class="example">
+<p><strong>Example:</strong> Suppose $popularity\;s_1 = 30$, $popularity\;s_2 = 12$, $popularity\;s_3 = 0$.</p>
+<ul>
+<li>$s_1$ has $30 > 12$ and $30 > 0$ &mdash; it beats every other song.</li>
+<li>No other song beats all others.</li>
+<li>So $\exists_1$ is satisfied with witness $s_1$, and $most\_popular = s_1$.</li>
+</ul>
+</div>
+
+<div class="example">
+<p><strong>Tie example:</strong> Suppose $popularity\;s_1 = 30$ and $popularity\;s_2 = 30$. Neither has strictly greater popularity than the other, so no song satisfies "beats all others." The $\exists_1$ fails, and $most\_popular = null\_song$.</p>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-c">Part (c) &mdash; Playlists Containing the Most Popular Song</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define, via a <span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating over a source and keeping qualifying elements.">set comprehension</span>, the <span class="key">set of playlists that feature <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span></span>. Assume <span class="vocab" data-def="A sentinel value indicating that no single most-popular song exists.">null_song</span> appears in no playlists.</p>
+</div>
+
+<h3 id="partc-vocab">Vocab for Part (c)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Abbreviation (==)</td><td>Introduces a shorthand name for an expression. Does not create new state; it is purely a convenience.</td></tr>
+<tr><td>Set comprehension</td><td>An expression $\{x : S \mid P\}$ that builds a set by collecting all $x$ from $S$ where predicate $P$ holds.</td></tr>
+</table>
+
+<h3 id="partc-symbols">Symbols for Part (c)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$==$</td><td>abbreviation</td><td>introduces a shorthand name for an expression</td></tr>
+<tr><td>dom</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>ran</td><td>range</td><td>the set of output values of a function</td></tr>
+<tr><td>&isin;</td><td>element of</td><td>"belongs to" &mdash; a value is a member of a set</td></tr>
+<tr><td>playlists</td><td>state variable</td><td>maps each playlist ID to its sequence of songs</td></tr>
+<tr><td>most_popular</td><td>constant</td><td>the most popular song (or null_song)</td></tr>
+</table>
+
+<h3 id="partc-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need an <span class="vocab" data-def="Introduces a shorthand name for an expression. Does not create new state.">abbreviation</span> for the set of all playlist IDs whose content includes <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span>. Since <span class="vocab" data-def="A sentinel value indicating that no single most-popular song exists.">null_song</span> does not appear in any playlist, this set will be empty when there is no unique winner &mdash; a sensible default.</p>
+</div>
+
+<h3 id="partc-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>A <span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating over a source and keeping qualifying elements.">set comprehension</span> with no output expression: $\{i : S \mid P\}$ collects all $i$ from $S$ satisfying $P$. The output defaults to $i$ itself (the playlist ID).</p>
+<ul>
+<li><strong>Source:</strong> <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> <span class="vocab" data-def="Maps each playlist ID to its sequence of songs.">playlists</span></li>
+<li><strong>Filter:</strong> <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span> <span class="vocab" data-def="Element of &mdash; belongs to.">&isin;</span> <span class="vocab" data-def="Range &mdash; the set of output values of a function.">ran</span>(<span class="vocab" data-def="Maps each playlist ID to its sequence of songs.">playlists</span> $i$)</li>
+</ul>
+</div>
+
+<h3 id="partc-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ol>
+<li><strong>Iterate</strong> over <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> <span class="vocab" data-def="Maps each playlist ID to its sequence of songs.">playlists</span> &mdash; the set of all playlist IDs.</li>
+<li><strong>Check</strong> whether <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span> <span class="vocab" data-def="Element of &mdash; belongs to.">&isin;</span> <span class="vocab" data-def="Range &mdash; the set of output values of a function.">ran</span>(<span class="vocab" data-def="Maps each playlist ID to its sequence of songs.">playlists</span> $i$) &mdash; whether the most popular song appears in that playlist's sequence.</li>
+<li><strong>Wrap</strong> in an <span class="vocab" data-def="Introduces a shorthand name for an expression. Does not create new state.">abbreviation</span> using $==$.</li>
+</ol>
+</div>
+
+<h3 id="partc-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Iterate over <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> <span class="vocab" data-def="Maps each playlist ID to its sequence of songs.">playlists</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\{\ \}$</td><td>set braces &mdash; enclose a set comprehension</td><td>wraps the entire expression</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; represents each playlist ID in turn</td><td>stands for each playlist ID as we iterate</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "drawn from"</td><td>says $i$ comes from the source set</td></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>gives the set of all playlist IDs</td></tr>
+<tr><td>playlists</td><td>state variable &mdash; maps each playlist ID to its sequence of songs</td><td>the function whose domain we iterate over</td></tr>
+</table>
+<div class="walkthrough">
+<p>Open the braces, declare <span class="vocab" data-def="Bound variable &mdash; represents each playlist ID in turn.">i</span> <span class="vocab" data-def="Type declaration &mdash; drawn from.">:</span> <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> <span class="vocab" data-def="Maps each playlist ID to its sequence of songs.">playlists</span>, leaving the filter as a placeholder:</p>
+$$\{i : \text{dom}\;playlists \;|\; \ldots\}$$
+</div>
+
+<h4>Build Step 2 &mdash; Check <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span> <span class="vocab" data-def="Element of &mdash; belongs to.">&isin;</span> <span class="vocab" data-def="Range &mdash; the set of output values of a function.">ran</span>(<span class="vocab" data-def="Maps each playlist ID to its sequence of songs.">playlists</span> $i$)</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>most_popular</td><td>constant &mdash; the most popular song (or null_song)</td><td>the song we are looking for in each playlist</td></tr>
+<tr><td>&isin;</td><td>element of &mdash; "belongs to"</td><td>checks membership in the playlist's song set</td></tr>
+<tr><td>ran</td><td>range &mdash; the set of output values of a function</td><td>extracts the set of songs from the playlist sequence</td></tr>
+</table>
+<div class="walkthrough">
+<p>After the filter bar, check that <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span> belongs to the <span class="vocab" data-def="Range &mdash; the set of output values of a function.">range</span> of the playlist sequence for playlist $i$:</p>
+$$\{i : \text{dom}\;playlists \mid most\_popular \in \text{ran}(playlists\;i)\}$$
+</div>
+
+<h4>Build Step 3 &mdash; Complete <span class="vocab" data-def="Introduces a shorthand name for an expression. Does not create new state.">abbreviation</span></h4>
+<div class="walkthrough">
+<p>Give the expression a name using $==$:</p>
+$$playlists\_containing\_most\_popular\_song \;==\; \{i : \text{dom}\;playlists \mid most\_popular \in \text{ran}(playlists\;i)\}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$playlists\_containing\_most\_popular\_song \;==\; \{i : \text{dom}\;playlists \mid most\_popular \in \text{ran}(playlists\;i)\}$$
+</div>
+<p>"The set of all playlist IDs <span class="vocab" data-def="Bound variable &mdash; represents each playlist ID in turn.">i</span> in the <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">domain</span> of <span class="vocab" data-def="Maps each playlist ID to its sequence of songs.">playlists</span> such that <span class="vocab" data-def="The song with the highest popularity, or null_song if no unique winner exists.">most_popular</span> <span class="vocab" data-def="Element of &mdash; belongs to.">belongs to</span> the <span class="vocab" data-def="Range &mdash; the set of output values of a function.">range</span> of that playlist."</p>
+
+<div class="example">
+<p><strong>Example:</strong> Suppose $most\_popular = s_1$ and:</p>
+<ul>
+<li>$playlists\;p_1 = \langle s_1, s_3, s_5 \rangle$ &mdash; $\text{ran} = \{s_1, s_3, s_5\}$ &mdash; $s_1 \in \text{ran}$? Yes. Include $p_1$.</li>
+<li>$playlists\;p_2 = \langle s_2, s_4 \rangle$ &mdash; $\text{ran} = \{s_2, s_4\}$ &mdash; $s_1 \in \text{ran}$? No. Exclude.</li>
+<li>$playlists\;p_3 = \langle s_1, s_2 \rangle$ &mdash; $\text{ran} = \{s_1, s_2\}$ &mdash; $s_1 \in \text{ran}$? Yes. Include $p_3$.</li>
+</ul>
+<p>Result: $playlists\_containing\_most\_popular\_song = \{p_1, p_3\}$.</p>
+</div>
+
+<div class="warning">
+<p><strong>Edge case:</strong> If $most\_popular = null\_song$ (no unique winner), this set will be empty &mdash; since $null\_song$ does not appear in any playlist &mdash; which is a sensible default.</p>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2>Summary</h2>
+
+<table>
+<tr><th>Part</th><th>What Was Defined</th><th>Key Technique</th></tr>
+<tr>
+<td>(a)</td>
+<td>$love\_hate\_score$, $playlist\_count$, $length$, $popularity$</td>
+<td>Set comprehension with $\#$ for counting; conditional definition (two-clause implication) to cap at 0; domain constraints $\text{dom} \subseteq songs$</td>
+</tr>
+<tr>
+<td>(b)</td>
+<td>$most\_popular : SongId$</td>
+<td>Axiomatic definition using $\exists_1$ to test uniqueness and $\mu$ to extract the witness; sentinel $null\_song$ for the tie / empty case</td>
+</tr>
+<tr>
+<td>(c)</td>
+<td>$playlists\_containing\_most\_popular\_song$</td>
+<td>Abbreviation via set comprehension filtering $\text{dom}\;playlists$ by membership in $\text{ran}$</td>
+</tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>Looking Ahead</h2>
+
+<div class="example">
+<p><a href="exercise_52.html">Exercise 52</a> will model the act of <em>playing</em> songs, introducing timestamps, user status, and recursive functions that filter and aggregate play records.</p>
+</div>
+
+<footer>
+<strong>Exercise 51</strong> &mdash; Streamify: Song Length and Popularity &mdash; Part 4 of 5<br>
+Previous: <a href="exercise_50.html">Exercise 50</a> | Next: <a href="exercise_52.html">Exercise 52</a>
+</footer>
+
+<script>
+function toggleDropdown(el) {
+  var item = el.closest('.nav-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  }
+});
+</script>
+</body>
+</html>

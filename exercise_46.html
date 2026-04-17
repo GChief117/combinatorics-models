@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 46 &mdash; Binary Trees: count and flatten</title>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+body { font-family: Georgia, "Times New Roman", serif; max-width: 860px; margin: 0 auto; padding: 0 20px 40px 20px; background: #ffffff; color: #111111; line-height: 1.55; }
+h1 { border-bottom: 2px solid #111; padding-bottom: 8px; scroll-margin-top: 100px; }
+h2 { margin-top: 40px; border-bottom: 1px solid #999; padding-bottom: 4px; scroll-margin-top: 100px; }
+h3 { margin-top: 28px; scroll-margin-top: 100px; }
+h4 { margin-top: 20px; color: #333; scroll-margin-top: 100px; }
+a { color: #0a3d91; }
+p { margin: 10px 0; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; margin: 12px 0; width: 100%; }
+th, td { border: 1px solid #bbb; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+.concept { background: #fafafa; border-left: 4px solid #888; padding: 10px 16px; margin: 14px 0; }
+.example { background: #fafafa; border-left: 4px solid #2a7a2a; padding: 10px 16px; margin: 14px 0; }
+.practice { background: #fafafa; border-left: 4px solid #1a5fb4; padding: 10px 16px; margin: 14px 0; }
+.warning { background: #fafafa; border-left: 4px solid #c0392b; padding: 10px 16px; margin: 14px 0; }
+.walkthrough { margin-top: 10px; padding: 10px 14px; background: #fffbea; border-left: 4px solid #b58900; }
+.schema-box { background: #f8f8f8; border: 1px solid #ccc; padding: 12px 16px; margin: 12px 0; font-size: 0.95em; overflow-x: auto; }
+details { margin: 10px 0; }
+summary { cursor: pointer; font-weight: bold; color: #0a3d91; }
+code, .sym { font-family: "Menlo", "Courier New", monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+.vocab { border-bottom: 1px dotted #1a5fb4; cursor: pointer; position: relative; color: #0a3d91; padding: 0 2px; }
+.vocab:hover { background-color: #fff3a3; }
+.vocab::after { content: attr(data-def); display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); background: #2a2a2a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; font-style: normal; font-weight: normal; white-space: normal; width: max-content; max-width: 280px; min-width: 180px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
+.vocab:hover::after { display: block; }
+.key { color: #1a5fb4; text-decoration: underline; text-underline-offset: 2px; }
+footer { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 0.85em; color: #666; }
+
+.section-nav { position: sticky; top: 0; z-index: 100; background: #fff; padding: 12px 0; margin: 0 0 24px 0; border-bottom: 1px solid #ccc; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.nav-item { position: relative; }
+.section-nav button { padding: 6px 10px; border: 1px solid #999; background: #fff; cursor: pointer; font-family: inherit; font-size: 0.9em; border-radius: 3px; }
+.section-nav button:hover { background: #eef; }
+.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #999; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 200px; z-index: 200; }
+.nav-item.open .nav-dropdown { display: block; }
+.nav-dropdown li { padding: 0; margin: 0; }
+.nav-dropdown a { display: block; padding: 6px 14px; text-decoration: none; color: #111; font-size: 0.9em; cursor: pointer; }
+.nav-dropdown a:hover { background: #eef; }
+.nav-link { font-size: 0.9em; color: #0a3d91; text-decoration: none; padding: 6px 10px; border: 1px solid #999; border-radius: 3px; }
+.nav-link:hover { background: #eef; }
+</style>
+</head>
+<body>
+
+<nav class="section-nav">
+  <a class="nav-link" href="exercise_45.html">&larr; Ex 45</a>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (a)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-a"><strong>Part (a)</strong></a></li>
+      <li><a href="#parta-vocab">Vocab</a></li>
+      <li><a href="#parta-symbols">Symbols</a></li>
+      <li><a href="#parta-step1">Step 1</a></li>
+      <li><a href="#parta-step2">Step 2</a></li>
+      <li><a href="#parta-step3">Step 3</a></li>
+      <li><a href="#parta-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (b)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-b"><strong>Part (b)</strong></a></li>
+      <li><a href="#partb-vocab">Vocab</a></li>
+      <li><a href="#partb-symbols">Symbols</a></li>
+      <li><a href="#partb-step1">Step 1</a></li>
+      <li><a href="#partb-step2">Step 2</a></li>
+      <li><a href="#partb-step3">Step 3</a></li>
+      <li><a href="#partb-solution">Solution</a></li>
+    </ul>
+  </div>
+  <a class="nav-link" href="exercise_47.html">Ex 47 &rarr;</a>
+  <a class="nav-link" href="index.html" style="margin-left:auto;">&larr; All Exercises</a>
+</nav>
+
+
+<h1>Exercise 46 &mdash; Binary Trees: count and flatten</h1>
+<p><em>Structural recursion exercise &mdash; defining functions over a free type step by step.</em></p>
+
+<!-- ============================================================ -->
+<h2>The Scenario</h2>
+
+<div class="concept">
+<p>The set of all binary trees with natural number leaves is defined by a <span class="vocab" data-def="A type defined by listing all its constructors. Every value is built by applying constructors finitely many times, with no hidden equalities between distinct constructor applications.">free type</span> with three <span class="vocab" data-def="A way to build an element of the free type. Each constructor produces a distinct form of that type.">constructors</span>:</p>
+<div class="schema-box">
+$$\text{Tree} ::= \text{stalk} \mid \text{leaf}\langle\!\langle \mathbb{N} \rangle\!\rangle \mid \text{branch}\langle\!\langle \text{Tree} \times \text{Tree} \rangle\!\rangle$$
+</div>
+<p>Every element of Tree is built from exactly one of these three constructors. The definition is <span class="vocab" data-def="Every element of Tree is one of the three forms — stalk, leaf, or branch. No other form exists.">exhaustive</span>: there is no other way to build a Tree.</p>
+</div>
+
+<h3>Free Type Definition</h3>
+
+<div class="walkthrough">
+<p><strong>Walkthrough &mdash; Reading the Free Type</strong></p>
+<p>A value of type Tree is built from exactly one of three <span class="vocab" data-def="A way to build an element of the free type. Each constructor produces a distinct form of that type.">constructors</span>:</p>
+
+<table>
+<tr><th>Constructor</th><th>Arguments</th><th>Meaning</th></tr>
+<tr>
+<td><code>stalk</code></td>
+<td>None (a constant)</td>
+<td>An empty tree &mdash; a bare stalk with no data. This is the <span class="vocab" data-def="The simplest tree with no subtrees. stalk has no leaves and no children &mdash; it is where recursion stops.">base case</span>; it carries no natural number and has no children.</td>
+</tr>
+<tr>
+<td>leaf&langle;&langle;N&rangle;&rangle;</td>
+<td>One natural number $n$</td>
+<td>A leaf node holding the value $n$. Written leaf $n$. This is where data lives in the tree.</td>
+</tr>
+<tr>
+<td>branch&langle;&langle;Tree &times; Tree&rangle;&rangle;</td>
+<td>A pair of trees $(t_1, t_2)$</td>
+<td>A branch node combining two subtrees. Written branch$(t_1, t_2)$. This is the <span class="vocab" data-def="Defined in terms of the function applied to subtrees. The branch constructor is recursive because its arguments are themselves Trees.">recursive case</span>.</td>
+</tr>
+</table>
+</div>
+
+<div class="concept">
+<p><strong>Why "free" type?</strong> A <span class="vocab" data-def="A type defined by listing all its constructors. Every value is built by applying constructors finitely many times, with no hidden equalities between distinct constructor applications.">free type</span> means every value of type Tree is built by applying constructors a finite number of times, with no hidden equalities. Two trees are equal if and only if they are built from the same constructor with the same arguments.</p>
+</div>
+
+<div class="concept">
+<p><strong>Structural recursion:</strong> To define a function on a <span class="vocab" data-def="A type defined by listing all its constructors. Every value is built by applying constructors finitely many times, with no hidden equalities between distinct constructor applications.">free type</span>, we use <span class="vocab" data-def="Defining a function by giving a case for each constructor of the free type. Because the cases are exhaustive, the function is total.">structural recursion</span> &mdash; give one clause for each <span class="vocab" data-def="A way to build an element of the free type. Each constructor produces a distinct form of that type.">constructor</span>. Because the cases are <span class="vocab" data-def="Every element of Tree is one of the three forms — stalk, leaf, or branch. No other form exists.">exhaustive</span> and the recursive calls are on strictly smaller subtrees, the function is guaranteed to terminate and is total.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Master Symbol Table</h2>
+
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$::=$</td><td>free type definition</td><td>introduces a new data type by listing its constructors, separated by $\mid$</td></tr>
+<tr><td>$\langle\!\langle \;\rangle\!\rangle$</td><td>constructor argument</td><td>indicates the type of argument a constructor takes</td></tr>
+<tr><td>$\times$</td><td>Cartesian product</td><td>the set of all ordered pairs; $A \times B$ is every $(a, b)$ with $a \in A$ and $b \in B$</td></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined on every element of its domain</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers</td><td>the set $\{0, 1, 2, 3, \ldots\}$</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence type</td><td>$\text{seq}\;X$ is the set of all finite sequences whose elements come from $X$</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>the sequence containing no elements</td></tr>
+<tr><td>$\langle n \rangle$</td><td>singleton sequence</td><td>a sequence containing exactly one element $n$</td></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>joins two sequences end-to-end</td></tr>
+<tr><td>$+$</td><td>addition</td><td>standard addition on natural numbers</td></tr>
+<tr><td>$=$</td><td>equality</td><td>both sides denote the same value</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all" &mdash; the statement holds for every value in the specified set</td></tr>
+<tr><td>$\bullet$</td><td>spot / such that</td><td>separates the bound variable from the body in a quantified expression</td></tr>
+</table>
+
+
+<!-- ============================================================ -->
+<h2 id="part-a">Part (a) &mdash; Define count : Tree &rarr; N</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define a function count that returns the <span class="key">total number of leaves</span> in an element of Tree.</p>
+</div>
+
+<h3 id="parta-vocab">Vocab for Part (a)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Free type</td><td>A type defined by listing all its constructors. Every value is built by applying constructors finitely many times, with no hidden equalities.</td></tr>
+<tr><td>Constructor</td><td>A way to build an element of the free type. Each constructor produces a distinct form of that type.</td></tr>
+<tr><td>Exhaustive</td><td>Every element of Tree is one of the three forms &mdash; stalk, leaf, or branch. No other form exists.</td></tr>
+<tr><td>Structural recursion</td><td>Defining a function by giving a case for each constructor of the free type. Because the cases are exhaustive, the function is total.</td></tr>
+<tr><td>Base case (stalk)</td><td>The simplest tree with no subtrees. stalk has no leaves and no children &mdash; it is where recursion stops.</td></tr>
+<tr><td>Recursive case (branch)</td><td>Defined in terms of the function applied to subtrees. The branch constructor is recursive because its arguments are themselves Trees.</td></tr>
+</table>
+
+<h3 id="parta-symbols">Symbols for Part (a)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined on every element of its domain</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers</td><td>the set $\{0, 1, 2, 3, \ldots\}$</td></tr>
+<tr><td>$=$</td><td>equality</td><td>both sides denote the same value</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all" &mdash; the statement holds for every value in the specified set</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates the bound variable from the body in a quantified expression</td></tr>
+<tr><td>$+$</td><td>addition</td><td>standard addition on natural numbers</td></tr>
+</table>
+
+<h3 id="parta-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need to define a function using <span class="vocab" data-def="Defining a function by giving a case for each constructor of the free type. Because the cases are exhaustive, the function is total.">structural recursion</span>. The function count takes any Tree and returns a natural number: the total number of leaves. Because Tree is a <span class="vocab" data-def="A type defined by listing all its constructors. Every value is built by applying constructors finitely many times, with no hidden equalities.">free type</span> with three <span class="vocab" data-def="A way to build an element of the free type. Each constructor produces a distinct form of that type.">constructors</span>, we must give one clause for each.</p>
+</div>
+
+<h3 id="parta-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Every function defined by <span class="vocab" data-def="Defining a function by giving a case for each constructor of the free type. Because the cases are exhaustive, the function is total.">structural recursion</span> on Tree follows the same skeleton:</p>
+<ul>
+<li><strong><span class="vocab" data-def="The simplest tree with no subtrees. stalk has no leaves and no children &mdash; it is where recursion stops.">Base case</span> (stalk):</strong> what does count return for the empty tree?</li>
+<li><strong>Leaf case:</strong> what does count return for a single leaf?</li>
+<li><strong><span class="vocab" data-def="Defined in terms of the function applied to subtrees. The branch constructor is recursive because its arguments are themselves Trees.">Recursive case</span> (branch):</strong> how do we combine count applied to each subtree?</li>
+</ul>
+<p>The three cases are <span class="vocab" data-def="Every element of Tree is one of the three forms &mdash; stalk, leaf, or branch. No other form exists.">exhaustive</span>, so no other cases are needed.</p>
+</div>
+
+<h3 id="parta-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong>stalk:</strong> a bare stalk has no leaves &rarr; return 0.</p>
+<p><strong>leaf $n$:</strong> a single leaf is exactly one leaf, regardless of the value $n$ &rarr; return 1.</p>
+<p><strong>branch$(t_1, t_2)$:</strong> the leaves of the whole tree are the leaves from $t_1$ plus the leaves from $t_2$ &rarr; return count $t_1$ <span class="vocab" data-def="addition &mdash; standard addition on natural numbers">+</span> count $t_2$.</p>
+</div>
+
+<h3 id="parta-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Type signature</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>count</td><td>function name &mdash; the leaf-counting function we are defining</td><td>the function we are defining</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares what type count has</td></tr>
+<tr><td>Tree</td><td>domain &mdash; the free type of binary trees</td><td>count accepts any Tree</td></tr>
+<tr><td>$\to$</td><td>total function &mdash; a function defined on every element of its domain</td><td>count is defined for every Tree</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers &mdash; the set $\{0, 1, 2, 3, \ldots\}$</td><td>the output type (a count of leaves)</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the function <span class="vocab" data-def="The leaf-counting function we are defining.">count</span>, use <span class="vocab" data-def="type declaration &mdash; &quot;is of type&quot;">:</span> to declare its type. The input is Tree, the output is <span class="vocab" data-def="natural numbers &mdash; the set {0, 1, 2, 3, ...}">N</span>, connected by <span class="vocab" data-def="total function &mdash; a function defined on every element of its domain">&rarr;</span>:</p>
+$$\text{count} : \text{Tree} \to \mathbb{N}$$
+</div>
+
+<h4>Build Step 2 &mdash; stalk case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>stalk</td><td>base-case constructor &mdash; the empty tree with no data</td><td>the input to count in this clause</td></tr>
+<tr><td>$=$</td><td>equality &mdash; both sides denote the same value</td><td>defines the result for stalk</td></tr>
+<tr><td>$0$</td><td>zero &mdash; the additive identity</td><td>stalk has zero leaves</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The simplest tree with no subtrees. stalk has no leaves and no children &mdash; it is where recursion stops.">base case</span>: a <span class="vocab" data-def="The empty tree with no data and no children &mdash; like a bare stalk with nothing growing from it.">stalk</span> is an empty tree with no leaves, so the count is <span class="vocab" data-def="The additive identity &mdash; zero leaves.">0</span>:</p>
+$$\text{count}\;\text{stalk} = 0$$
+</div>
+
+<h4>Build Step 3 &mdash; leaf case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>the clause holds for every natural number $n$</td></tr>
+<tr><td>$n$</td><td>bound variable &mdash; represents the leaf's label</td><td>stands for the natural number stored in the leaf</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers &mdash; the set $\{0, 1, 2, 3, \ldots\}$</td><td>the type of $n$</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates declaration from expression</td><td>connects "for all $n$" to the equation</td></tr>
+<tr><td>$1$</td><td>one &mdash; a single leaf</td><td>every leaf contributes exactly one to the count</td></tr>
+</table>
+<div class="walkthrough">
+<p>A leaf holds exactly one natural number <span class="vocab" data-def="Bound variable &mdash; represents the leaf's label.">n</span>. Regardless of what value $n$ is, a leaf contributes exactly one leaf to the count. Use <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> to say this holds for every $n$, with <span class="vocab" data-def="spot &mdash; separates declaration from expression">&bull;</span> separating the declaration from the equation:</p>
+$$\forall\, n : \mathbb{N} \;\bullet\; \text{count}(\text{leaf}\;n) = 1$$
+</div>
+
+<h4>Build Step 4 &mdash; branch case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>the clause holds for every pair of subtrees</td></tr>
+<tr><td>$t_1, t_2$</td><td>bound variables &mdash; represent the two subtrees</td><td>stand for the left and right subtrees of the branch</td></tr>
+<tr><td>Tree</td><td>domain &mdash; the free type of binary trees</td><td>the type of $t_1$ and $t_2$</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates declaration from expression</td><td>connects "for all $t_1, t_2$" to the equation</td></tr>
+<tr><td>$+$</td><td>addition &mdash; standard addition on natural numbers</td><td>combines the leaf counts from both subtrees</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="Defined in terms of the function applied to subtrees. The branch constructor is recursive because its arguments are themselves Trees.">recursive case</span>: a branch combines two subtrees <span class="vocab" data-def="Bound variable &mdash; the left subtree.">t_1</span> and <span class="vocab" data-def="Bound variable &mdash; the right subtree.">t_2</span>. The total leaf count is count applied to $t_1$ <span class="vocab" data-def="addition &mdash; standard addition on natural numbers">+</span> count applied to $t_2$. The branch node itself is not a leaf, so it does not add 1. Use <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> to quantify over all pairs of subtrees:</p>
+$$\forall\, t_1, t_2 : \text{Tree} \;\bullet\; \text{count}(\text{branch}(t_1, t_2)) = \text{count}\;t_1 + \text{count}\;t_2$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\text{count} : \text{Tree} \to \mathbb{N}$$
+$$\text{count}\;\text{stalk} = 0$$
+$$\forall\, n : \mathbb{N} \;\bullet\; \text{count}(\text{leaf}\;n) = 1$$
+$$\forall\, t_1, t_2 : \text{Tree} \;\bullet\; \text{count}(\text{branch}(t_1, t_2)) = \text{count}\;t_1 + \text{count}\;t_2$$
+</div>
+<p>Line 1 = type signature. Line 2 = <span class="vocab" data-def="The simplest tree with no subtrees. stalk has no leaves and no children &mdash; it is where recursion stops.">base case</span>. Line 3 = leaf case. Line 4 = <span class="vocab" data-def="Defined in terms of the function applied to subtrees. The branch constructor is recursive because its arguments are themselves Trees.">recursive case</span>.</p>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p><strong>Input:</strong> branch(leaf 3, branch(stalk, leaf 5))</p>
+<table>
+<tr><th>Step</th><th>Expression</th><th>Rule applied</th><th>Result</th></tr>
+<tr><td>1</td><td>$\text{count}(\text{branch}(\text{leaf}\;3,\;\text{branch}(\text{stalk},\;\text{leaf}\;5)))$</td><td>branch case</td><td>$\text{count}(\text{leaf}\;3) + \text{count}(\text{branch}(\text{stalk},\;\text{leaf}\;5))$</td></tr>
+<tr><td>2</td><td>$\text{count}(\text{leaf}\;3)$</td><td>leaf case</td><td>$1$</td></tr>
+<tr><td>3</td><td>$\text{count}(\text{branch}(\text{stalk},\;\text{leaf}\;5))$</td><td>branch case</td><td>$\text{count}\;\text{stalk} + \text{count}(\text{leaf}\;5)$</td></tr>
+<tr><td>4</td><td>$\text{count}\;\text{stalk}$</td><td>stalk case</td><td>$0$</td></tr>
+<tr><td>5</td><td>$\text{count}(\text{leaf}\;5)$</td><td>leaf case</td><td>$1$</td></tr>
+<tr><td>6</td><td>$1 + (0 + 1)$</td><td>arithmetic</td><td>$\mathbf{2}$ &check;</td></tr>
+</table>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-b">Part (b) &mdash; Define flatten : Tree &rarr; seq N</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define a function flatten that maps a <span class="key">tree to a sequence of natural numbers</span>, <span class="key">preserving the multiplicity</span> of each number that appears.</p>
+</div>
+
+<h3 id="partb-vocab">Vocab for Part (b)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Free type</td><td>A type defined by listing all its constructors. Every value is built by applying constructors finitely many times, with no hidden equalities.</td></tr>
+<tr><td>Constructor</td><td>A way to build an element of the free type. Each constructor produces a distinct form of that type.</td></tr>
+<tr><td>Exhaustive</td><td>Every element of Tree is one of the three forms &mdash; stalk, leaf, or branch. No other form exists.</td></tr>
+<tr><td>Structural recursion</td><td>Defining a function by giving a case for each constructor of the free type. Because the cases are exhaustive, the function is total.</td></tr>
+<tr><td>Base case (stalk)</td><td>The simplest tree with no subtrees. stalk has no leaves and no children &mdash; it is where recursion stops.</td></tr>
+<tr><td>Recursive case (branch)</td><td>Defined in terms of the function applied to subtrees. The branch constructor is recursive because its arguments are themselves Trees.</td></tr>
+</table>
+
+<h3 id="partb-symbols">Symbols for Part (b)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined on every element of its domain</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence type</td><td>$\text{seq}\;X$ is the set of all finite sequences whose elements come from $X$</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers</td><td>the set $\{0, 1, 2, 3, \ldots\}$</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>the sequence containing no elements</td></tr>
+<tr><td>$\langle n \rangle$</td><td>singleton sequence</td><td>a sequence containing exactly one element $n$</td></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>joins two sequences end-to-end</td></tr>
+<tr><td>$=$</td><td>equality</td><td>both sides denote the same value</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all" &mdash; the statement holds for every value in the specified set</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates the bound variable from the body in a quantified expression</td></tr>
+</table>
+
+<h3 id="partb-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need to define a function using <span class="vocab" data-def="Defining a function by giving a case for each constructor of the free type. Because the cases are exhaustive, the function is total.">structural recursion</span>. The function flatten takes any Tree and returns a <span class="vocab" data-def="seq X is the set of all finite sequences whose elements come from X.">sequence</span> of natural numbers: the leaf values collected left-to-right. Because Tree is a <span class="vocab" data-def="A type defined by listing all its constructors. Every value is built by applying constructors finitely many times, with no hidden equalities.">free type</span> with three <span class="vocab" data-def="A way to build an element of the free type. Each constructor produces a distinct form of that type.">constructors</span>, we must give one clause for each.</p>
+</div>
+
+<h3 id="partb-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>The same <span class="vocab" data-def="Defining a function by giving a case for each constructor of the free type. Because the cases are exhaustive, the function is total.">structural recursion</span> skeleton applies as for count:</p>
+<ul>
+<li><strong><span class="vocab" data-def="The simplest tree with no subtrees. stalk has no leaves and no children &mdash; it is where recursion stops.">Base case</span> (stalk):</strong> what sequence does the empty tree produce?</li>
+<li><strong>Leaf case:</strong> what sequence does a single leaf produce?</li>
+<li><strong><span class="vocab" data-def="Defined in terms of the function applied to subtrees. The branch constructor is recursive because its arguments are themselves Trees.">Recursive case</span> (branch):</strong> how do we combine the sequences from each subtree?</li>
+</ul>
+<p>The key difference from count: flatten collects <em>values</em>, not a count. The combining operation is <span class="vocab" data-def="concatenation &mdash; joins two sequences end-to-end">&frown;</span> (concatenation) rather than $+$ (addition).</p>
+</div>
+
+<h3 id="partb-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong>stalk:</strong> a bare stalk has no leaves to collect &rarr; return the <span class="vocab" data-def="The sequence containing no elements.">&langle;&rangle;</span> empty sequence.</p>
+<p><strong>leaf $n$:</strong> a single leaf holds value $n$ &rarr; return the <span class="vocab" data-def="A sequence containing exactly one element n.">&langle;n&rangle;</span> singleton sequence.</p>
+<p><strong>branch$(t_1, t_2)$:</strong> the values from the whole tree are the values from $t_1$ followed by the values from $t_2$ &rarr; return flatten $t_1$ <span class="vocab" data-def="concatenation &mdash; joins two sequences end-to-end">&frown;</span> flatten $t_2$.</p>
+</div>
+
+<h3 id="partb-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Type signature</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>flatten</td><td>function name &mdash; the tree-to-sequence function we are defining</td><td>the function we are defining</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares what type flatten has</td></tr>
+<tr><td>Tree</td><td>domain &mdash; the free type of binary trees</td><td>flatten accepts any Tree</td></tr>
+<tr><td>$\to$</td><td>total function &mdash; a function defined on every element of its domain</td><td>flatten is defined for every Tree</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence type &mdash; $\text{seq}\;X$ is the set of all finite sequences with elements from $X$</td><td>the output is a sequence</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers &mdash; the set $\{0, 1, 2, 3, \ldots\}$</td><td>the elements of the output sequence are natural numbers</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the function <span class="vocab" data-def="The tree-to-sequence function we are defining.">flatten</span>, use <span class="vocab" data-def="type declaration &mdash; &quot;is of type&quot;">:</span> to declare its type. The input is Tree, the output is <span class="vocab" data-def="seq X is the set of all finite sequences whose elements come from X.">seq</span> <span class="vocab" data-def="natural numbers &mdash; the set {0, 1, 2, 3, ...}">N</span>, connected by <span class="vocab" data-def="total function &mdash; a function defined on every element of its domain">&rarr;</span>:</p>
+$$\text{flatten} : \text{Tree} \to \text{seq}\;\mathbb{N}$$
+</div>
+
+<h4>Build Step 2 &mdash; stalk case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>stalk</td><td>base-case constructor &mdash; the empty tree with no data</td><td>the input to flatten in this clause</td></tr>
+<tr><td>$=$</td><td>equality &mdash; both sides denote the same value</td><td>defines the result for stalk</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence &mdash; a sequence with no elements</td><td>stalk has no leaves to collect</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The simplest tree with no subtrees. stalk has no leaves and no children &mdash; it is where recursion stops.">base case</span>: a <span class="vocab" data-def="The empty tree with no data and no children &mdash; like a bare stalk with nothing growing from it.">stalk</span> carries no data, so it flattens to the <span class="vocab" data-def="The sequence containing no elements.">empty sequence</span> <span class="vocab" data-def="The sequence containing no elements.">&langle;&rangle;</span>. There are no values to collect:</p>
+$$\text{flatten}\;\text{stalk} = \langle\rangle$$
+</div>
+
+<h4>Build Step 3 &mdash; leaf case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>the clause holds for every natural number $n$</td></tr>
+<tr><td>$n$</td><td>bound variable &mdash; represents the leaf's label</td><td>stands for the natural number stored in the leaf</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers &mdash; the set $\{0, 1, 2, 3, \ldots\}$</td><td>the type of $n$</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates declaration from expression</td><td>connects "for all $n$" to the equation</td></tr>
+<tr><td>$\langle n \rangle$</td><td>singleton sequence &mdash; a sequence containing exactly one element</td><td>wraps the leaf value into a one-element sequence</td></tr>
+</table>
+<div class="walkthrough">
+<p>A leaf holds exactly one natural number <span class="vocab" data-def="Bound variable &mdash; represents the leaf's label.">n</span>. Flattening it produces a <span class="vocab" data-def="A sequence containing exactly one element n.">singleton sequence</span> containing just that value. Unlike count, the value $n$ matters here &mdash; it determines the content of the sequence. Use <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> to say this holds for every $n$, with <span class="vocab" data-def="spot &mdash; separates declaration from expression">&bull;</span> separating the declaration from the equation:</p>
+$$\forall\, n : \mathbb{N} \;\bullet\; \text{flatten}(\text{leaf}\;n) = \langle n \rangle$$
+</div>
+
+<h4>Build Step 4 &mdash; branch case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>the clause holds for every pair of subtrees</td></tr>
+<tr><td>$t_1, t_2$</td><td>bound variables &mdash; represent the two subtrees</td><td>stand for the left and right subtrees of the branch</td></tr>
+<tr><td>Tree</td><td>domain &mdash; the free type of binary trees</td><td>the type of $t_1$ and $t_2$</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates declaration from expression</td><td>connects "for all $t_1, t_2$" to the equation</td></tr>
+<tr><td>$\frown$</td><td>concatenation &mdash; joins two sequences end-to-end</td><td>appends the right subtree's values after the left subtree's values</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="Defined in terms of the function applied to subtrees. The branch constructor is recursive because its arguments are themselves Trees.">recursive case</span>: a branch combines two subtrees <span class="vocab" data-def="Bound variable &mdash; the left subtree.">t_1</span> and <span class="vocab" data-def="Bound variable &mdash; the right subtree.">t_2</span>. Flattening <span class="vocab" data-def="concatenation &mdash; joins two sequences end-to-end">concatenates</span> the sequences from the left subtree and the right subtree. This preserves left-to-right order: all values from $t_1$ appear before all values from $t_2$. Use <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> to quantify over all pairs of subtrees:</p>
+$$\forall\, t_1, t_2 : \text{Tree} \;\bullet\; \text{flatten}(\text{branch}(t_1, t_2)) = \text{flatten}\;t_1 \;\frown\; \text{flatten}\;t_2$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\text{flatten} : \text{Tree} \to \text{seq}\;\mathbb{N}$$
+$$\text{flatten}\;\text{stalk} = \langle\rangle$$
+$$\forall\, n : \mathbb{N} \;\bullet\; \text{flatten}(\text{leaf}\;n) = \langle n \rangle$$
+$$\forall\, t_1, t_2 : \text{Tree} \;\bullet\; \text{flatten}(\text{branch}(t_1, t_2)) = \text{flatten}\;t_1 \;\frown\; \text{flatten}\;t_2$$
+</div>
+<p>Line 1 = type signature. Line 2 = <span class="vocab" data-def="The simplest tree with no subtrees. stalk has no leaves and no children &mdash; it is where recursion stops.">base case</span>. Line 3 = leaf case. Line 4 = <span class="vocab" data-def="Defined in terms of the function applied to subtrees. The branch constructor is recursive because its arguments are themselves Trees.">recursive case</span>.</p>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p><strong>Input:</strong> branch(leaf 3, branch(stalk, leaf 5))</p>
+<table>
+<tr><th>Step</th><th>Expression</th><th>Rule applied</th><th>Result</th></tr>
+<tr><td>1</td><td>$\text{flatten}(\text{branch}(\text{leaf}\;3,\;\text{branch}(\text{stalk},\;\text{leaf}\;5)))$</td><td>branch case</td><td>$\text{flatten}(\text{leaf}\;3) \;\frown\; \text{flatten}(\text{branch}(\text{stalk},\;\text{leaf}\;5))$</td></tr>
+<tr><td>2</td><td>$\text{flatten}(\text{leaf}\;3)$</td><td>leaf case</td><td>$\langle 3 \rangle$</td></tr>
+<tr><td>3</td><td>$\text{flatten}(\text{branch}(\text{stalk},\;\text{leaf}\;5))$</td><td>branch case</td><td>$\text{flatten}\;\text{stalk} \;\frown\; \text{flatten}(\text{leaf}\;5)$</td></tr>
+<tr><td>4</td><td>$\text{flatten}\;\text{stalk}$</td><td>stalk case</td><td>$\langle\rangle$</td></tr>
+<tr><td>5</td><td>$\text{flatten}(\text{leaf}\;5)$</td><td>leaf case</td><td>$\langle 5 \rangle$</td></tr>
+<tr><td>6</td><td>$\langle 3 \rangle \;\frown\; (\langle\rangle \;\frown\; \langle 5 \rangle)$</td><td>concatenation</td><td>$\langle 3 \rangle \;\frown\; \langle 5 \rangle = \langle 3, 5 \rangle$ &check;</td></tr>
+</table>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2>Summary</h2>
+
+<div class="concept">
+<p><strong>Comparing the two functions:</strong> Both follow the same <span class="vocab" data-def="Defining a function by giving a case for each constructor of the free type. Because the cases are exhaustive, the function is total.">structural recursion</span> dictated by the <span class="vocab" data-def="A type defined by listing all its constructors. Every value is built by applying constructors finitely many times, with no hidden equalities.">free type</span>. They differ only in the codomain and the combining operation:</p>
+
+<table>
+<tr><th>Case</th><th>count (to $\mathbb{N}$)</th><th>flatten (to seq $\mathbb{N}$)</th></tr>
+<tr><td>stalk</td><td>$0$</td><td>$\langle\rangle$</td></tr>
+<tr><td>leaf $n$</td><td>$1$</td><td>$\langle n \rangle$</td></tr>
+<tr><td>branch$(t_1, t_2)$</td><td>count $t_1$ $+$ count $t_2$</td><td>flatten $t_1$ $\frown$ flatten $t_2$</td></tr>
+</table>
+
+<p>In both cases, <strong>stalk</strong> maps to the identity element ($0$ for addition, $\langle\rangle$ for concatenation), <strong>leaf</strong> maps to a unit ($1$ or a singleton), and <strong>branch</strong> combines results with the appropriate binary operation ($+$ or $\frown$).</p>
+</div>
+
+<div class="warning">
+<p><strong>Totality:</strong> Because Tree is a <span class="vocab" data-def="A type defined by listing all its constructors. Every value is built by applying constructors finitely many times, with no hidden equalities.">free type</span>, every tree is built from a finite number of constructor applications. The three cases are <span class="vocab" data-def="Every element of Tree is one of the three forms &mdash; stalk, leaf, or branch. No other form exists.">exhaustive</span> and the recursive calls are on strictly smaller subtrees. This guarantees that both count and flatten are total functions.</p>
+</div>
+
+<footer>
+Exercise 46 &mdash; Software Engineering Mathematics
+</footer>
+
+<script>
+function toggleDropdown(el) {
+  var item = el.closest('.nav-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  }
+});
+</script>
+</body>
+</html>

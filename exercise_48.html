@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 48 &mdash; Streamify: Base System (Playlists)</title>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+body { font-family: Georgia, "Times New Roman", serif; max-width: 860px; margin: 0 auto; padding: 0 20px 40px 20px; background: #ffffff; color: #111111; line-height: 1.55; }
+h1 { border-bottom: 2px solid #111; padding-bottom: 8px; scroll-margin-top: 100px; }
+h2 { margin-top: 40px; border-bottom: 1px solid #999; padding-bottom: 4px; scroll-margin-top: 100px; }
+h3 { margin-top: 28px; scroll-margin-top: 100px; }
+h4 { margin-top: 20px; color: #333; scroll-margin-top: 100px; }
+a { color: #0a3d91; }
+p { margin: 10px 0; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; margin: 12px 0; width: 100%; }
+th, td { border: 1px solid #bbb; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+.concept { background: #fafafa; border-left: 4px solid #888; padding: 10px 16px; margin: 14px 0; }
+.example { background: #fafafa; border-left: 4px solid #2a7a2a; padding: 10px 16px; margin: 14px 0; }
+.practice { background: #fafafa; border-left: 4px solid #1a5fb4; padding: 10px 16px; margin: 14px 0; }
+.warning { background: #fafafa; border-left: 4px solid #c0392b; padding: 10px 16px; margin: 14px 0; }
+.walkthrough { margin-top: 10px; padding: 10px 14px; background: #fffbea; border-left: 4px solid #b58900; }
+.schema-box { background: #f8f8f8; border: 1px solid #ccc; padding: 12px 16px; margin: 12px 0; font-size: 0.95em; overflow-x: auto; }
+details { margin: 10px 0; }
+summary { cursor: pointer; font-weight: bold; color: #0a3d91; }
+code, .sym { font-family: "Menlo", "Courier New", monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+.vocab { border-bottom: 1px dotted #1a5fb4; cursor: pointer; position: relative; color: #0a3d91; padding: 0 2px; }
+.vocab:hover { background-color: #fff3a3; }
+.vocab::after { content: attr(data-def); display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); background: #2a2a2a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; font-style: normal; font-weight: normal; white-space: normal; width: max-content; max-width: 280px; min-width: 180px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
+.vocab:hover::after { display: block; }
+.key { color: #1a5fb4; text-decoration: underline; text-underline-offset: 2px; }
+footer { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 0.85em; color: #666; }
+
+.section-nav { position: sticky; top: 0; z-index: 100; background: #fff; padding: 12px 0; margin: 0 0 24px 0; border-bottom: 1px solid #ccc; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.nav-item { position: relative; }
+.section-nav button { padding: 6px 10px; border: 1px solid #999; background: #fff; cursor: pointer; font-family: inherit; font-size: 0.9em; border-radius: 3px; }
+.section-nav button:hover { background: #eef; }
+.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #999; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 200px; z-index: 200; }
+.nav-item.open .nav-dropdown { display: block; }
+.nav-dropdown li { padding: 0; margin: 0; }
+.nav-dropdown a { display: block; padding: 6px 14px; text-decoration: none; color: #111; font-size: 0.9em; cursor: pointer; }
+.nav-dropdown a:hover { background: #eef; }
+.nav-link { font-size: 0.9em; color: #0a3d91; text-decoration: none; padding: 6px 10px; border: 1px solid #999; border-radius: 3px; }
+.nav-link:hover { background: #eef; }
+</style>
+</head>
+<body>
+
+<nav class="section-nav">
+  <a class="nav-link" href="exercise_47.html">&larr; Ex 47</a>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (a)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-a"><strong>Part (a)</strong></a></li>
+      <li><a href="#parta-vocab">Vocab</a></li>
+      <li><a href="#parta-symbols">Symbols</a></li>
+      <li><a href="#parta-step1">Step 1</a></li>
+      <li><a href="#parta-step2">Step 2</a></li>
+      <li><a href="#parta-step3">Step 3</a></li>
+      <li><a href="#parta-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (b)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-b"><strong>Part (b)</strong></a></li>
+      <li><a href="#partb-vocab">Vocab</a></li>
+      <li><a href="#partb-symbols">Symbols</a></li>
+      <li><a href="#partb-step1">Step 1</a></li>
+      <li><a href="#partb-step2">Step 2</a></li>
+      <li><a href="#partb-step3">Step 3</a></li>
+      <li><a href="#partb-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (c)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-c"><strong>Part (c)</strong></a></li>
+      <li><a href="#partc-vocab">Vocab</a></li>
+      <li><a href="#partc-symbols">Symbols</a></li>
+      <li><a href="#partc-step1">Step 1</a></li>
+      <li><a href="#partc-step2">Step 2</a></li>
+      <li><a href="#partc-step3">Step 3</a></li>
+      <li><a href="#partc-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (d)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-d"><strong>Part (d)</strong></a></li>
+      <li><a href="#partd-vocab">Vocab</a></li>
+      <li><a href="#partd-symbols">Symbols</a></li>
+      <li><a href="#partd-step1">Step 1</a></li>
+      <li><a href="#partd-step2">Step 2</a></li>
+      <li><a href="#partd-step3">Step 3</a></li>
+      <li><a href="#partd-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (e)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-e"><strong>Part (e)</strong></a></li>
+      <li><a href="#parte-vocab">Vocab</a></li>
+      <li><a href="#parte-symbols">Symbols</a></li>
+      <li><a href="#parte-step1">Step 1</a></li>
+      <li><a href="#parte-step2">Step 2</a></li>
+      <li><a href="#parte-step3">Step 3</a></li>
+      <li><a href="#parte-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (f)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-f"><strong>Part (f)</strong></a></li>
+      <li><a href="#partf-vocab">Vocab</a></li>
+      <li><a href="#partf-symbols">Symbols</a></li>
+      <li><a href="#partf-step1">Step 1</a></li>
+      <li><a href="#partf-step2">Step 2</a></li>
+      <li><a href="#partf-step3">Step 3</a></li>
+      <li><a href="#partf-solution">Solution</a></li>
+    </ul>
+  </div>
+  <a class="nav-link" href="exercise_49.html">Ex 49 &rarr;</a>
+  <a class="nav-link" href="index.html" style="margin-left:auto;">&larr; All Exercises</a>
+</nav>
+
+
+<h1>Exercise 48 &mdash; Streamify: Base System (Playlists)</h1>
+<p><em>Z Notation Modelling &mdash; Part 1 of a 5-exercise series</em></p>
+
+<!-- ============================================================ -->
+<h2>The Scenario</h2>
+
+<div class="concept">
+<p>You have been asked to design (via a formal model) a prototype for a new online music platform called <strong>Streamify</strong>. This exercise establishes the <strong>base system</strong>: songs, users, playlists, ownership, and subscriptions.</p>
+<p>All remaining questions (Exercises 49&ndash;52) will leverage the definitions built here.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Given Types</h2>
+
+<p>Three <span class="vocab" data-def="A type declared in Z whose internal structure is deliberately left unspecified. We only know that each element is unique.">basic types</span> representing atomic identifiers:</p>
+$$[PlaylistId,\; SongId,\; UserId]$$
+
+<p>A playlist is defined as a non-empty <span class="vocab" data-def="Injective sequence &mdash; a non-empty sequence with no duplicate elements.">injective sequence</span> of songs:</p>
+$$Playlist == \text{iseq}_1\; SongId$$
+
+<div class="walkthrough">
+<strong>Unpacking this definition:</strong>
+<ul>
+<li>$\text{iseq}\; X$ is the set of all injective sequences over $X$ &mdash; sequences where no element appears twice.</li>
+<li>The subscript $_1$ adds the constraint that the sequence must be non-empty (at least one element).</li>
+<li>So a $Playlist$ is a finite sequence of $SongId$ values with <strong>no duplicate songs</strong> and <strong>at least one song</strong>.</li>
+</ul>
+</div>
+
+<!-- ============================================================ -->
+<h2>System Declaration</h2>
+
+<p>The state of the Streamify base system is captured by five variables:</p>
+
+<div class="schema-box">
+<strong>Streamify</strong><br>
+$songs : \mathbb{F}\; SongId$<br>
+$users : \mathbb{F}\; UserId$<br>
+$playlists : PlaylistId \;{\pfun}\; Playlist$<br>
+$playlist\_owner : PlaylistId \;{\pfun}\; UserId$<br>
+$playlist\_subscribers : PlaylistId \;{\pfun}\; \mathbb{F}_1\; UserId$
+</div>
+
+<div class="walkthrough">
+<strong>Reading the declarations line by line:</strong>
+<table>
+<tr><th>Variable</th><th>Type</th><th>English meaning</th></tr>
+<tr><td>$songs$</td><td>$\mathbb{F}\; SongId$</td><td>The <span class="vocab" data-def="Finite set &mdash; a set with a finite number of elements.">finite set</span> of all songs currently on the platform.</td></tr>
+<tr><td>$users$</td><td>$\mathbb{F}\; UserId$</td><td>The <span class="vocab" data-def="Finite set &mdash; a set with a finite number of elements.">finite set</span> of all registered users.</td></tr>
+<tr><td>$playlists$</td><td>$PlaylistId \;{\pfun}\; Playlist$</td><td>A <span class="vocab" data-def="Partial function &mdash; a function not defined for every input.">partial function</span> from playlist IDs to their content (an injective, non-empty sequence of songs).</td></tr>
+<tr><td>$playlist\_owner$</td><td>$PlaylistId \;{\pfun}\; UserId$</td><td>A <span class="vocab" data-def="Partial function &mdash; a function not defined for every input.">partial function</span> mapping each playlist to its owner.</td></tr>
+<tr><td>$playlist\_subscribers$</td><td>$PlaylistId \;{\pfun}\; \mathbb{F}_1\; UserId$</td><td>A <span class="vocab" data-def="Partial function &mdash; a function not defined for every input.">partial function</span> mapping each playlist to a <span class="vocab" data-def="Non-empty finite set &mdash; a finite set with at least one element.">non-empty finite set</span> of subscribers.</td></tr>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<h2>Master Symbol Table</h2>
+
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\mathbb{F}$</td><td>finite power set</td><td>$\mathbb{F}\;X$ is the set of all finite subsets of $X$</td></tr>
+<tr><td>$\mathbb{F}_1$</td><td>non-empty finite power set</td><td>$\mathbb{F}_1\;X$ is the set of all non-empty finite subsets of $X$</td></tr>
+<tr><td>$\text{iseq}_1$</td><td>non-empty injective sequence</td><td>a finite sequence with no repeated elements and at least one element</td></tr>
+<tr><td>$\pfun$</td><td>partial function</td><td>a function not defined for every input</td></tr>
+<tr><td>$\text{dom}$</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of outputs that a function actually produces</td></tr>
+<tr><td>$\subseteq$</td><td>subset</td><td>every element of the left set is also in the right set</td></tr>
+<tr><td>$\in$</td><td>element of</td><td>the value on the left is a member of the set on the right</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all" &mdash; the statement holds for every value in the specified set</td></tr>
+<tr><td>$\bullet$</td><td>spot / such that</td><td>separates the bound variable from the body in a quantified expression</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>The Task</h2>
+
+<div class="practice">
+<strong>Task:</strong> Complete the <span class="key">axiomatic definition</span> of the Streamify system by adding <span class="key">predicates</span> (below the line) that capture the following six constraints:
+<ol type="a">
+<li>Only songs that appear in $songs$ can appear in <span class="key">playlists</span>.</li>
+<li>Only playlists that appear in $playlists$ can appear in <span class="key">$playlist\_owner$</span>.</li>
+<li>Only users that appear in $users$ can appear in <span class="key">$playlist\_owner$</span>.</li>
+<li>Only playlists that appear in $playlists$ can appear in <span class="key">$playlist\_subscribers$</span>.</li>
+<li>Only users that appear in $users$ can appear in <span class="key">$playlist\_subscribers$</span>.</li>
+<li>Every <span class="key">playlist's owner</span> is, by default, a <span class="key">subscriber</span> to that playlist.</li>
+</ol>
+</div>
+
+
+<!-- ============================================================ -->
+<h2 id="part-a">Part (a) &mdash; Only songs in songs can appear in playlists</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="key">predicate</span> ensuring that <span class="key">every song appearing in any playlist</span> must be a <span class="key">member of the $songs$ set</span>.</p>
+</div>
+
+<h3 id="parta-vocab">Vocab for Part (a)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Axiomatic definition</td><td>Declares variables above a line, with predicates below that must always hold.</td></tr>
+<tr><td>Referential integrity</td><td>Ensuring that references to entities (songs, users, playlists) point to things that actually exist.</td></tr>
+<tr><td>Injective sequence (iseq&#x2081;)</td><td>A non-empty sequence with no duplicate elements.</td></tr>
+<tr><td>Subset</td><td>Every element of A is also in B.</td></tr>
+</table>
+
+<h3 id="parta-symbols">Symbols for Part (a)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>&forall;</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>dom</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>ran</td><td>range</td><td>the set of outputs that a function actually produces</td></tr>
+<tr><td>&bull;</td><td>spot</td><td>separates the bound variable from the body in a quantified expression</td></tr>
+<tr><td>&sube;</td><td>subset</td><td>every element of the left set is also in the right set</td></tr>
+</table>
+
+<h3 id="parta-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a predicate that enforces <span class="vocab" data-def="Referential integrity &mdash; ensuring that references to entities (songs, users, playlists) point to things that actually exist.">referential integrity</span> for songs. Every song that appears inside any playlist must exist in the global $songs$ set. This prevents playlists from referencing phantom or deleted tracks.</p>
+</div>
+
+<h3 id="parta-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Each playlist is an <span class="vocab" data-def="Injective sequence &mdash; a non-empty sequence with no duplicate elements.">injective sequence</span> of songs &mdash; a function from positions to $SongId$ values. So $playlists$ maps to <em>sequences</em>, not directly to individual songs. We cannot simply write ran playlists &sube; songs because that would give us a set of <em>sequences</em>, not a set of songs.</p>
+<p>Instead, we must iterate over each playlist and extract the set of songs from that individual sequence using ran.</p>
+</div>
+
+<h3 id="parta-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li>Use <span class="vocab" data-def="Universal quantifier &mdash; for all.">&#8704;</span> to iterate over every playlist ID in <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> playlists.</li>
+<li>For each playlist ID $i$, apply playlists to get the sequence: $playlists\; i$.</li>
+<li>Extract the set of songs in that sequence using <span class="vocab" data-def="Range &mdash; the set of outputs that a function actually produces.">ran</span>: $\text{ran}(playlists\; i)$.</li>
+<li>Assert that set is a <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> of songs: $\text{ran}(playlists\; i) \subseteq songs$.</li>
+</ul>
+</div>
+
+<h3 id="parta-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Begin with the <span class="vocab" data-def="Universal quantifier &mdash; for all.">universal quantifier</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&forall;</td><td>universal quantifier &mdash; "for all"</td><td>the constraint must hold for every playlist</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; represents each playlist ID in turn</td><td>stands for each playlist ID as we iterate</td></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>gives the set of all playlist IDs currently in the system</td></tr>
+</table>
+<div class="walkthrough">
+<p>Start with <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to say "for every playlist ID <span class="vocab" data-def="Bound variable &mdash; represents each playlist ID in turn.">i</span>", drawing from <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> playlists:</p>
+$$\forall\, i : \text{dom}\; playlists\ \ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; Add the <span class="vocab" data-def="Spot &mdash; separates the bound variable from the body in a quantified expression.">spot</span> and extract songs with <span class="vocab" data-def="Range &mdash; the set of outputs that a function actually produces.">ran</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&bull;</td><td>spot &mdash; separates the bound variable from the body</td><td>connects "for all $i$" to the condition</td></tr>
+<tr><td>ran</td><td>range &mdash; the set of outputs that a function actually produces</td><td>extracts the set of $SongId$ values from the sequence $playlists\; i$</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="Spot &mdash; separates the bound variable from the body in a quantified expression.">&bull;</span>, apply <span class="vocab" data-def="Range &mdash; the set of outputs that a function actually produces.">ran</span> to the sequence $playlists\; i$ to get the set of songs in that playlist:</p>
+$$\forall\, i : \text{dom}\; playlists \bullet \text{ran}(playlists\; i)\ \ldots$$
+</div>
+
+<h4>Build Step 3 &mdash; Assert the <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> relationship</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&sube;</td><td>subset &mdash; every element of the left set is also in the right set</td><td>requires every song in the playlist to be in $songs$</td></tr>
+<tr><td>songs</td><td>the global set of all songs on the platform</td><td>the reference set that playlist songs must belong to</td></tr>
+</table>
+<div class="walkthrough">
+<p>Complete the predicate by asserting <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">&sube;</span> songs:</p>
+$$\forall\, i : \text{dom}\; playlists \bullet \text{ran}(playlists\; i) \subseteq songs$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\forall\, i : \text{dom}\; playlists \bullet \text{ran}(playlists\; i) \subseteq songs$$
+</div>
+<p>"For every playlist ID $i$ in the system, the set of songs in that playlist (obtained via <span class="vocab" data-def="Range &mdash; the set of outputs that a function actually produces.">ran</span>) must be a <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> of songs."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-b">Part (b) &mdash; Only playlists in playlists can appear in playlist_owner</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="key">predicate</span> ensuring that only <span class="key">playlist IDs that exist in $playlists$</span> can appear as <span class="key">keys in $playlist\_owner$</span>.</p>
+</div>
+
+<h3 id="partb-vocab">Vocab for Part (b)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Domain constraint</td><td>Restricting which keys can appear in a function.</td></tr>
+<tr><td>Referential integrity</td><td>Ensuring that references to entities (songs, users, playlists) point to things that actually exist.</td></tr>
+</table>
+
+<h3 id="partb-symbols">Symbols for Part (b)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>dom</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>&sube;</td><td>subset</td><td>every element of the left set is also in the right set</td></tr>
+</table>
+
+<h3 id="partb-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="Domain constraint &mdash; restricting which keys can appear in a function.">domain constraint</span> that prevents $playlist\_owner$ from assigning an owner to a playlist that does not exist. This is <span class="vocab" data-def="Referential integrity &mdash; ensuring that references to entities (songs, users, playlists) point to things that actually exist.">referential integrity</span> on the key side of the function.</p>
+</div>
+
+<h3 id="partb-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Both $playlist\_owner$ and $playlists$ are partial functions keyed by $PlaylistId$. We need every key of $playlist\_owner$ to also be a key of $playlists$. This is a direct <span class="vocab" data-def="Domain constraint &mdash; restricting which keys can appear in a function.">domain constraint</span>: dom of one &sube; dom of the other.</p>
+</div>
+
+<h3 id="partb-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li>Extract the keys of $playlist\_owner$ using <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span>.</li>
+<li>Extract the keys of $playlists$ using <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span>.</li>
+<li>Assert the first is a <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> of the second.</li>
+</ul>
+</div>
+
+<h3 id="partb-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Extract both domains</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>extracts the set of playlist IDs from each function</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> on both sides:</p>
+$$\text{dom}\; playlist\_owner \quad\ldots\quad \text{dom}\; playlists$$
+</div>
+
+<h4>Build Step 2 &mdash; Assert the <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> relationship</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&sube;</td><td>subset &mdash; every element of the left set is also in the right set</td><td>ensures every owned playlist actually exists</td></tr>
+</table>
+<div class="walkthrough">
+<p>Connect with <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">&sube;</span>:</p>
+$$\text{dom}\; playlist\_owner \subseteq \text{dom}\; playlists$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\text{dom}\; playlist\_owner \subseteq \text{dom}\; playlists$$
+</div>
+<p>"The set of playlist IDs that have owners must be a <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> of the set of playlist IDs that actually exist."</p>
+
+<div class="warning">
+<p><strong>Why &sube; and not =?</strong> We use &sube; deliberately: it allows for the possibility that some playlists might not yet have an owner assigned (e.g., during creation). If we wanted to enforce that <em>every</em> playlist has an owner, we would write dom playlist_owner = dom playlists.</p>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-c">Part (c) &mdash; Only users in users can appear in playlist_owner</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="key">predicate</span> ensuring that <span class="key">every user who appears as a playlist owner</span> must be a <span class="key">registered user in $users$</span>.</p>
+</div>
+
+<h3 id="partc-vocab">Vocab for Part (c)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Range constraint</td><td>Restricting which values a function can produce.</td></tr>
+<tr><td>Referential integrity</td><td>Ensuring that references to entities (songs, users, playlists) point to things that actually exist.</td></tr>
+</table>
+
+<h3 id="partc-symbols">Symbols for Part (c)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>ran</td><td>range</td><td>the set of outputs that a function actually produces</td></tr>
+<tr><td>&sube;</td><td>subset</td><td>every element of the left set is also in the right set</td></tr>
+</table>
+
+<h3 id="partc-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="Range constraint &mdash; restricting which values a function can produce.">range constraint</span> ensuring <span class="vocab" data-def="Referential integrity &mdash; ensuring that references to entities (songs, users, playlists) point to things that actually exist.">referential integrity</span> on the value side of $playlist\_owner$. No phantom users as owners.</p>
+</div>
+
+<h3 id="partc-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>The function $playlist\_owner$ maps directly to individual $UserId$ values (not to sets or sequences). So <span class="vocab" data-def="Range &mdash; the set of outputs that a function actually produces.">ran</span> playlist_owner gives us a flat set of $UserId$ values that we can compare directly against $users$.</p>
+</div>
+
+<h3 id="partc-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li>Extract the output values of $playlist\_owner$ using <span class="vocab" data-def="Range &mdash; the set of outputs that a function actually produces.">ran</span>.</li>
+<li>Assert they are a <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> of $users$.</li>
+</ul>
+</div>
+
+<h3 id="partc-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Extract the range</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>ran</td><td>range &mdash; the set of outputs that a function actually produces</td><td>collects all $UserId$ values that appear as owners</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="Range &mdash; the set of outputs that a function actually produces.">ran</span> to get the set of all owner IDs:</p>
+$$\text{ran}\; playlist\_owner \quad\ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; Assert the <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> relationship</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&sube;</td><td>subset &mdash; every element of the left set is also in the right set</td><td>requires every owner to be a registered user</td></tr>
+<tr><td>users</td><td>the global set of all registered users</td><td>the reference set that owners must belong to</td></tr>
+</table>
+<div class="walkthrough">
+<p>Connect with <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">&sube;</span> users:</p>
+$$\text{ran}\; playlist\_owner \subseteq users$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\text{ran}\; playlist\_owner \subseteq users$$
+</div>
+<p>"The set of all users who own playlists must be a <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> of the registered $users$."</p>
+
+<div class="concept">
+<p><strong>Why ran works here but not in Part (a):</strong> $playlist\_owner$ maps directly to $UserId$ values, so ran gives a flat set of users. In Part (a), $playlists$ maps to <em>sequences</em>, not directly to $SongId$ values, so we had to go one level deeper.</p>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-d">Part (d) &mdash; Only playlists in playlists can appear in playlist_subscribers</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="key">predicate</span> ensuring that only <span class="key">playlist IDs that exist in $playlists$</span> can appear as <span class="key">keys in $playlist\_subscribers$</span>.</p>
+</div>
+
+<h3 id="partd-vocab">Vocab for Part (d)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Domain constraint</td><td>Restricting which keys can appear in a function.</td></tr>
+<tr><td>Referential integrity</td><td>Ensuring that references to entities (songs, users, playlists) point to things that actually exist.</td></tr>
+</table>
+
+<h3 id="partd-symbols">Symbols for Part (d)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>dom</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>&sube;</td><td>subset</td><td>every element of the left set is also in the right set</td></tr>
+</table>
+
+<h3 id="partd-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>This is the same kind of <span class="vocab" data-def="Domain constraint &mdash; restricting which keys can appear in a function.">domain constraint</span> as Part (b), but applied to $playlist\_subscribers$ instead of $playlist\_owner$. We need to ensure that subscribers cannot be assigned to a playlist that does not exist.</p>
+</div>
+
+<h3 id="partd-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Structurally identical to Part (b). Both $playlist\_subscribers$ and $playlists$ are partial functions keyed by $PlaylistId$. We require every key of $playlist\_subscribers$ to also be a key of $playlists$.</p>
+</div>
+
+<h3 id="partd-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li>Extract the keys of $playlist\_subscribers$ using <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span>.</li>
+<li>Extract the keys of $playlists$ using <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span>.</li>
+<li>Assert the first is a <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> of the second.</li>
+</ul>
+</div>
+
+<h3 id="partd-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Extract both domains</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>extracts the set of playlist IDs from each function</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> on both sides:</p>
+$$\text{dom}\; playlist\_subscribers \quad\ldots\quad \text{dom}\; playlists$$
+</div>
+
+<h4>Build Step 2 &mdash; Assert the <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> relationship</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&sube;</td><td>subset &mdash; every element of the left set is also in the right set</td><td>ensures every playlist with subscribers actually exists</td></tr>
+</table>
+<div class="walkthrough">
+<p>Connect with <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">&sube;</span>:</p>
+$$\text{dom}\; playlist\_subscribers \subseteq \text{dom}\; playlists$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\text{dom}\; playlist\_subscribers \subseteq \text{dom}\; playlists$$
+</div>
+<p>"The set of playlist IDs that have subscriber lists must be a <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> of the set of playlist IDs that actually exist."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-e">Part (e) &mdash; Only users in users can appear in playlist_subscribers</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="key">predicate</span> ensuring that <span class="key">every user appearing in any subscriber set</span> must be a <span class="key">registered user in $users$</span>.</p>
+</div>
+
+<h3 id="parte-vocab">Vocab for Part (e)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Referential integrity</td><td>Ensuring that references to entities (songs, users, playlists) point to things that actually exist.</td></tr>
+<tr><td>Non-empty finite set (F&#x2081;)</td><td>A finite set with at least one element.</td></tr>
+<tr><td>Subset</td><td>Every element of A is also in B.</td></tr>
+</table>
+
+<h3 id="parte-symbols">Symbols for Part (e)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>&forall;</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>dom</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>&bull;</td><td>spot</td><td>separates the bound variable from the body in a quantified expression</td></tr>
+<tr><td>&sube;</td><td>subset</td><td>every element of the left set is also in the right set</td></tr>
+</table>
+
+<h3 id="parte-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need <span class="vocab" data-def="Referential integrity &mdash; ensuring that references to entities (songs, users, playlists) point to things that actually exist.">referential integrity</span> for the subscriber values. Every user listed as a subscriber must exist in $users$. This is conceptually like Part (c), but the structure of $playlist\_subscribers$ is different.</p>
+</div>
+
+<h3 id="parte-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Unlike Part (c) where $playlist\_owner$ maps to individual $UserId$ values, $playlist\_subscribers$ maps to <em>sets</em> of users ($\mathbb{F}_1\; UserId$). Writing ran playlist_subscribers &sube; users would be a type error: the range is a set of <em>sets of users</em>, not a set of users.</p>
+<p>We must use <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to iterate over each playlist, unwrap the set-valued function, and check each subscriber set individually.</p>
+</div>
+
+<h3 id="parte-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li>Use <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to iterate over every playlist ID in <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> playlist_subscribers.</li>
+<li>For each playlist ID $i$, apply playlist_subscribers to get the subscriber set: $playlist\_subscribers\; i$.</li>
+<li>Assert that set is a <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> of $users$.</li>
+</ul>
+</div>
+
+<h3 id="parte-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Begin with the <span class="vocab" data-def="Universal quantifier &mdash; for all.">universal quantifier</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&forall;</td><td>universal quantifier &mdash; "for all"</td><td>the constraint must hold for every playlist with subscribers</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; represents each playlist ID in turn</td><td>stands for each playlist ID as we iterate</td></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>gives the set of playlist IDs that have subscriber lists</td></tr>
+</table>
+<div class="walkthrough">
+<p>Start with <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to say "for every playlist ID <span class="vocab" data-def="Bound variable &mdash; represents each playlist ID in turn.">i</span>", drawing from <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> playlist_subscribers:</p>
+$$\forall\, i : \text{dom}\; playlist\_subscribers\ \ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; Add the <span class="vocab" data-def="Spot &mdash; separates the bound variable from the body in a quantified expression.">spot</span> and apply the function</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&bull;</td><td>spot &mdash; separates the bound variable from the body</td><td>connects "for all $i$" to the condition</td></tr>
+<tr><td>$playlist\_subscribers\; i$</td><td>function application &mdash; the subscriber set for playlist $i$</td><td>yields the $\mathbb{F}_1\; UserId$ for this specific playlist</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="Spot &mdash; separates the bound variable from the body in a quantified expression.">&bull;</span>, apply playlist_subscribers to $i$ to get the subscriber set for that playlist:</p>
+$$\forall\, i : \text{dom}\; playlist\_subscribers \bullet playlist\_subscribers\; i\ \ldots$$
+</div>
+
+<h4>Build Step 3 &mdash; Assert the <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> relationship</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&sube;</td><td>subset &mdash; every element of the left set is also in the right set</td><td>requires every subscriber to be a registered user</td></tr>
+<tr><td>users</td><td>the global set of all registered users</td><td>the reference set that subscribers must belong to</td></tr>
+</table>
+<div class="walkthrough">
+<p>Complete the predicate by asserting <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">&sube;</span> users:</p>
+$$\forall\, i : \text{dom}\; playlist\_subscribers \bullet playlist\_subscribers\; i \subseteq users$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\forall\, i : \text{dom}\; playlist\_subscribers \bullet playlist\_subscribers\; i \subseteq users$$
+</div>
+<p>"For every playlist ID $i$ that has subscribers, the subscriber set must be a <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> of $users$."</p>
+
+<div class="concept">
+<p><strong>Contrast with Part (c):</strong> Part (c) used ran playlist_owner &sube; users because $playlist\_owner$ maps to individual $UserId$ values. Here, $playlist\_subscribers$ maps to <em>sets</em> of $UserId$ values, so we must unwrap one level with &forall;.</p>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-f">Part (f) &mdash; Every playlist's owner is a subscriber to that playlist</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="key">predicate</span> ensuring that for every playlist, the <span class="key">owner is automatically a member of the subscriber set</span>.</p>
+</div>
+
+<h3 id="partf-vocab">Vocab for Part (f)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Membership</td><td>A single element belongs to a set (&isin; vs &sube;).</td></tr>
+<tr><td>Referential integrity</td><td>Ensuring that references to entities (songs, users, playlists) point to things that actually exist.</td></tr>
+<tr><td>Non-empty finite set (F&#x2081;)</td><td>A finite set with at least one element.</td></tr>
+</table>
+
+<h3 id="partf-symbols">Symbols for Part (f)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>&forall;</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>dom</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>&bull;</td><td>spot</td><td>separates the bound variable from the body in a quantified expression</td></tr>
+<tr><td>&isin;</td><td>element of</td><td>the value on the left is a member of the set on the right</td></tr>
+</table>
+
+<h3 id="partf-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a business rule: when you create a playlist, you automatically follow it. The owner must always appear in the subscriber set. This is a <span class="vocab" data-def="Membership &mdash; a single element belongs to a set.">membership</span> constraint, not a <span class="vocab" data-def="Subset &mdash; every element of A is also in B.">subset</span> constraint, because the owner is a single user, not a set.</p>
+</div>
+
+<h3 id="partf-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>For each playlist, $playlist\_owner\; i$ yields a single $UserId$, while $playlist\_subscribers\; i$ yields a set of $UserId$ values. We need to assert that the single value <em>belongs to</em> the set. This calls for <span class="vocab" data-def="Element of &mdash; the value on the left is a member of the set on the right.">&isin;</span>, not &sube;.</p>
+
+<p><strong>Key distinction:</strong> use &isin; when the left side is an <em>element</em>; use &sube; when the left side is a <em>set</em>.</p>
+</div>
+
+<h3 id="partf-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li>Use <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to iterate over every playlist ID in <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> playlists.</li>
+<li>For each playlist ID $i$, get the owner: $playlist\_owner\; i$ (a single $UserId$).</li>
+<li>Get the subscriber set: $playlist\_subscribers\; i$ (a set of $UserId$).</li>
+<li>Assert <span class="vocab" data-def="Membership &mdash; a single element belongs to a set.">membership</span>: the owner &isin; the subscriber set.</li>
+</ul>
+</div>
+
+<h3 id="partf-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Begin with the <span class="vocab" data-def="Universal quantifier &mdash; for all.">universal quantifier</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&forall;</td><td>universal quantifier &mdash; "for all"</td><td>the constraint must hold for every playlist</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; represents each playlist ID in turn</td><td>stands for each playlist ID as we iterate</td></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>gives the set of all playlist IDs currently in the system</td></tr>
+</table>
+<div class="walkthrough">
+<p>Start with <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to say "for every playlist ID <span class="vocab" data-def="Bound variable &mdash; represents each playlist ID in turn.">i</span>", drawing from <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> playlists:</p>
+$$\forall\, i : \text{dom}\; playlists\ \ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; Add the <span class="vocab" data-def="Spot &mdash; separates the bound variable from the body in a quantified expression.">spot</span> and get the owner</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&bull;</td><td>spot &mdash; separates the bound variable from the body</td><td>connects "for all $i$" to the condition</td></tr>
+<tr><td>$playlist\_owner\; i$</td><td>function application &mdash; the owner of playlist $i$</td><td>yields a single $UserId$</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="Spot &mdash; separates the bound variable from the body in a quantified expression.">&bull;</span>, apply playlist_owner to $i$ to get the owner:</p>
+$$\forall\, i : \text{dom}\; playlists \bullet (playlist\_owner\; i)\ \ldots$$
+</div>
+
+<h4>Build Step 3 &mdash; Assert <span class="vocab" data-def="Membership &mdash; a single element belongs to a set.">membership</span> with <span class="vocab" data-def="Element of &mdash; the value on the left is a member of the set on the right.">&isin;</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&isin;</td><td>element of &mdash; the value on the left is a member of the set on the right</td><td>asserts the owner belongs to the subscriber set</td></tr>
+<tr><td>$playlist\_subscribers\; i$</td><td>function application &mdash; the subscriber set for playlist $i$</td><td>the set that must contain the owner</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="Element of &mdash; the value on the left is a member of the set on the right.">&isin;</span> (not &sube;) because the owner is a single value, not a set:</p>
+$$\forall\, i : \text{dom}\; playlists \bullet (playlist\_owner\; i) \in playlist\_subscribers\; i$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\forall\, i : \text{dom}\; playlists \bullet (playlist\_owner\; i) \in playlist\_subscribers\; i$$
+</div>
+<p>"For every playlist, the owner is a <span class="vocab" data-def="Membership &mdash; a single element belongs to a set.">member</span> of the subscriber set."</p>
+
+<div class="warning">
+<p><strong>Why &isin; and not &sube;?</strong> The owner is a single $UserId$, not a set. We use <span class="vocab" data-def="Element of &mdash; the value on the left is a member of the set on the right.">&isin;</span> to test membership of an element in a set, and &sube; to test containment of one set within another.</p>
+</div>
+
+<div class="concept">
+<p><strong>Why this constraint matters:</strong> It captures the business rule that creating a playlist automatically subscribes you to it. It also explains why $playlist\_subscribers$ maps to $\mathbb{F}_1$ (<span class="vocab" data-def="Non-empty finite set &mdash; a finite set with at least one element.">non-empty finite set</span>) rather than $\mathbb{F}$: since the owner is always a subscriber, every playlist has at least one subscriber.</p>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2>Complete System &mdash; Full Axiomatic Definition</h2>
+
+<p>Assembling all five declarations and six constraints into a single schema:</p>
+
+<div class="schema-box">
+<strong>Streamify</strong><br>
+$songs : \mathbb{F}\; SongId$<br>
+$users : \mathbb{F}\; UserId$<br>
+$playlists : PlaylistId \;{\pfun}\; Playlist$<br>
+$playlist\_owner : PlaylistId \;{\pfun}\; UserId$<br>
+$playlist\_subscribers : PlaylistId \;{\pfun}\; \mathbb{F}_1\; UserId$<br>
+<hr style="border-top: 1px solid #999; margin: 8px 0;">
+$\forall\, i : \text{dom}\; playlists \bullet \text{ran}(playlists\; i) \subseteq songs$ &emsp;&emsp; ...(a)<br>
+$\text{dom}\; playlist\_owner \subseteq \text{dom}\; playlists$ &emsp;&emsp; ...(b)<br>
+$\text{ran}\; playlist\_owner \subseteq users$ &emsp;&emsp; ...(c)<br>
+$\text{dom}\; playlist\_subscribers \subseteq \text{dom}\; playlists$ &emsp;&emsp; ...(d)<br>
+$\forall\, i : \text{dom}\; playlist\_subscribers \bullet playlist\_subscribers\; i \subseteq users$ &emsp;&emsp; ...(e)<br>
+$\forall\, i : \text{dom}\; playlists \bullet (playlist\_owner\; i) \in playlist\_subscribers\; i$ &emsp;&emsp; ...(f)
+</div>
+
+<div class="walkthrough">
+<p><strong>Reading the schema:</strong> Above the line are the five variable declarations &mdash; the <em>state space</em>. Below the line are the six <span class="vocab" data-def="Referential integrity &mdash; ensuring that references to entities (songs, users, playlists) point to things that actually exist.">referential integrity</span> constraints &mdash; the <em>invariants</em>. Every valid state of the Streamify system must satisfy all six predicates simultaneously.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Summary Table</h2>
+
+<div class="concept">
+<table>
+<tr><th>Technique</th><th>Where used</th><th>Purpose</th></tr>
+<tr>
+<td>dom $f$ &sube; $S$</td>
+<td>(b), (d)</td>
+<td><span class="vocab" data-def="Domain constraint &mdash; restricting which keys can appear in a function.">Domain constraint</span> &mdash; ensures the function is only defined on valid inputs (<span class="vocab" data-def="Referential integrity &mdash; ensuring that references to entities (songs, users, playlists) point to things that actually exist.">referential integrity</span> on the key side).</td>
+</tr>
+<tr>
+<td>ran $f$ &sube; $S$</td>
+<td>(c)</td>
+<td><span class="vocab" data-def="Range constraint &mdash; restricting which values a function can produce.">Range constraint</span> &mdash; ensures the function only produces valid outputs. Works when the function maps to atomic values.</td>
+</tr>
+<tr>
+<td>&forall; $i$ : dom $f$ &bull; ran($f\; i$) &sube; $S$</td>
+<td>(a)</td>
+<td>Referential integrity for functions whose values are <em>sequences</em>. Must extract ran from each individual sequence.</td>
+</tr>
+<tr>
+<td>&forall; $i$ : dom $f$ &bull; $f\; i$ &sube; $S$</td>
+<td>(e)</td>
+<td>Referential integrity for functions whose values are <em>sets</em>. Must unwrap each set and check its contents.</td>
+</tr>
+<tr>
+<td>&forall; $i$ : dom $f$ &bull; $x$ &isin; $T$</td>
+<td>(f)</td>
+<td><span class="vocab" data-def="Membership &mdash; a single element belongs to a set.">Membership</span> constraint &mdash; asserts a single element belongs to a set across all items in a domain.</td>
+</tr>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<h2>Looking Ahead</h2>
+
+<div class="example">
+<p>This schema forms the <strong>foundation</strong> for the rest of the Streamify series:</p>
+<ul>
+<li><strong>Exercise 49</strong> extends the model with <em>loved</em> and <em>hated</em> songs.</li>
+<li><strong>Exercise 50</strong> derives useful information from the combined model.</li>
+<li><strong>Exercises 51&ndash;52</strong> introduce operations that modify the state.</li>
+</ul>
+<p>Every extension relies on the variables and constraints defined here.</p>
+</div>
+
+<footer>
+Exercise 48 &mdash; Software Engineering Mathematics
+</footer>
+
+<script>
+function toggleDropdown(el) {
+  var item = el.closest('.nav-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  }
+});
+</script>
+</body>
+</html>

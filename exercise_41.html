@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 41 — Course Records Table</title>
+<style>
+body { font-family: Georgia, "Times New Roman", serif; max-width: 860px; margin: 0 auto; padding: 0 20px 40px 20px; background: #ffffff; color: #111111; line-height: 1.55; }
+h1 { border-bottom: 2px solid #111; padding-bottom: 8px; scroll-margin-top: 100px; }
+h2 { margin-top: 40px; border-bottom: 1px solid #999; padding-bottom: 4px; scroll-margin-top: 100px; }
+h3 { margin-top: 28px; scroll-margin-top: 100px; }
+h4 { margin-top: 20px; color: #333; scroll-margin-top: 100px; }
+a { color: #0a3d91; }
+p { margin: 10px 0; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; margin: 12px 0; width: 100%; }
+th, td { border: 1px solid #bbb; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+.concept { background: #fafafa; border-left: 4px solid #888; padding: 10px 16px; margin: 14px 0; }
+.example { background: #fafafa; border-left: 4px solid #2a7a2a; padding: 10px 16px; margin: 14px 0; }
+.practice { background: #fafafa; border-left: 4px solid #1a5fb4; padding: 10px 16px; margin: 14px 0; }
+.warning { background: #fafafa; border-left: 4px solid #c0392b; padding: 10px 16px; margin: 14px 0; }
+.walkthrough { margin-top: 10px; padding: 10px 14px; background: #fffbea; border-left: 4px solid #b58900; }
+.schema-box { background: #f8f8f8; border: 1px solid #ccc; padding: 12px 16px; margin: 12px 0; font-size: 0.95em; overflow-x: auto; }
+details { margin: 10px 0; }
+summary { cursor: pointer; font-weight: bold; color: #0a3d91; }
+code, .sym { font-family: "Menlo", "Courier New", monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+.vocab { border-bottom: 1px dotted #1a5fb4; cursor: pointer; position: relative; color: #0a3d91; padding: 0 2px; }
+.vocab:hover { background-color: #fff3a3; }
+.vocab::after { content: attr(data-def); display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); background: #2a2a2a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; font-style: normal; font-weight: normal; white-space: normal; width: max-content; max-width: 280px; min-width: 180px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
+.vocab:hover::after { display: block; }
+.key { color: #1a5fb4; text-decoration: underline; text-underline-offset: 2px; }
+footer { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 0.85em; color: #666; }
+
+.section-nav { position: sticky; top: 0; z-index: 100; background: #fff; padding: 12px 0; margin: 0 0 24px 0; border-bottom: 1px solid #ccc; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.nav-item { position: relative; }
+.section-nav button { padding: 6px 10px; border: 1px solid #999; background: #fff; cursor: pointer; font-family: inherit; font-size: 0.9em; border-radius: 3px; }
+.section-nav button:hover { background: #eef; }
+.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #999; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 200px; z-index: 200; }
+.nav-item.open .nav-dropdown { display: block; }
+.nav-dropdown li { padding: 0; margin: 0; }
+.nav-dropdown a { display: block; padding: 6px 14px; text-decoration: none; color: #111; font-size: 0.9em; cursor: pointer; }
+.nav-dropdown a:hover { background: #eef; }
+.nav-link { font-size: 0.9em; color: #0a3d91; text-decoration: none; padding: 6px 10px; border: 1px solid #999; border-radius: 3px; }
+.nav-link:hover { background: #eef; }
+</style>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <a class="nav-link" href="exercise_40.html">&larr; Ex 40</a>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (a)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-a"><strong>Part (a)</strong></a></li>
+      <li><a href="#parta-vocab">Vocab</a></li>
+      <li><a href="#parta-symbols">Symbols</a></li>
+      <li><a href="#parta-step1">Step 1</a></li>
+      <li><a href="#parta-step2">Step 2</a></li>
+      <li><a href="#parta-step3">Step 3</a></li>
+      <li><a href="#parta-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (b)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-b"><strong>Part (b)</strong></a></li>
+      <li><a href="#partb-vocab">Vocab</a></li>
+      <li><a href="#partb-symbols">Symbols</a></li>
+      <li><a href="#partb-step1">Step 1</a></li>
+      <li><a href="#partb-step2">Step 2</a></li>
+      <li><a href="#partb-step3">Step 3</a></li>
+      <li><a href="#partb-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (c)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-c"><strong>Part (c)</strong></a></li>
+      <li><a href="#partc-vocab">Vocab</a></li>
+      <li><a href="#partc-symbols">Symbols</a></li>
+      <li><a href="#partc-step1">Step 1</a></li>
+      <li><a href="#partc-step2">Step 2</a></li>
+      <li><a href="#partc-step3">Step 3</a></li>
+      <li><a href="#partc-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (d)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-d"><strong>Part (d)</strong></a></li>
+      <li><a href="#partd-vocab">Vocab</a></li>
+      <li><a href="#partd-symbols">Symbols</a></li>
+      <li><a href="#partd-step1">Step 1</a></li>
+      <li><a href="#partd-step2">Step 2</a></li>
+      <li><a href="#partd-step3">Step 3</a></li>
+      <li><a href="#partd-solution">Solution</a></li>
+    </ul>
+  </div>
+  <a class="nav-link" href="exercise_42.html">Ex 42 &rarr;</a>
+  <a class="nav-link" href="index.html" style="margin-left:auto;">&larr; All Exercises</a>
+</nav>
+
+
+<h1>Exercise 41 &mdash; Course Records Table</h1>
+<p><em>Modelling exercise &mdash; formalising a multi-year database of course records.</em></p>
+
+<!-- ============================================================ -->
+<h2>The Scenario</h2>
+
+<div class="concept">
+<p>At the end of each calendar year a table is produced summarising details of courses that ran during that year. The table has seven columns:</p>
+</div>
+
+<table>
+<tr><th>Column</th><th>Field</th><th>Description</th><th>Position</th></tr>
+<tr><td>Date</td><td><code>e.1</code></td><td>Start date of the 5-day course</td><td>1</td></tr>
+<tr><td>Course</td><td><code>e.2</code></td><td>Three-letter course acronym</td><td>2</td></tr>
+<tr><td>Location</td><td><code>e.3</code></td><td>Teaching centre: 478 or 479</td><td>3</td></tr>
+<tr><td>Lecturer</td><td><code>e.4</code></td><td>Lead lecturer</td><td>4</td></tr>
+<tr><td>Attendees</td><td><code>e.5</code></td><td>Number of attendees</td><td>5</td></tr>
+<tr><td>Submissions</td><td><code>e.6</code></td><td>Number of assignment submissions (may exceed attendees)</td><td>6</td></tr>
+<tr><td>Average</td><td><code>e.7</code></td><td>Grade average</td><td>7</td></tr>
+</table>
+
+<h3>Example Table (year 2023)</h3>
+
+<table>
+<tr><th>Date</th><th>Course</th><th>Location</th><th>Lecturer</th><th>Attendees</th><th>Submissions</th><th>Average</th></tr>
+<tr><td>16/Jan/23</td><td>DES</td><td>479</td><td>IF</td><td>10</td><td>9</td><td>60</td></tr>
+<tr><td>23/Jan/23</td><td>CDS</td><td>479</td><td>JD</td><td>10</td><td>10</td><td>55</td></tr>
+<tr><td>23/Jan/23</td><td>NES</td><td>478</td><td>AP</td><td>10</td><td>11</td><td>65</td></tr>
+</table>
+
+<h3>Given Types and Definitions</h3>
+
+<table>
+<tr><th>Declaration</th><th>What it is</th><th>Notes</th></tr>
+<tr><td>$[\mathit{Date}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Abstract set of all possible dates</td></tr>
+<tr><td>$[\mathit{Course}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Abstract set of all three-letter course acronyms</td></tr>
+<tr><td>$[\mathit{Location}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Teaching centres (478 or 479)</td></tr>
+<tr><td>$[\mathit{Lecturer}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Abstract set of all lecturers</td></tr>
+<tr><td>$[\mathit{Grade}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Abstract set of all grades</td></tr>
+<tr><td>$[\mathit{Year}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Abstract set of all years</td></tr>
+</table>
+
+<div class="concept">
+<strong>Abbreviations:</strong><br>
+$\text{Entry} == \text{Date} \times \text{Course} \times \text{Location} \times \text{Lecturer} \times \mathbb{N} \times \mathbb{N} \times \mathbb{N}$<br>
+$\text{Table} == \text{seq}\ \text{Entry}$<br><br>
+<strong>State variable:</strong><br>
+$records : \text{Year} \pfun \text{Table}$ &mdash; a <span class="vocab" data-def="A function that may not be defined for every element of its source type. Written A --|-> B.">partial function</span> from years to tables<br><br>
+<strong>Helper functions:</strong><br>
+$current : \text{Year}$ &mdash; the current year<br>
+$year : \text{Date} \to \text{Year}$ &mdash; extracts the year component from a date
+</div>
+
+<div class="warning">
+<p><strong>Key details:</strong></p>
+<ul>
+<li>Each Entry is a 7-tuple. Access fields as $e.1$ (Date) through $e.7$ (Average).</li>
+<li>Submissions ($e.6$) may exceed attendees ($e.5$) &mdash; students can submit multiple assignments.</li>
+<li>Two teaching centres exist: 478 and 479. A room is double-booked if two courses share the same start date and the same location.</li>
+</ul>
+</div>
+
+
+<!-- ============================================================ -->
+<h2>Symbol Table</h2>
+
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\pfun$</td><td>partial function</td><td>a function that may not be defined for every input in its source type</td></tr>
+<tr><td>$\text{dom}$</td><td>domain</td><td>the set of inputs for which a function is defined</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function or sequence</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>an ordered list (function from $\{1,\ldots,n\}$ to values)</td></tr>
+<tr><td>$\#$</td><td>cardinality / length</td><td>number of elements in a set, or length of a sequence</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all" &mdash; a statement that must hold for every element</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier</td><td>"there exists" &mdash; at least one element satisfies a condition</td></tr>
+<tr><td>$\in$</td><td>set membership</td><td>"is an element of"</td></tr>
+<tr><td>$\bullet$</td><td>spot / such that</td><td>separates the constraint from the expression in quantified formulas</td></tr>
+<tr><td>$|$</td><td>filter bar</td><td>introduces a predicate restricting which elements are considered</td></tr>
+<tr><td>$\leq$</td><td>less than or equal</td><td>standard numeric comparison</td></tr>
+<tr><td>$\geq$</td><td>greater than or equal</td><td>standard numeric comparison</td></tr>
+<tr><td>$>$</td><td>strictly greater than</td><td>left side exceeds right side</td></tr>
+<tr><td>$\neq$</td><td>not equal</td><td>two values are different</td></tr>
+<tr><td>$=$</td><td>equality</td><td>two values are the same</td></tr>
+<tr><td>$\Rightarrow$</td><td>implication</td><td>"if ... then ..." &mdash; $P \Rightarrow Q$ is false only when $P$ is true and $Q$ is false</td></tr>
+<tr><td>$\times$</td><td>Cartesian product</td><td>combines types into tuples</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>a sequence containing no elements</td></tr>
+<tr><td>$\frown$</td><td>sequence concatenation</td><td>joins two sequences end-to-end</td></tr>
+<tr><td>$\mapsto$</td><td>maplet</td><td>"maps to" &mdash; creates a mapping pair $a \mapsto b$</td></tr>
+<tr><td>$\{ \}$</td><td>set braces</td><td>delimit a set, either by enumeration or comprehension</td></tr>
+<tr><td>$..\,$</td><td>integer range</td><td>$a \,..\, b$ is the set $\{x : \mathbb{Z} \mid a \leq x \leq b\}$</td></tr>
+<tr><td>$\wedge$</td><td>logical and</td><td>both conditions must hold simultaneously</td></tr>
+<tr><td>$+$</td><td>addition</td><td>adds two numbers together</td></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined for every possible input</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers</td><td>the set $\{0, 1, 2, 3, \ldots\}$</td></tr>
+</table>
+
+
+<!-- ============================================================ -->
+<h2 id="part-a">Part (a) &mdash; Axiomatic Definition with Constraints</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Complete the <span class="vocab" data-def="Declares a variable above a line, with predicates below that must always hold.">axiomatic definition</span> of $records$ with <span class="key">four constraints</span>:</p>
+<ol>
+<li>The domain covers years 1993 to the current year &mdash; and no others</li>
+<li>At most 50 courses per year</li>
+<li>Every entry's date belongs to the correct year</li>
+<li>No double-booking of teaching rooms on the same date</li>
+</ol>
+</div>
+
+<h3 id="parta-vocab">Vocab for Part (a)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Axiomatic definition</td><td>Declares a variable above a line, with predicates below that must always hold.</td></tr>
+<tr><td>Predicate</td><td>A statement that is either true or false.</td></tr>
+<tr><td>Invariant</td><td>A condition that must be satisfied in every valid state of the system.</td></tr>
+<tr><td>Constraint</td><td>A restriction on the valid values a variable may take.</td></tr>
+<tr><td>Partial function</td><td>A function that may not be defined for every element of its source type.</td></tr>
+</table>
+
+<h3 id="parta-symbols">Symbols for Part (a)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\pfun$</td><td>partial function</td><td>a function that may not be defined for every input</td></tr>
+<tr><td>$\text{dom}$</td><td>domain</td><td>the set of inputs for which a function is defined</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function or sequence</td></tr>
+<tr><td>$..\,$</td><td>integer range</td><td>$a \,..\, b$ is the set $\{x : \mathbb{Z} \mid a \leq x \leq b\}$</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates constraint from expression in quantifiers</td></tr>
+<tr><td>$\#$</td><td>cardinality / length</td><td>number of elements in a set or sequence</td></tr>
+<tr><td>$\leq$</td><td>less than or equal</td><td>standard numeric comparison</td></tr>
+<tr><td>$\neq$</td><td>not equal</td><td>two values are different</td></tr>
+<tr><td>$=$</td><td>equality</td><td>two values are the same</td></tr>
+<tr><td>$\wedge$</td><td>logical and</td><td>both conditions must hold simultaneously</td></tr>
+<tr><td>$\Rightarrow$</td><td>implication</td><td>"if ... then ..."</td></tr>
+<tr><td>$e.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+</table>
+
+<h3 id="parta-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need to complete an <span class="vocab" data-def="Declares a variable above a line, with predicates below that must always hold.">axiomatic definition</span>. The declaration ($records$ and its type) goes above the line. Below the line, we write four <span class="vocab" data-def="A statement that is either true or false.">predicates</span> &mdash; <span class="vocab" data-def="A condition that must be satisfied in every valid state of the system.">invariants</span> that must always hold. Each English <span class="vocab" data-def="A restriction on the valid values a variable may take.">constraint</span> becomes one formal line.</p>
+</div>
+
+<h3 id="parta-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>We have four English <span class="vocab" data-def="A restriction on the valid values a variable may take.">constraints</span>. Each becomes one <span class="vocab" data-def="A statement that is either true or false.">predicate</span> below the line:</p>
+<ol>
+<li>"years 1993 to current, no others" &rarr; fix the <span class="vocab" data-def="domain — the set of inputs for which a function is defined">domain</span> using <span class="vocab" data-def="a .. b is the set {x : Z | a &le; x &le; b}">integer range</span></li>
+<li>"at most 50 courses per year" &rarr; <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> over years, bound <span class="vocab" data-def="cardinality / length — number of elements in a set or sequence">#</span></li>
+<li>"entries pertain to that year" &rarr; nested <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> with year extraction</li>
+<li>"no double-booking" &rarr; <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> over index pairs with <span class="vocab" data-def="implication — &quot;if ... then ...&quot;">&rArr;</span></li>
+</ol>
+</div>
+
+<h3 id="parta-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong><span class="vocab" data-def="A restriction on the valid values a variable may take.">Constraint</span> (i):</strong> <span class="vocab" data-def="domain — the set of inputs for which a function is defined">dom</span> records <span class="vocab" data-def="equality — two values are the same">=</span> 1993 <span class="vocab" data-def="a .. b is the set {x : Z | a &le; x &le; b}">..</span> current. This says "exactly these years, no more, no fewer."</p>
+<p><strong><span class="vocab" data-def="A restriction on the valid values a variable may take.">Constraint</span> (ii):</strong> <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> y : <span class="vocab" data-def="domain — the set of inputs for which a function is defined">dom</span> records <span class="vocab" data-def="spot — separates constraint from expression in quantifiers">&bull;</span> <span class="vocab" data-def="cardinality / length — number of elements in a set or sequence">#</span>(records y) <span class="vocab" data-def="less than or equal — standard numeric comparison">&le;</span> 50.</p>
+<p><strong><span class="vocab" data-def="A restriction on the valid values a variable may take.">Constraint</span> (iii):</strong> nested <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> over years y, then over entries e in <span class="vocab" data-def="range — the set of output values of a function or sequence">ran</span>(records y). Check year(<span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">e.1</span>) = y.</p>
+<p><strong><span class="vocab" data-def="A restriction on the valid values a variable may take.">Constraint</span> (iv):</strong> <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> over tables r in <span class="vocab" data-def="range — the set of output values of a function or sequence">ran</span> records, then over distinct index pairs. Same date <span class="vocab" data-def="logical and — both conditions must hold simultaneously">&and;</span> same indices <span class="vocab" data-def="implication — &quot;if ... then ...&quot;">&rArr;</span> different location.</p>
+</div>
+
+<h3 id="parta-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Write the declaration (above the line)</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$records$</td><td>variable name &mdash; the multi-year course database</td><td>the variable we are defining</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares what type $records$ has</td></tr>
+<tr><td>$\text{Year}$</td><td>given type &mdash; the set of all years</td><td>the source type (input)</td></tr>
+<tr><td>$\pfun$</td><td>partial function &mdash; a function not defined for every input</td><td>$records$ is only defined for certain years</td></tr>
+<tr><td>$\text{Table}$</td><td>abbreviation &mdash; seq Entry</td><td>the target type (output): a sequence of entries</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the variable <span class="vocab" data-def="The multi-year course database we are defining.">records</span>, use <span class="vocab" data-def="type declaration — &quot;is of type&quot;">:</span> to declare its type. It is a <span class="vocab" data-def="A function that may not be defined for every element of its source type.">partial function</span> from Year to Table, written with <span class="vocab" data-def="partial function — a function not defined for every input">&pfun;</span>:</p>
+$$records : \text{Year} \pfun \text{Table}$$
+</div>
+
+<h4>Build Step 2 &mdash; Constraint (i): fix the domain</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\text{dom}$</td><td>domain &mdash; the set of inputs for which a function is defined</td><td>the set of years that have course tables</td></tr>
+<tr><td>$=$</td><td>equality &mdash; two values are the same</td><td>the domain is exactly this set, no more, no fewer</td></tr>
+<tr><td>$1993$</td><td>constant &mdash; the first year of records</td><td>lower bound of the range</td></tr>
+<tr><td>$..\,$</td><td>integer range &mdash; $a \,..\, b = \{x : \mathbb{Z} \mid a \leq x \leq b\}$</td><td>produces the set of consecutive years</td></tr>
+<tr><td>$current$</td><td>variable &mdash; the current year</td><td>upper bound of the range</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="domain — the set of inputs for which a function is defined">domain</span> must be exactly the years 1993 through <span class="vocab" data-def="The current year.">current</span>. Use <span class="vocab" data-def="a .. b is the set {x : Z | a &le; x &le; b}">integer range</span> notation and <span class="vocab" data-def="equality — two values are the same">=</span> (not a subset &mdash; we want exactly this set):</p>
+$$\text{dom}\ records = 1993 \,..\, current$$
+</div>
+
+<h4>Build Step 3 &mdash; Constraint (ii): at most 50 courses per year</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>constraint must hold for every year</td></tr>
+<tr><td>$y$</td><td>bound variable &mdash; represents each year in turn</td><td>stands for each year as we iterate</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates constraint from expression</td><td>connects "for all y" to the condition</td></tr>
+<tr><td>$\#$</td><td>cardinality / length &mdash; number of elements</td><td>counts entries in the year's table</td></tr>
+<tr><td>$\leq$</td><td>less than or equal &mdash; standard comparison</td><td>bounds the count at 50</td></tr>
+<tr><td>$50$</td><td>constant &mdash; the maximum courses per year</td><td>the upper bound</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> to say "for every year <span class="vocab" data-def="Bound variable — represents each year in turn.">y</span>" in the <span class="vocab" data-def="domain — the set of inputs for which a function is defined">domain</span>. After <span class="vocab" data-def="spot — separates constraint from expression in quantifiers">&bull;</span>, use <span class="vocab" data-def="cardinality / length — number of elements in a set or sequence">#</span> to count entries and bound with <span class="vocab" data-def="less than or equal — standard numeric comparison">&le;</span>:</p>
+$$\forall\, y : \text{dom}\ records \bullet \#(records\,y) \leq 50$$
+</div>
+
+<h4>Build Step 4 &mdash; Constraint (iii): entries pertain to the correct year</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$e$</td><td>bound variable &mdash; represents each entry in turn</td><td>stands for each entry as we iterate</td></tr>
+<tr><td>$\text{ran}$</td><td>range &mdash; the set of output values of a function/sequence</td><td>gives the entries stored in year y's table</td></tr>
+<tr><td>$e.1$</td><td>tuple projection &mdash; extracts the 1st component (Date)</td><td>gets the start date from the entry</td></tr>
+<tr><td>$year$</td><td>helper function &mdash; extracts the year from a date</td><td>converts a date to its year component</td></tr>
+</table>
+<div class="walkthrough">
+<p>Nested <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span>: first over years <span class="vocab" data-def="Bound variable — represents each year in turn.">y</span>, then over entries <span class="vocab" data-def="Bound variable — represents each entry in turn.">e</span> in <span class="vocab" data-def="range — the set of output values of a function or sequence">ran</span>(records y). The date field is <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">e.1</span>. Apply <span class="vocab" data-def="Helper function — extracts the year from a date.">year</span> and check it equals y:</p>
+$$\forall\, y : \text{dom}\ records \bullet \forall\, e : \text{ran}(records\,y) \bullet year(e.1) = y$$
+</div>
+
+<h4>Build Step 5 &mdash; Constraint (iv): no double-booking of rooms</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$r$</td><td>bound variable &mdash; represents each year's table</td><td>a single year's table (a sequence)</td></tr>
+<tr><td>$i_1, i_2$</td><td>bound variables &mdash; sequence indices</td><td>two positions in the same table</td></tr>
+<tr><td>$\neq$</td><td>not equal &mdash; two values are different</td><td>ensures we compare distinct entries</td></tr>
+<tr><td>$\wedge$</td><td>logical and &mdash; both conditions hold</td><td>combines "distinct indices" with "same date"</td></tr>
+<tr><td>$(r\,i).1$</td><td>date of entry at index $i$</td><td>gets the start date from the entry at position $i$</td></tr>
+<tr><td>$(r\,i).3$</td><td>location of entry at index $i$</td><td>gets the teaching centre from the entry at position $i$</td></tr>
+</table>
+<div class="walkthrough">
+<p>Quantify over every table <span class="vocab" data-def="Bound variable — represents each year's table.">r</span> in <span class="vocab" data-def="range — the set of output values of a function or sequence">ran</span> records. Within each table, consider all pairs of distinct indices <span class="vocab" data-def="Bound variable — sequence index.">i1</span>, <span class="vocab" data-def="Bound variable — sequence index.">i2</span> in <span class="vocab" data-def="domain — the set of inputs for which a function is defined">dom</span> r. If they are distinct (<span class="vocab" data-def="not equal — two values are different">&ne;</span>) and share the same date (<span class="vocab" data-def="logical and — both conditions must hold simultaneously">&and;</span>), then their locations must differ. This uses <span class="vocab" data-def="implication — &quot;if ... then ...&quot;">implication</span> via the filter bar:</p>
+$$\forall\, r : \text{ran}\ records \bullet \forall\, i_1, i_2 : \text{dom}\ r \mid i_1 \neq i_2 \wedge (r\,i_1).1 = (r\,i_2).1 \bullet (r\,i_1).3 \neq (r\,i_2).3$$
+<p>Read: "for every table r in the records, for every pair of distinct indices whose entries share the same start date, the locations must differ."</p>
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\begin{array}{|l}
+records : \text{Year} \pfun \text{Table} \\
+\hline
+\text{dom}\ records = 1993 \,..\, current \\[4pt]
+\forall\, y : \text{dom}\ records \bullet \#(records\,y) \leq 50 \\[4pt]
+\forall\, y : \text{dom}\ records \bullet \forall\, e : \text{ran}(records\,y) \bullet year(e.1) = y \\[4pt]
+\forall\, r : \text{ran}\ records \bullet \forall\, i_1, i_2 : \text{dom}\ r \mid i_1 \neq i_2 \wedge (r\,i_1).1 = (r\,i_2).1 \bullet (r\,i_1).3 \neq (r\,i_2).3
+\end{array}$$
+</div>
+
+<table>
+<tr><th>Line</th><th>What it enforces</th></tr>
+<tr><td>Line 1</td><td>Records exist for exactly the years 1993 through $current$</td></tr>
+<tr><td>Line 2</td><td>No year has more than 50 course entries</td></tr>
+<tr><td>Line 3</td><td>Every entry's date falls within the year it is filed under</td></tr>
+<tr><td>Line 4</td><td>No two courses on the same date use the same room</td></tr>
+</table>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p>Using the example table for 2023:</p>
+<table>
+<tr><th>Constraint</th><th>Check</th><th>Result</th></tr>
+<tr><td>(i) dom</td><td>$2023 \in 1993 \,..\, current$?</td><td>Yes (assuming current $\geq$ 2023)</td></tr>
+<tr><td>(ii) size</td><td>$\#(records\,2023) = 3 \leq 50$?</td><td>Yes</td></tr>
+<tr><td>(iii) year match</td><td>$year(\text{16/Jan/23}) = 2023$? Same for all entries.</td><td>Yes</td></tr>
+<tr><td>(iv) no clash</td><td>Entries 2 and 3 share date 23/Jan/23. Locations: 479 vs 478. Different?</td><td>Yes &mdash; no double-booking</td></tr>
+</table>
+</div>
+
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-b">Part (b) &mdash; Set Comprehensions</h2>
+
+<div class="concept">
+<p><strong>Key pattern:</strong> To say "entry $e$ appears somewhere in the records", we write:</p>
+<p>$\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r$</p>
+<p>This says: there exists a table $r$ that is in the <span class="vocab" data-def="range — the set of output values of a function or sequence">range</span> of $records$ (i.e., some year's table) such that $e$ is one of the entries in that table. This pattern appears in sub-parts (i), (ii), and (iii).</p>
+</div>
+
+<!-- ======== (b)(i) ======== -->
+<h3>(i) Course instances taught in room 479</h3>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating and filtering.">set comprehension</span> for all entries that were <span class="key">taught in location 479</span>.</p>
+</div>
+
+<h3 id="partb-vocab">Vocab for Part (b)(i)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Set comprehension</td><td>An expression $\{\ \text{decl}\ |\ \text{filter}\ \}$ that builds a set by iterating over a type and keeping elements where the filter holds.</td></tr>
+<tr><td>Existential witness</td><td>A pattern that asserts an element appears somewhere in the records: $\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r$.</td></tr>
+</table>
+
+<h3 id="partb-symbols">Symbols for Part (b)(i)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\{\ |\ \}$</td><td>set comprehension</td><td>iterate, filter, collect</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier</td><td>"there exists at least one"</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function/sequence</td></tr>
+<tr><td>$\in$</td><td>set membership</td><td>"is an element of"</td></tr>
+<tr><td>$\wedge$</td><td>logical and</td><td>both conditions must hold</td></tr>
+<tr><td>$e.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+<tr><td>$=$</td><td>equality</td><td>two values are the same</td></tr>
+</table>
+
+<h3 id="partb-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating over a type and keeping elements where the filter holds.">set comprehension</span> that collects complete entries (not just one field) for courses taught in room 479. We need to verify each entry actually exists in the records using the <span class="vocab" data-def="A pattern that asserts an element appears somewhere in the records.">existential witness</span> pattern.</p>
+</div>
+
+<h3 id="partb-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating over a type and keeping elements where the filter holds.">set comprehension</span> has two slots: { <strong>declaration</strong> | <strong>filter</strong> }. The output is omitted because we collect the entire entry <span class="vocab" data-def="Bound variable — represents each entry.">e</span> itself.</p>
+</div>
+
+<h3 id="partb-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li><strong>Declaration:</strong> <span class="vocab" data-def="Bound variable — represents each entry.">e</span> : Entry</li>
+<li><strong>Filter part 1:</strong> <span class="vocab" data-def="A pattern that asserts an element appears somewhere in the records.">existential witness</span> &mdash; <span class="vocab" data-def="existential quantifier — &quot;there exists at least one&quot;">&exist;</span> r : <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> records <span class="vocab" data-def="spot — separates constraint from expression in quantifiers">&bull;</span> e <span class="vocab" data-def="set membership — &quot;is an element of&quot;">&isin;</span> <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> r</li>
+<li><strong>Filter part 2:</strong> <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">e.3</span> <span class="vocab" data-def="equality — two values are the same">=</span> 479</li>
+</ul>
+</div>
+
+<h3 id="partb-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Start with the declaration</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\{\ \}$</td><td>set braces &mdash; enclose a set comprehension</td><td>wraps the entire expression</td></tr>
+<tr><td>$e$</td><td>bound variable &mdash; represents each entry</td><td>stands for each candidate entry</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "drawn from"</td><td>says $e$ comes from Entry</td></tr>
+<tr><td>$\text{Entry}$</td><td>abbreviation &mdash; the 7-tuple type</td><td>the source type</td></tr>
+</table>
+<div class="walkthrough">
+<p>Open the braces, declare <span class="vocab" data-def="Bound variable — represents each entry.">e</span> <span class="vocab" data-def="type declaration — &quot;drawn from&quot;">:</span> Entry, leaving the filter as a placeholder:</p>
+$$\{e : \text{Entry}\ |\ \ldots\ \}$$
+</div>
+
+<h4>Build Step 2 &mdash; Add the existential witness</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$|$</td><td>filter bar &mdash; introduces the predicate</td><td>begins the condition</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier &mdash; "there exists at least one"</td><td>asserts e appears somewhere in the records</td></tr>
+<tr><td>$r$</td><td>bound variable &mdash; a year's table</td><td>some table in which e might live</td></tr>
+<tr><td>$\text{ran}$</td><td>range &mdash; set of output values</td><td>ran records = set of all yearly tables; ran r = entries in table r</td></tr>
+<tr><td>$\in$</td><td>set membership &mdash; "is an element of"</td><td>e is one of the entries in table r</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="filter bar — introduces a predicate restricting which elements are considered">|</span>, write the <span class="vocab" data-def="A pattern that asserts an element appears somewhere in the records.">existential witness</span>: <span class="vocab" data-def="existential quantifier — &quot;there exists at least one&quot;">&exist;</span> r : <span class="vocab" data-def="range — the set of output values of a function or sequence">ran</span> records <span class="vocab" data-def="spot — separates constraint from expression in quantifiers">&bull;</span> e <span class="vocab" data-def="set membership — &quot;is an element of&quot;">&isin;</span> <span class="vocab" data-def="range — the set of output values of a function or sequence">ran</span> r:</p>
+$$\{e : \text{Entry}\ |\ (\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r)\ \wedge\ \ldots\ \}$$
+</div>
+
+<h4>Build Step 3 &mdash; Add the location filter</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\wedge$</td><td>logical and &mdash; both conditions hold</td><td>combines the existential with the location check</td></tr>
+<tr><td>$e.3$</td><td>tuple projection &mdash; extracts the 3rd component (Location)</td><td>gets the teaching centre from the entry</td></tr>
+<tr><td>$479$</td><td>constant &mdash; teaching room 479</td><td>the location we are filtering for</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="logical and — both conditions must hold simultaneously">&and;</span> to add the location check: <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">e.3</span> <span class="vocab" data-def="equality — two values are the same">=</span> 479:</p>
+$$\{e : \text{Entry} \mid (\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r) \wedge e.3 = 479\}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\{e : \text{Entry} \mid (\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r) \wedge e.3 = 479\}$$
+</div>
+<p>"The set of all entries $e$ that appear in some year's table and whose location is 479."</p>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p>From the example table:</p>
+<table>
+<tr><th>Entry</th><th>$e.3$</th><th>$= 479$?</th><th>Included?</th></tr>
+<tr><td>(16/Jan/23, DES, 479, IF, 10, 9, 60)</td><td>479</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>(23/Jan/23, CDS, 479, JD, 10, 10, 55)</td><td>479</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>(23/Jan/23, NES, 478, AP, 10, 11, 65)</td><td>478</td><td>No</td><td>No</td></tr>
+</table>
+<p>Result: the first two entries are collected.</p>
+</div>
+
+</details>
+
+
+<!-- ======== (b)(ii) ======== -->
+<h3>(ii) Course instances where submissions exceed attendees</h3>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating and filtering.">set comprehension</span> for all entries where the <span class="key">number of submissions exceeds the number of attendees</span>.</p>
+</div>
+
+<h3>Vocab for Part (b)(ii)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Set comprehension</td><td>An expression $\{\ \text{decl}\ |\ \text{filter}\ \}$ that builds a set by iterating over a type and keeping elements where the filter holds.</td></tr>
+<tr><td>Existential witness</td><td>A pattern that asserts an element appears somewhere in the records: $\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r$.</td></tr>
+</table>
+
+<h3>Symbols for Part (b)(ii)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\{\ |\ \}$</td><td>set comprehension</td><td>iterate, filter, collect</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier</td><td>"there exists at least one"</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function/sequence</td></tr>
+<tr><td>$>$</td><td>strictly greater than</td><td>left side exceeds right side</td></tr>
+<tr><td>$e.5$</td><td>tuple projection</td><td>extracts the 5th component (Attendees)</td></tr>
+<tr><td>$e.6$</td><td>tuple projection</td><td>extracts the 6th component (Submissions)</td></tr>
+</table>
+
+<h3>Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating over a type and keeping elements where the filter holds.">set comprehension</span> collecting complete entries where submissions exceeded attendees. The structure is identical to (b)(i) but with a different filter condition.</p>
+</div>
+
+<h3>Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Same pattern as (b)(i): declare <span class="vocab" data-def="Bound variable — represents each entry.">e</span> : Entry, use the <span class="vocab" data-def="A pattern that asserts an element appears somewhere in the records.">existential witness</span>, and change the second condition. Attendees is <span class="vocab" data-def="tuple projection — extracts the 5th component (Attendees)">e.5</span>, submissions is <span class="vocab" data-def="tuple projection — extracts the 6th component (Submissions)">e.6</span>. We want <span class="vocab" data-def="tuple projection — extracts the 6th component (Submissions)">e.6</span> <span class="vocab" data-def="strictly greater than — left side exceeds right side">&gt;</span> <span class="vocab" data-def="tuple projection — extracts the 5th component (Attendees)">e.5</span>.</p>
+</div>
+
+<h3>Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li><strong>Declaration:</strong> <span class="vocab" data-def="Bound variable — represents each entry.">e</span> : Entry</li>
+<li><strong>Filter part 1:</strong> <span class="vocab" data-def="A pattern that asserts an element appears somewhere in the records.">existential witness</span></li>
+<li><strong>Filter part 2:</strong> <span class="vocab" data-def="tuple projection — extracts the 6th component (Submissions)">e.6</span> <span class="vocab" data-def="strictly greater than — left side exceeds right side">&gt;</span> <span class="vocab" data-def="tuple projection — extracts the 5th component (Attendees)">e.5</span></li>
+</ul>
+</div>
+
+<h3>Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Declaration and existential (same as (b)(i))</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$e$</td><td>bound variable &mdash; represents each entry</td><td>stands for each candidate entry</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier &mdash; "there exists at least one"</td><td>asserts e appears in the records</td></tr>
+<tr><td>$\text{ran}$</td><td>range &mdash; set of output values</td><td>gives tables and their entries</td></tr>
+</table>
+<div class="walkthrough">
+<p>Reuse the same opening: <span class="vocab" data-def="Bound variable — represents each entry.">e</span> : Entry, filtered by the <span class="vocab" data-def="A pattern that asserts an element appears somewhere in the records.">existential witness</span>:</p>
+$$\{e : \text{Entry}\ |\ (\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r)\ \wedge\ \ldots\ \}$$
+</div>
+
+<h4>Build Step 2 &mdash; Add the submissions &gt; attendees filter</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$e.6$</td><td>tuple projection &mdash; extracts the 6th component (Submissions)</td><td>gets the number of submissions</td></tr>
+<tr><td>$>$</td><td>strictly greater than &mdash; left side exceeds right side</td><td>submissions must exceed attendees</td></tr>
+<tr><td>$e.5$</td><td>tuple projection &mdash; extracts the 5th component (Attendees)</td><td>gets the number of attendees</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="logical and — both conditions must hold simultaneously">&and;</span>, compare <span class="vocab" data-def="tuple projection — extracts the 6th component (Submissions)">e.6</span> <span class="vocab" data-def="strictly greater than — left side exceeds right side">&gt;</span> <span class="vocab" data-def="tuple projection — extracts the 5th component (Attendees)">e.5</span>:</p>
+$$\{e : \text{Entry} \mid (\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r) \wedge e.6 > e.5\}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\{e : \text{Entry} \mid (\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r) \wedge e.6 > e.5\}$$
+</div>
+<p>"The set of all entries where submissions exceeded attendees." This can happen when students submit more than one assignment each.</p>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p>From the example table:</p>
+<table>
+<tr><th>Entry</th><th>$e.5$ (Att.)</th><th>$e.6$ (Sub.)</th><th>$e.6 > e.5$?</th><th>Included?</th></tr>
+<tr><td>DES</td><td>10</td><td>9</td><td>No</td><td>No</td></tr>
+<tr><td>CDS</td><td>10</td><td>10</td><td>No</td><td>No</td></tr>
+<tr><td>NES</td><td>10</td><td>11</td><td>Yes</td><td>Yes</td></tr>
+</table>
+<p>Result: only the NES entry is collected.</p>
+</div>
+
+</details>
+
+
+<!-- ======== (b)(iii) ======== -->
+<h3>(iii) Course instances with average grade &ge; 70</h3>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating and filtering.">set comprehension</span> for all entries whose <span class="key">average grade is at least 70</span>.</p>
+</div>
+
+<h3>Vocab for Part (b)(iii)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Set comprehension</td><td>An expression $\{\ \text{decl}\ |\ \text{filter}\ \}$ that builds a set by iterating over a type and keeping elements where the filter holds.</td></tr>
+<tr><td>Existential witness</td><td>A pattern that asserts an element appears somewhere in the records: $\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r$.</td></tr>
+</table>
+
+<h3>Symbols for Part (b)(iii)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\{\ |\ \}$</td><td>set comprehension</td><td>iterate, filter, collect</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier</td><td>"there exists at least one"</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function/sequence</td></tr>
+<tr><td>$\geq$</td><td>greater than or equal</td><td>standard numeric comparison</td></tr>
+<tr><td>$e.7$</td><td>tuple projection</td><td>extracts the 7th component (Average grade)</td></tr>
+</table>
+
+<h3>Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>Same pattern as (b)(i) and (b)(ii): a <span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating over a type and keeping elements where the filter holds.">set comprehension</span> with the <span class="vocab" data-def="A pattern that asserts an element appears somewhere in the records.">existential witness</span>, but this time filtering on the average grade field.</p>
+</div>
+
+<h3>Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Average grade is <span class="vocab" data-def="tuple projection — extracts the 7th component (Average grade)">e.7</span>. We want <span class="vocab" data-def="tuple projection — extracts the 7th component (Average grade)">e.7</span> <span class="vocab" data-def="greater than or equal — standard numeric comparison">&ge;</span> 70.</p>
+</div>
+
+<h3>Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li><strong>Declaration:</strong> <span class="vocab" data-def="Bound variable — represents each entry.">e</span> : Entry</li>
+<li><strong>Filter part 1:</strong> <span class="vocab" data-def="A pattern that asserts an element appears somewhere in the records.">existential witness</span></li>
+<li><strong>Filter part 2:</strong> <span class="vocab" data-def="tuple projection — extracts the 7th component (Average grade)">e.7</span> <span class="vocab" data-def="greater than or equal — standard numeric comparison">&ge;</span> 70</li>
+</ul>
+</div>
+
+<h3>Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Declaration and existential</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$e$</td><td>bound variable &mdash; represents each entry</td><td>stands for each candidate entry</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier &mdash; "there exists at least one"</td><td>asserts e appears in the records</td></tr>
+<tr><td>$\text{ran}$</td><td>range &mdash; set of output values</td><td>gives tables and their entries</td></tr>
+</table>
+<div class="walkthrough">
+<p>Same opening as (b)(i): <span class="vocab" data-def="Bound variable — represents each entry.">e</span> : Entry with the <span class="vocab" data-def="A pattern that asserts an element appears somewhere in the records.">existential witness</span>:</p>
+$$\{e : \text{Entry}\ |\ (\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r)\ \wedge\ \ldots\ \}$$
+</div>
+
+<h4>Build Step 2 &mdash; Add the average grade filter</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$e.7$</td><td>tuple projection &mdash; extracts the 7th component (Average grade)</td><td>gets the average grade</td></tr>
+<tr><td>$\geq$</td><td>greater than or equal &mdash; standard numeric comparison</td><td>average must meet or exceed the threshold</td></tr>
+<tr><td>$70$</td><td>constant &mdash; the grade threshold</td><td>the minimum acceptable average</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="logical and — both conditions must hold simultaneously">&and;</span>, compare <span class="vocab" data-def="tuple projection — extracts the 7th component (Average grade)">e.7</span> <span class="vocab" data-def="greater than or equal — standard numeric comparison">&ge;</span> 70:</p>
+$$\{e : \text{Entry} \mid (\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r) \wedge e.7 \geq 70\}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\{e : \text{Entry} \mid (\exists\, r : \text{ran}\ records \bullet e \in \text{ran}\ r) \wedge e.7 \geq 70\}$$
+</div>
+<p>"The set of all entries whose average grade was 70 or above."</p>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p>From the example table:</p>
+<table>
+<tr><th>Entry</th><th>$e.7$ (Average)</th><th>$\geq 70$?</th><th>Included?</th></tr>
+<tr><td>DES</td><td>60</td><td>No</td><td>No</td></tr>
+<tr><td>CDS</td><td>55</td><td>No</td><td>No</td></tr>
+<tr><td>NES</td><td>65</td><td>No</td><td>No</td></tr>
+</table>
+<p>Result: none of the example entries qualify (all below 70).</p>
+</div>
+
+</details>
+
+
+<!-- ======== (b)(iv) ======== -->
+<h3>(iv) Courses where every instance averages &ge; 70</h3>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating and filtering.">set comprehension</span> for the <span class="key">course acronyms</span> where <span class="key"><em>every single instance</em></span> (across all years) achieved an <span class="key">average of at least 70</span>.</p>
+</div>
+
+<h3>Vocab for Part (b)(iv)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Set comprehension</td><td>An expression $\{\ \text{decl}\ |\ \text{filter}\ \}$ that builds a set by iterating over a type and keeping elements where the filter holds.</td></tr>
+<tr><td>Universal quantification</td><td>A "for all" statement requiring every element to satisfy a condition.</td></tr>
+<tr><td>Implication</td><td>"If P then Q." Written $P \Rightarrow Q$. False only when P is true and Q is false.</td></tr>
+<tr><td>Vacuous truth</td><td>An implication $P \Rightarrow Q$ is vacuously true when P is never true. A course that never appears satisfies the condition trivially.</td></tr>
+</table>
+
+<h3>Symbols for Part (b)(iv)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\{\ |\ \}$</td><td>set comprehension</td><td>iterate, filter, collect</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function/sequence</td></tr>
+<tr><td>$\Rightarrow$</td><td>implication</td><td>"if ... then ..."</td></tr>
+<tr><td>$\geq$</td><td>greater than or equal</td><td>standard numeric comparison</td></tr>
+<tr><td>$e.2$</td><td>tuple projection</td><td>extracts the 2nd component (Course acronym)</td></tr>
+<tr><td>$e.7$</td><td>tuple projection</td><td>extracts the 7th component (Average grade)</td></tr>
+</table>
+
+<h3>Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>Unlike (b)(i)-(iii), which use an <span class="vocab" data-def="existential quantifier — &quot;there exists at least one&quot;">existential</span> ("there exists a table containing this entry"), this query is <em>universal</em>: we want course names <span class="vocab" data-def="Bound variable — represents each course acronym.">c</span> such that <strong>every</strong> entry with course code <span class="vocab" data-def="Bound variable — represents each course acronym.">c</span> has a high average. We collect <em>course acronyms</em>, not full entries.</p>
+</div>
+
+<h3>Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="A &quot;for all&quot; statement requiring every element to satisfy a condition.">universal quantification</span> over all tables and all entries. The key is <span class="vocab" data-def="&quot;If P then Q.&quot; Written P &rArr; Q. False only when P is true and Q is false.">implication</span>: if the entry's course matches <span class="vocab" data-def="Bound variable — represents each course acronym.">c</span>, then its average must be <span class="vocab" data-def="greater than or equal — standard numeric comparison">&ge;</span> 70.</p>
+</div>
+
+<h3>Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li><strong>Declaration:</strong> <span class="vocab" data-def="Bound variable — represents each course acronym.">c</span> : Course</li>
+<li><strong>Filter:</strong> <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> r : <span class="vocab" data-def="range — the set of output values of a function or sequence">ran</span> records <span class="vocab" data-def="spot — separates constraint from expression in quantifiers">&bull;</span> <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> e : <span class="vocab" data-def="range — the set of output values of a function or sequence">ran</span> r <span class="vocab" data-def="spot — separates constraint from expression in quantifiers">&bull;</span> (<span class="vocab" data-def="tuple projection — extracts the 2nd component (Course acronym)">e.2</span> = c <span class="vocab" data-def="implication — &quot;if ... then ...&quot;">&rArr;</span> <span class="vocab" data-def="tuple projection — extracts the 7th component (Average grade)">e.7</span> <span class="vocab" data-def="greater than or equal — standard numeric comparison">&ge;</span> 70)</li>
+</ul>
+</div>
+
+<h3>Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Declaration: collect course acronyms</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\{\ \}$</td><td>set braces &mdash; enclose a set comprehension</td><td>wraps the entire expression</td></tr>
+<tr><td>$c$</td><td>bound variable &mdash; represents each course acronym</td><td>stands for each candidate course</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "drawn from"</td><td>says $c$ comes from Course</td></tr>
+<tr><td>$\text{Course}$</td><td>given type &mdash; set of all course acronyms</td><td>the source type</td></tr>
+</table>
+<div class="walkthrough">
+<p>Declare <span class="vocab" data-def="Bound variable — represents each course acronym.">c</span> <span class="vocab" data-def="type declaration — &quot;drawn from&quot;">:</span> Course. We collect course names, not entries:</p>
+$$\{c : \text{Course}\ |\ \ldots\ \}$$
+</div>
+
+<h4>Build Step 2 &mdash; Universal quantification with implication</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>every table, every entry must satisfy the condition</td></tr>
+<tr><td>$r$</td><td>bound variable &mdash; a year's table</td><td>each table in the records</td></tr>
+<tr><td>$e$</td><td>bound variable &mdash; each entry in a table</td><td>each entry within table r</td></tr>
+<tr><td>$\Rightarrow$</td><td>implication &mdash; "if ... then ..."</td><td>IF course matches c, THEN average is high</td></tr>
+<tr><td>$e.2$</td><td>tuple projection &mdash; extracts 2nd component (Course)</td><td>the course acronym of this entry</td></tr>
+<tr><td>$e.7$</td><td>tuple projection &mdash; extracts 7th component (Average)</td><td>the average grade of this entry</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use nested <span class="vocab" data-def="A &quot;for all&quot; statement requiring every element to satisfy a condition.">universal quantification</span>: <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> r in <span class="vocab" data-def="range — the set of output values of a function or sequence">ran</span> records, then <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> e in <span class="vocab" data-def="range — the set of output values of a function or sequence">ran</span> r. The <span class="vocab" data-def="&quot;If P then Q.&quot; Written P &rArr; Q. False only when P is true and Q is false.">implication</span> says: if <span class="vocab" data-def="tuple projection — extracts the 2nd component (Course acronym)">e.2</span> = c then <span class="vocab" data-def="tuple projection — extracts the 7th component (Average grade)">e.7</span> <span class="vocab" data-def="greater than or equal — standard numeric comparison">&ge;</span> 70:</p>
+$$\{c : \text{Course} \mid \forall\, r : \text{ran}\ records \bullet \forall\, e : \text{ran}\ r \bullet (e.2 = c \Rightarrow e.7 \geq 70)\}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\{c : \text{Course} \mid \forall\, r : \text{ran}\ records \bullet \forall\, e : \text{ran}\ r \bullet (e.2 = c \Rightarrow e.7 \geq 70)\}$$
+</div>
+<p>"The set of course acronyms $c$ such that every instance of $c$ in every year had an average grade of at least 70."</p>
+
+<div class="warning">
+<p><strong>Note the <span class="vocab" data-def="An implication P &rArr; Q is vacuously true when P is never true. A course that never appears satisfies the condition trivially.">vacuous truth</span>:</strong> If a course $c$ never appears in any table, the implication $e.2 = c \Rightarrow e.7 \geq 70$ is vacuously true for all $e$. Such a course would be included in the result set. If this is undesirable, an additional existential can be added to require at least one occurrence.</p>
+</div>
+
+</details>
+
+
+<!-- ======== (b)(v) ======== -->
+<h3>(v) Year-to-busy-lecturers mapping</h3>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span> that <span class="key">maps each year</span> to the set of <span class="key">lecturers who taught more than 6 courses</span> in that year.</p>
+</div>
+
+<h3>Vocab for Part (b)(v)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Set comprehension</td><td>An expression $\{\ \text{decl}\ |\ \text{filter}\ \bullet\ \text{output}\ \}$ that builds a set by iterating, filtering, and collecting.</td></tr>
+<tr><td>Nested set comprehension</td><td>A set comprehension whose output expression contains another set comprehension.</td></tr>
+<tr><td>Maplet</td><td>A mapping pair $a \mapsto b$, used to construct functions as sets of pairs.</td></tr>
+<tr><td>Cardinality filter</td><td>Using $\#\{\ldots\} > n$ to count elements and filter by count.</td></tr>
+</table>
+
+<h3>Symbols for Part (b)(v)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\{\ |\ \bullet\ \}$</td><td>set comprehension</td><td>iterate, filter, collect</td></tr>
+<tr><td>$\mapsto$</td><td>maplet</td><td>"maps to" &mdash; creates a mapping pair</td></tr>
+<tr><td>$\#$</td><td>cardinality</td><td>number of elements in a set</td></tr>
+<tr><td>$>$</td><td>strictly greater than</td><td>left side exceeds right side</td></tr>
+<tr><td>$\text{dom}$</td><td>domain</td><td>the set of inputs for which a function is defined</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function/sequence</td></tr>
+<tr><td>$\in$</td><td>set membership</td><td>"is an element of"</td></tr>
+<tr><td>$c.4$</td><td>tuple projection</td><td>extracts the 4th component (Lecturer)</td></tr>
+</table>
+
+<h3>Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="A set comprehension whose output expression contains another set comprehension.">nested set comprehension</span>. The outer comprehension iterates over years. For each year, the output is a <span class="vocab" data-def="A mapping pair a &mapsto; b, used to construct functions as sets of pairs.">maplet</span> from the year to the set of busy lecturers. The inner comprehension collects lecturers who taught more than 6 courses that year.</p>
+</div>
+
+<h3>Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p><strong>Outer comprehension:</strong> iterate <span class="vocab" data-def="Bound variable — represents each year.">y</span> : Year, filter <span class="vocab" data-def="Bound variable — represents each year.">y</span> <span class="vocab" data-def="set membership — &quot;is an element of&quot;">&isin;</span> <span class="vocab" data-def="domain — the set of inputs for which a function is defined">dom</span> records, output <span class="vocab" data-def="Bound variable — represents each year.">y</span> <span class="vocab" data-def="maplet — &quot;maps to&quot; &mdash; creates a mapping pair">&mapsto;</span> {inner set}.</p>
+<p><strong>Inner comprehension:</strong> iterate <span class="vocab" data-def="Bound variable — represents each lecturer.">l</span> : Lecturer, filter using <span class="vocab" data-def="Using #{...} > n to count elements and filter by count.">cardinality filter</span>: <span class="vocab" data-def="cardinality — number of elements in a set">#</span>{courses taught by l in year y} <span class="vocab" data-def="strictly greater than — left side exceeds right side">&gt;</span> 6.</p>
+</div>
+
+<h3>Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong>Outer:</strong> { y : Year | y <span class="vocab" data-def="set membership — &quot;is an element of&quot;">&isin;</span> <span class="vocab" data-def="domain — the set of inputs for which a function is defined">dom</span> records <span class="vocab" data-def="spot — separates constraint from expression in quantifiers">&bull;</span> y <span class="vocab" data-def="maplet — &quot;maps to&quot; &mdash; creates a mapping pair">&mapsto;</span> {inner} }</p>
+<p><strong>Inner:</strong> { l : Lecturer | <span class="vocab" data-def="cardinality — number of elements in a set">#</span>{ c : <span class="vocab" data-def="range — the set of output values of a function or sequence">ran</span>(records y) | <span class="vocab" data-def="tuple projection — extracts the 4th component (Lecturer)">c.4</span> = l } <span class="vocab" data-def="strictly greater than — left side exceeds right side">&gt;</span> 6 }</p>
+</div>
+
+<h3>Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Outer comprehension: iterate over years</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\{\ \}$</td><td>set braces &mdash; enclose a set comprehension</td><td>wraps the outer expression</td></tr>
+<tr><td>$y$</td><td>bound variable &mdash; represents each year</td><td>iterates over years</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "drawn from"</td><td>says y comes from Year</td></tr>
+<tr><td>$|$</td><td>filter bar &mdash; introduces the predicate</td><td>restricts to years in the domain</td></tr>
+<tr><td>$\in$</td><td>set membership &mdash; "is an element of"</td><td>y must be in dom records</td></tr>
+<tr><td>$\text{dom}$</td><td>domain &mdash; the set of inputs for which a function is defined</td><td>the valid years</td></tr>
+</table>
+<div class="walkthrough">
+<p>Start the outer <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span>: declare <span class="vocab" data-def="Bound variable — represents each year.">y</span> : Year, filter to <span class="vocab" data-def="Bound variable — represents each year.">y</span> <span class="vocab" data-def="set membership — &quot;is an element of&quot;">&isin;</span> <span class="vocab" data-def="domain — the set of inputs for which a function is defined">dom</span> records, leaving the output as a placeholder:</p>
+$$\{y : \text{Year} \mid y \in \text{dom}\ records\ \bullet\ \ldots\ \}$$
+</div>
+
+<h4>Build Step 2 &mdash; Output: maplet to inner set</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates filter from output</td><td>begins the output expression</td></tr>
+<tr><td>$\mapsto$</td><td>maplet &mdash; "maps to"</td><td>pairs y with the set of busy lecturers</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="spot — separates constraint from expression in quantifiers">&bull;</span>, output <span class="vocab" data-def="Bound variable — represents each year.">y</span> <span class="vocab" data-def="maplet — &quot;maps to&quot; &mdash; creates a mapping pair">&mapsto;</span> {inner set of busy lecturers}:</p>
+$$\{y : \text{Year} \mid y \in \text{dom}\ records\ \bullet\ y \mapsto \{\ldots\}\ \}$$
+</div>
+
+<h4>Build Step 3 &mdash; Inner comprehension: busy lecturers</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$l$</td><td>bound variable &mdash; represents each lecturer</td><td>candidate busy lecturer</td></tr>
+<tr><td>$\#$</td><td>cardinality &mdash; number of elements in a set</td><td>counts how many courses l taught</td></tr>
+<tr><td>$c$</td><td>bound variable &mdash; represents each entry in that year</td><td>iterates over entries in records y</td></tr>
+<tr><td>$c.4$</td><td>tuple projection &mdash; extracts the 4th component (Lecturer)</td><td>gets the lecturer from each entry</td></tr>
+<tr><td>$>$</td><td>strictly greater than &mdash; left exceeds right</td><td>count must exceed 6</td></tr>
+<tr><td>$6$</td><td>constant &mdash; the "busy" threshold</td><td>more than 6 courses</td></tr>
+</table>
+<div class="walkthrough">
+<p>The inner comprehension collects lecturers <span class="vocab" data-def="Bound variable — represents each lecturer.">l</span> where the <span class="vocab" data-def="Using #{...} > n to count elements and filter by count.">cardinality filter</span> counts courses taught by l: <span class="vocab" data-def="cardinality — number of elements in a set">#</span>{ c : <span class="vocab" data-def="range — the set of output values of a function or sequence">ran</span>(records y) | <span class="vocab" data-def="tuple projection — extracts the 4th component (Lecturer)">c.4</span> = <span class="vocab" data-def="Bound variable — represents each lecturer.">l</span> } <span class="vocab" data-def="strictly greater than — left side exceeds right side">&gt;</span> 6:</p>
+$$\{y : \text{Year} \mid y \in \text{dom}\ records \bullet y \mapsto \{l : \text{Lecturer} \mid \#\{c : \text{ran}(records\,y) \mid c.4 = l\} > 6\}\}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\{y : \text{Year} \mid y \in \text{dom}\ records \bullet y \mapsto \{l : \text{Lecturer} \mid \#\{c : \text{ran}(records\,y) \mid c.4 = l\} > 6\}\}$$
+</div>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p><strong>Worked example:</strong> Suppose $records\,2020$ contains 40 entries. Lecturer "Smith" appears as $e.4$ in 8 of them, lecturer "Jones" in 3. Then:</p>
+<table>
+<tr><th>Lecturer</th><th>Count of courses</th><th>$> 6$?</th><th>Included?</th></tr>
+<tr><td>Smith</td><td>$\#\{c : \text{ran}(records\,2020) \mid c.4 = \text{Smith}\} = 8$</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Jones</td><td>$\#\{c : \text{ran}(records\,2020) \mid c.4 = \text{Jones}\} = 3$</td><td>No</td><td>No</td></tr>
+</table>
+<p>Result for 2020: $2020 \mapsto \{\text{Smith}\}$.</p>
+</div>
+
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-c">Part (c) &mdash; Recursive Function: <code>479_courses</code></h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define a <span class="vocab" data-def="A function defined in terms of itself: a base case handles the simplest input, and a recursive case reduces towards it.">recursive function</span> that takes a sequence of entries and returns only those <span class="key">taught in room 479</span>, <span class="key">preserving order</span>.</p>
+</div>
+
+<h3 id="partc-vocab">Vocab for Part (c)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Recursive definition</td><td>A definition where the function calls itself: a base case handles the simplest input, and a recursive case reduces towards it.</td></tr>
+<tr><td>Base case</td><td>The simplest input that can be answered directly without recursion (here, the empty sequence).</td></tr>
+<tr><td>Recursive case</td><td>The step that processes one element and calls the function again on the remainder.</td></tr>
+<tr><td>Recursive filter</td><td>A recursive function that keeps or discards each element based on a condition, preserving order.</td></tr>
+</table>
+
+<h3 id="partc-symbols">Symbols for Part (c)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>a sequence with no elements</td></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition</td><td>splits a non-empty sequence into its first element $x$ and the remaining tail $s$</td></tr>
+<tr><td>$x.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>joins two sequences end-to-end</td></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined for every possible input</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>an ordered list (function from $\{1,\ldots,n\}$ to values)</td></tr>
+<tr><td>$:$</td><td>type declaration</td><td>"is of type" / "drawn from"</td></tr>
+<tr><td>$=$</td><td>equality</td><td>the left side equals the right side</td></tr>
+</table>
+
+<h3 id="partc-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="A definition where the function calls itself: a base case handles the simplest input, and a recursive case reduces towards it.">recursive definition</span> that acts as a <span class="vocab" data-def="A recursive function that keeps or discards each element based on a condition, preserving order.">recursive filter</span>. Given a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> of Entry, it returns a new <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> containing only entries whose location (field 3) is 479.</p>
+</div>
+
+<h3 id="partc-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Every <span class="vocab" data-def="A recursive function that keeps or discards each element based on a condition, preserving order.">recursive filter</span> on sequences follows the same skeleton:</p>
+<ul>
+<li><strong><span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence).">Base case</span>:</strong> <span class="vocab" data-def="empty sequence — a sequence with no elements">&langle;&rangle;</span> maps to <span class="vocab" data-def="empty sequence — a sequence with no elements">&langle;&rangle;</span>.</li>
+<li><strong><span class="vocab" data-def="The step that processes one element and calls the function again on the remainder.">Recursive case</span>:</strong> decompose <span class="vocab" data-def="head-tail decomposition — splits a non-empty sequence into its first element x and the remaining tail s">&langle;x&rangle; &frown; s</span>. Check the condition on x. If it passes, prepend x to the recursive result; otherwise skip x and recurse on s alone.</li>
+</ul>
+</div>
+
+<h3 id="partc-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong><span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence).">Base case</span>:</strong> filtering an empty sequence produces <span class="vocab" data-def="empty sequence — a sequence with no elements">&langle;&rangle;</span>.</p>
+<p><strong><span class="vocab" data-def="The step that processes one element and calls the function again on the remainder.">Recursive case</span>:</strong> check <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">x.3</span>. If <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">x.3</span> <span class="vocab" data-def="equality — the left side equals the right side">=</span> 479, keep; otherwise discard.</p>
+</div>
+
+<h3 id="partc-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Type signature</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$479\_courses$</td><td>function name &mdash; the filter function we are defining</td><td>takes a sequence, returns a filtered sequence</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares the input and output types</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence &mdash; an ordered list</td><td>input and output are both sequences of entries</td></tr>
+<tr><td>$\text{Entry}$</td><td>abbreviation &mdash; the 7-tuple type</td><td>the element type</td></tr>
+<tr><td>$\to$</td><td>total function &mdash; defined for every input</td><td>$479\_courses$ accepts any sequence</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the function <span class="vocab" data-def="The filter function we are defining.">479_courses</span>, use <span class="vocab" data-def="type declaration — &quot;is of type&quot;">:</span> to declare its type. Input and output are both <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">seq</span> Entry, connected by <span class="vocab" data-def="total function — a function defined for every possible input">&rarr;</span>:</p>
+$$479\_courses : \text{seq}\ \text{Entry} \to \text{seq}\ \text{Entry}$$
+</div>
+
+<h4>Build Step 2 &mdash; Base case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence &mdash; a sequence with no elements</td><td>base case input and output</td></tr>
+<tr><td>$=$</td><td>equality &mdash; the left side equals the right side</td><td>defines the result for the empty input</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence).">base case</span>: an <span class="vocab" data-def="empty sequence — a sequence with no elements">empty sequence</span> has nothing to filter, so return <span class="vocab" data-def="empty sequence — a sequence with no elements">&langle;&rangle;</span>:</p>
+$$479\_courses(\langle\rangle) = \langle\rangle$$
+</div>
+
+<h4>Build Step 3 &mdash; Recursive case: check $x.3$</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition &mdash; splits a non-empty sequence into first element $x$ and tail $s$</td><td>splits off the first entry</td></tr>
+<tr><td>$x.3$</td><td>tuple projection &mdash; extracts the 3rd component (Location)</td><td>checks the location of the head element</td></tr>
+<tr><td>$\frown$</td><td>concatenation &mdash; joins two sequences end-to-end</td><td>prepends $\langle x \rangle$ to the recursive result when keeping</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The step that processes one element and calls the function again on the remainder.">recursive case</span>: decompose into <span class="vocab" data-def="head-tail decomposition — splits a non-empty sequence into its first element x and the remaining tail s">&langle;x&rangle; &frown; s</span>. Check <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">x.3</span>: if 479, <span class="vocab" data-def="concatenation — joins two sequences end-to-end">concatenate</span> &langle;x&rangle; with the <span class="vocab" data-def="A definition where the function calls itself: a base case handles the simplest input, and a recursive case reduces towards it.">recursive</span> result; otherwise skip x and recurse on s:</p>
+<p>If $x.3 = 479$: prepend and recurse &rarr; $\langle x \rangle \frown 479\_courses(s)$</p>
+<p>Otherwise: skip and recurse &rarr; $479\_courses(s)$</p>
+$$479\_courses(\langle x \rangle \frown s) = \begin{cases} \langle x \rangle \frown 479\_courses(s) & \text{if } x.3 = 479 \\ 479\_courses(s) & \text{otherwise} \end{cases}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\begin{array}{|l}
+479\_courses : \text{seq}\ \text{Entry} \to \text{seq}\ \text{Entry} \\
+\hline
+479\_courses(\langle\rangle) = \langle\rangle \\
+\forall\, x : \text{Entry};\ s : \text{seq}\ \text{Entry} \bullet \\
+\quad 479\_courses(\langle x \rangle \frown s) = \begin{cases} \langle x \rangle \frown 479\_courses(s) & \text{if } x.3 = 479 \\ 479\_courses(s) & \text{otherwise} \end{cases}
+\end{array}$$
+</div>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p>Using the example table as input: $\langle e_1, e_2, e_3 \rangle$ where $e_1.3 = 479$ (DES), $e_2.3 = 479$ (CDS), $e_3.3 = 478$ (NES).</p>
+<table>
+<tr><th>Call</th><th>Head $x$</th><th>$x.3$</th><th>Action</th><th>Building result</th></tr>
+<tr><td>1</td><td>$e_1$ (DES)</td><td>$479$</td><td>$479 = 479$ &mdash; keep, recurse</td><td>$\langle e_1 \rangle \frown \ldots$</td></tr>
+<tr><td>2</td><td>$e_2$ (CDS)</td><td>$479$</td><td>$479 = 479$ &mdash; keep, recurse</td><td>$\langle e_1, e_2 \rangle \frown \ldots$</td></tr>
+<tr><td>3</td><td>$e_3$ (NES)</td><td>$478$</td><td>$478 \neq 479$ &mdash; skip, recurse</td><td>$\langle e_1, e_2 \rangle \frown \ldots$</td></tr>
+<tr><td>base</td><td>&mdash;</td><td>&mdash;</td><td>Return $\langle\rangle$</td><td>$\langle e_1, e_2 \rangle$</td></tr>
+</table>
+<p>Result: $\langle e_1, e_2 \rangle$ &mdash; DES and CDS kept, NES discarded.</p>
+</div>
+
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-d">Part (d) &mdash; Recursive Function: <code>total</code></h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define a <span class="vocab" data-def="A function defined in terms of itself: a base case provides the identity element, and a recursive case combines the head's contribution with the recursive result on the tail.">recursive function</span> that takes a sequence of entries and returns the <span class="key">total number of attendees</span> across all entries.</p>
+<p><strong>Example:</strong> For the example table, $total$ returns $10 + 10 + 10 = 30$.</p>
+</div>
+
+<h3 id="partd-vocab">Vocab for Part (d)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Recursive function</td><td>A function defined in terms of itself: a base case handles the simplest input, and a recursive case reduces towards it.</td></tr>
+<tr><td>Base case</td><td>The simplest input that can be answered directly without recursion (here, the empty sequence returns 0).</td></tr>
+<tr><td>Recursive case</td><td>The step that processes one element and calls the function again on the remainder.</td></tr>
+<tr><td>Accumulator</td><td>A value that builds up across recursive calls (here, the running sum of attendees).</td></tr>
+</table>
+
+<h3 id="partd-symbols">Symbols for Part (d)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>a sequence with no elements</td></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition</td><td>splits a non-empty sequence into first element $x$ and tail $s$</td></tr>
+<tr><td>$x.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+<tr><td>$+$</td><td>addition</td><td>adds two numbers together</td></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined for every possible input</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers</td><td>the set $\{0, 1, 2, 3, \ldots\}$</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>an ordered list (function from $\{1,\ldots,n\}$ to values)</td></tr>
+<tr><td>$:$</td><td>type declaration</td><td>"is of type" / "drawn from"</td></tr>
+<tr><td>$=$</td><td>equality</td><td>the left side equals the right side</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates declaration from expression in a quantifier</td></tr>
+</table>
+
+<h3 id="partd-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="A function defined in terms of itself: a base case handles the simplest input, and a recursive case reduces towards it.">recursive function</span> that sums all attendee counts in a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> of entries and returns the total as a <span class="vocab" data-def="natural numbers — the set {0, 1, 2, 3, ...}">natural number</span>. Unlike part (c) which is a filter, this is an <span class="vocab" data-def="A value that builds up across recursive calls (here, the running sum of attendees).">accumulator</span>.</p>
+</div>
+
+<h3 id="partd-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Every <span class="vocab" data-def="A function defined in terms of itself: a base case handles the simplest input, and a recursive case reduces towards it.">recursive function</span> on sequences follows the same skeleton:</p>
+<ul>
+<li><strong><span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns 0).">Base case</span>:</strong> what happens with <span class="vocab" data-def="empty sequence — a sequence with no elements">&langle;&rangle;</span>? The sum of zero entries is 0.</li>
+<li><strong><span class="vocab" data-def="The step that processes one element and calls the function again on the remainder.">Recursive case</span>:</strong> split <span class="vocab" data-def="head-tail decomposition — splits a non-empty sequence into first element x and tail s">&langle;x&rangle; &frown; s</span>. Add x's attendee count to the recursive total of s.</li>
+</ul>
+</div>
+
+<h3 id="partd-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong><span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns 0).">Base case</span>:</strong> total(<span class="vocab" data-def="empty sequence — a sequence with no elements">&langle;&rangle;</span>) = 0.</p>
+<p><strong><span class="vocab" data-def="The step that processes one element and calls the function again on the remainder.">Recursive case</span>:</strong> the head x is an entry. Its attendee count is <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">x.5</span>. <span class="vocab" data-def="addition — adds two numbers together">Add</span> that to the recursive total of the tail. The running sum is the <span class="vocab" data-def="A value that builds up across recursive calls (here, the running sum of attendees).">accumulator</span>.</p>
+</div>
+
+<h3 id="partd-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Type signature</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$total$</td><td>function name &mdash; the recursive summing function we are defining</td><td>takes a sequence of entries, returns a natural number</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares the input and output types</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence &mdash; an ordered list</td><td>the input is a sequence of entries</td></tr>
+<tr><td>$\text{Entry}$</td><td>abbreviation &mdash; the 7-tuple type</td><td>the element type</td></tr>
+<tr><td>$\to$</td><td>total function &mdash; defined for every input</td><td>$total$ accepts any sequence</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers &mdash; the set $\{0, 1, 2, 3, \ldots\}$</td><td>the output type (a count of attendees)</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the function <span class="vocab" data-def="The recursive summing function we are defining.">total</span>, use <span class="vocab" data-def="type declaration — &quot;is of type&quot;">:</span> to declare its type. Input is a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">seq</span> Entry, output is <span class="vocab" data-def="natural numbers — the set {0, 1, 2, 3, ...}">N</span>, connected by <span class="vocab" data-def="total function — a function defined for every possible input">&rarr;</span>:</p>
+$$total : \text{seq}\ \text{Entry} \to \mathbb{N}$$
+</div>
+
+<h4>Build Step 2 &mdash; Base case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence &mdash; a sequence with no elements</td><td>triggers the base case</td></tr>
+<tr><td>$=$</td><td>equality &mdash; the left side equals the right side</td><td>defines the result for the empty input</td></tr>
+<tr><td>$0$</td><td>zero &mdash; the additive identity</td><td>the total attendees of zero entries</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns 0).">base case</span>: an <span class="vocab" data-def="empty sequence — a sequence with no elements">empty sequence</span> <span class="vocab" data-def="empty sequence — a sequence with no elements">&langle;&rangle;</span> has no entries, so the total attendee count is <span class="vocab" data-def="The additive identity.">0</span>:</p>
+$$total(\langle\rangle) = 0$$
+</div>
+
+<h4>Build Step 3 &mdash; Recursive case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition &mdash; splits a non-empty sequence into first element $x$ and tail $s$</td><td>splits off the first entry</td></tr>
+<tr><td>$x.5$</td><td>tuple projection &mdash; extracts the 5th component (Attendees)</td><td>gets the attendee count of the current entry</td></tr>
+<tr><td>$+$</td><td>addition &mdash; adds two numbers together</td><td>adds this count to the recursive total of the remaining entries</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The step that processes one element and calls the function again on the remainder.">recursive case</span>: decompose into <span class="vocab" data-def="head-tail decomposition — splits a non-empty sequence into first element x and tail s">&langle;x&rangle; &frown; s</span>. Extract the attendee count with <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">x.5</span> and <span class="vocab" data-def="addition — adds two numbers together">add</span> it to the recursive call on the tail. The running sum is the <span class="vocab" data-def="A value that builds up across recursive calls (here, the running sum of attendees).">accumulator</span>:</p>
+$$total(\langle x \rangle \frown s) = x.5 + total(s)$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\begin{array}{|l}
+total : \text{seq}\ \text{Entry} \to \mathbb{N} \\
+\hline
+total(\langle\rangle) = 0 \\
+\forall\, x : \text{Entry};\ s : \text{seq}\ \text{Entry} \bullet \\
+\quad total(\langle x \rangle \frown s) = x.5 + total(s)
+\end{array}$$
+</div>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p>Using the example table: $\langle e_1, e_2, e_3 \rangle$ with $e_1.5 = 10$ (DES), $e_2.5 = 10$ (CDS), $e_3.5 = 10$ (NES).</p>
+<table>
+<tr><th>Call</th><th>Head $x$</th><th>$x.5$</th><th>Remaining</th><th>Running sum</th></tr>
+<tr><td>1</td><td>$e_1$ (DES)</td><td>$10$</td><td>$\langle e_2, e_3 \rangle$</td><td>$10 + \ldots$</td></tr>
+<tr><td>2</td><td>$e_2$ (CDS)</td><td>$10$</td><td>$\langle e_3 \rangle$</td><td>$10 + 10 + \ldots$</td></tr>
+<tr><td>3</td><td>$e_3$ (NES)</td><td>$10$</td><td>$\langle\rangle$</td><td>$10 + 10 + 10 + \ldots$</td></tr>
+<tr><td>base</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>$10 + 10 + 10 + 0 = \mathbf{30}$</td></tr>
+</table>
+</div>
+
+</details>
+
+
+<!-- ============================================================ -->
+<h2>Summary Table</h2>
+
+<table>
+<tr><th>Part</th><th>What it models</th><th>Key technique</th></tr>
+<tr><td>(a)(i)</td><td>Domain constraint on $records$</td><td>$\text{dom}\ records = 1993 \,..\, current$</td></tr>
+<tr><td>(a)(ii)</td><td>Max 50 courses per year</td><td><span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> with <span class="vocab" data-def="cardinality / length — number of elements in a set or sequence">#</span> $\leq 50$</td></tr>
+<tr><td>(a)(iii)</td><td>Entries match their year</td><td>Nested <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> with year extraction</td></tr>
+<tr><td>(a)(iv)</td><td>No room double-booking</td><td>Same date <span class="vocab" data-def="implication — &quot;if ... then ...&quot;">&rArr;</span> different location</td></tr>
+<tr><td>(b)(i)</td><td>Room 479 courses</td><td><span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating and filtering.">Set comprehension</span> with $e.3 = 479$</td></tr>
+<tr><td>(b)(ii)</td><td>Submissions &gt; attendees</td><td><span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating and filtering.">Set comprehension</span> with $e.6 > e.5$</td></tr>
+<tr><td>(b)(iii)</td><td>Average &ge; 70</td><td><span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating and filtering.">Set comprehension</span> with $e.7 \geq 70$</td></tr>
+<tr><td>(b)(iv)</td><td>All instances average &ge; 70</td><td><span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> with <span class="vocab" data-def="implication — &quot;if ... then ...&quot;">&rArr;</span> (universal + implication)</td></tr>
+<tr><td>(b)(v)</td><td>Busy lecturers per year</td><td><span class="vocab" data-def="A set comprehension whose output expression contains another set comprehension.">Nested set comprehension</span> with <span class="vocab" data-def="cardinality / length — number of elements in a set or sequence">#</span> $> 6$</td></tr>
+<tr><td>(c)</td><td>Filter for room 479</td><td><span class="vocab" data-def="A recursive function that keeps or discards each element based on a condition, preserving order.">Recursive filter</span> with conditional prepend</td></tr>
+<tr><td>(d)</td><td>Total attendees</td><td><span class="vocab" data-def="A value that builds up across recursive calls (here, the running sum of attendees).">Recursive accumulator</span> summing $e.5$</td></tr>
+</table>
+
+<div class="concept">
+<p><strong>Patterns to remember.</strong> Parts (b)(i)-(iii) all share the same existential "appears somewhere in the records" pattern. Part (b)(iv) switches to a universal quantifier because we need <em>every</em> instance to satisfy the condition. Part (b)(v) introduces nesting: an outer comprehension over years and an inner comprehension over lecturers with a cardinality filter. Parts (c) and (d) are both recursive over sequences but differ in purpose: (c) is a <em>filter</em> (keep/discard) while (d) is an <em>accumulator</em> (sum a field).</p>
+</div>
+
+<footer>
+Exercise 41 &mdash; Course Records Table Model &mdash; Software Engineering Mathematics
+</footer>
+
+<script>
+function toggleDropdown(el) {
+  var item = el.closest('.nav-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  }
+});
+</script>
+</body>
+</html>

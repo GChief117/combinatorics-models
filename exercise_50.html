@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 50 &mdash; Streamify: Deriving Information</title>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+body { font-family: Georgia, "Times New Roman", serif; max-width: 860px; margin: 0 auto; padding: 0 20px 40px 20px; background: #ffffff; color: #111111; line-height: 1.55; }
+h1 { border-bottom: 2px solid #111; padding-bottom: 8px; scroll-margin-top: 100px; }
+h2 { margin-top: 40px; border-bottom: 1px solid #999; padding-bottom: 4px; scroll-margin-top: 100px; }
+h3 { margin-top: 28px; scroll-margin-top: 100px; }
+h4 { margin-top: 20px; color: #333; scroll-margin-top: 100px; }
+a { color: #0a3d91; }
+p { margin: 10px 0; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; margin: 12px 0; width: 100%; }
+th, td { border: 1px solid #bbb; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+.concept { background: #fafafa; border-left: 4px solid #888; padding: 10px 16px; margin: 14px 0; }
+.example { background: #fafafa; border-left: 4px solid #2a7a2a; padding: 10px 16px; margin: 14px 0; }
+.practice { background: #fafafa; border-left: 4px solid #1a5fb4; padding: 10px 16px; margin: 14px 0; }
+.warning { background: #fafafa; border-left: 4px solid #c0392b; padding: 10px 16px; margin: 14px 0; }
+.walkthrough { margin-top: 10px; padding: 10px 14px; background: #fffbea; border-left: 4px solid #b58900; }
+.schema-box { background: #f8f8f8; border: 1px solid #ccc; padding: 12px 16px; margin: 12px 0; font-size: 0.95em; overflow-x: auto; }
+details { margin: 10px 0; }
+summary { cursor: pointer; font-weight: bold; color: #0a3d91; }
+code, .sym { font-family: "Menlo", "Courier New", monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+.vocab { border-bottom: 1px dotted #1a5fb4; cursor: pointer; position: relative; color: #0a3d91; padding: 0 2px; }
+.vocab:hover { background-color: #fff3a3; }
+.vocab::after { content: attr(data-def); display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); background: #2a2a2a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; font-style: normal; font-weight: normal; white-space: normal; width: max-content; max-width: 280px; min-width: 180px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
+.vocab:hover::after { display: block; }
+.key { color: #1a5fb4; text-decoration: underline; text-underline-offset: 2px; }
+footer { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 0.85em; color: #666; }
+
+.section-nav { position: sticky; top: 0; z-index: 100; background: #fff; padding: 12px 0; margin: 0 0 24px 0; border-bottom: 1px solid #ccc; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.nav-item { position: relative; }
+.section-nav button { padding: 6px 10px; border: 1px solid #999; background: #fff; cursor: pointer; font-family: inherit; font-size: 0.9em; border-radius: 3px; }
+.section-nav button:hover { background: #eef; }
+.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #999; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 200px; z-index: 200; }
+.nav-item.open .nav-dropdown { display: block; }
+.nav-dropdown li { padding: 0; margin: 0; }
+.nav-dropdown a { display: block; padding: 6px 14px; text-decoration: none; color: #111; font-size: 0.9em; cursor: pointer; }
+.nav-dropdown a:hover { background: #eef; }
+.nav-link { font-size: 0.9em; color: #0a3d91; text-decoration: none; padding: 6px 10px; border: 1px solid #999; border-radius: 3px; }
+.nav-link:hover { background: #eef; }
+</style>
+</head>
+<body>
+
+<nav class="section-nav">
+  <a class="nav-link" href="exercise_49.html">&larr; Ex 49</a>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (a)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-a"><strong>Part (a)</strong></a></li>
+      <li><a href="#parta-vocab">Vocab</a></li>
+      <li><a href="#parta-symbols">Symbols</a></li>
+      <li><a href="#parta-step1">Step 1</a></li>
+      <li><a href="#parta-step2">Step 2</a></li>
+      <li><a href="#parta-step3">Step 3</a></li>
+      <li><a href="#parta-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (b)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-b"><strong>Part (b)</strong></a></li>
+      <li><a href="#partb-vocab">Vocab</a></li>
+      <li><a href="#partb-symbols">Symbols</a></li>
+      <li><a href="#partb-step1">Step 1</a></li>
+      <li><a href="#partb-step2">Step 2</a></li>
+      <li><a href="#partb-step3">Step 3</a></li>
+      <li><a href="#partb-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (c)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-c"><strong>Part (c)</strong></a></li>
+      <li><a href="#partc-vocab">Vocab</a></li>
+      <li><a href="#partc-symbols">Symbols</a></li>
+      <li><a href="#partc-step1">Step 1</a></li>
+      <li><a href="#partc-step2">Step 2</a></li>
+      <li><a href="#partc-step3">Step 3</a></li>
+      <li><a href="#partc-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (d)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-d"><strong>Part (d)</strong></a></li>
+      <li><a href="#partd-vocab">Vocab</a></li>
+      <li><a href="#partd-symbols">Symbols</a></li>
+      <li><a href="#partd-step1">Step 1</a></li>
+      <li><a href="#partd-step2">Step 2</a></li>
+      <li><a href="#partd-step3">Step 3</a></li>
+      <li><a href="#partd-solution">Solution</a></li>
+    </ul>
+  </div>
+  <a class="nav-link" href="exercise_51.html">Ex 51 &rarr;</a>
+  <a class="nav-link" href="index.html" style="margin-left:auto;">&larr; All Exercises</a>
+</nav>
+
+
+<h1>Exercise 50 &mdash; Streamify: Deriving Information</h1>
+
+<p><em>Software Engineering Mathematics &mdash; Z Notation Modelling (Part 3 of a 5-exercise series)</em></p>
+
+<!-- ============================================================ -->
+<h2>The Scenario</h2>
+
+<div class="concept">
+<p>Using the Streamify model built in <a href="exercise_48.html">Exercise 48</a> (playlists, ownership, subscriptions) and <a href="exercise_49.html">Exercise 49</a> (love/hate), we now <em>derive</em> useful information from the system state. This exercise practises reading and querying a Z specification &mdash; writing expressions that extract specific facts from the model's variables.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Context &mdash; Available Definitions from Exercises 48 and 49</h2>
+
+<p>From the combined Streamify model, we have:</p>
+
+<div class="schema-box">
+<strong>From Exercise 48 (base system):</strong><br>
+$songs : \mathbb{F}\; SongId$ &mdash; all songs on the platform<br>
+$users : \mathbb{F}\; UserId$ &mdash; all registered users<br>
+$playlists : PlaylistId \;{\pfun}\; Playlist$ &mdash; playlist contents (where $Playlist == \text{iseq}_1\; SongId$)<br>
+$playlist\_owner : PlaylistId \;{\pfun}\; UserId$ &mdash; who owns each playlist<br>
+$playlist\_subscribers : PlaylistId \;{\pfun}\; \mathbb{F}_1\; UserId$ &mdash; who subscribes to each playlist<br><br>
+<strong>From Exercise 49 (love/hate):</strong><br>
+$hated : UserId \;{\pfun}\; \mathbb{F}\; SongId$ &mdash; songs each user hates<br>
+$loved : UserId \;{\pfun}\; \mathbb{F}\; SongId$ &mdash; songs each user loves
+</div>
+
+<!-- ============================================================ -->
+<h2>Master Symbol Table</h2>
+
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr>
+<td>$\setminus$</td>
+<td>Set difference</td>
+<td>$A \setminus B$ gives all elements of $A$ that are not in $B$. "A minus B."</td>
+</tr>
+<tr>
+<td>$\bigcup$</td>
+<td>Generalised union</td>
+<td>Takes a set of sets and flattens them into one set containing every element from any of the inner sets.</td>
+</tr>
+<tr>
+<td>$\text{ran}$</td>
+<td>Range</td>
+<td>The set of all output values of a function. If $f = \{a \mapsto X, b \mapsto Y\}$, then $\text{ran}\;f = \{X, Y\}$.</td>
+</tr>
+<tr>
+<td>$\text{dom}$</td>
+<td>Domain</td>
+<td>The set of all input values for which a function is defined.</td>
+</tr>
+<tr>
+<td>$\#$</td>
+<td>Cardinality</td>
+<td>The number of elements in a finite set. $\#\{a, b, c\} = 3$.</td>
+</tr>
+<tr>
+<td>$\geq$</td>
+<td>Greater than or equal</td>
+<td>Numeric comparison: left side is at least as large as right side.</td>
+</tr>
+<tr>
+<td>$\mu$</td>
+<td>Mu (unique selector)</td>
+<td>$\mu\,x : S \mid P$ returns the unique element $x$ from $S$ satisfying $P$. Undefined if zero or more than one element qualifies.</td>
+</tr>
+<tr>
+<td>$\forall$</td>
+<td>Universal quantifier</td>
+<td>"For all." Asserts a property holds for every element in a set.</td>
+</tr>
+<tr>
+<td>$\neq$</td>
+<td>Not equal</td>
+<td>Two values are different.</td>
+</tr>
+<tr>
+<td>$\bullet$</td>
+<td>Spot / such-that separator</td>
+<td>Separates the declaration/constraint from the body of a quantified expression.</td>
+</tr>
+<tr>
+<td>$>$</td>
+<td>Strictly greater than</td>
+<td>Numeric comparison: left side is larger than right side.</td>
+</tr>
+<tr>
+<td>$\in$</td>
+<td>Element of</td>
+<td>"Belongs to." Asserts that a value is a member of a set.</td>
+</tr>
+<tr>
+<td>$\{\;\}$</td>
+<td>Set comprehension</td>
+<td>$\{x : S \mid P\}$ builds a set by collecting all $x$ from $S$ where predicate $P$ holds.</td>
+</tr>
+</table>
+
+
+<!-- ============================================================ -->
+<h2 id="part-a">Part (a) &mdash; Users Who Have Subscribed to No Playlists</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Find all <span class="key">registered users</span> who <span class="key">do not appear as a subscriber</span> of any playlist.</p>
+</div>
+
+<h3 id="parta-vocab">Vocab for Part (a)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Set difference (\)</td><td>Elements in A but not in B. $A \setminus B$ removes from A everything that also appears in B.</td></tr>
+<tr><td>Generalised union ($\bigcup$)</td><td>Flattens a set of sets into one set. Collects every element that appears in any of the inner sets.</td></tr>
+<tr><td>Range (ran)</td><td>The set of all output values of a function. When the function maps to sets, the range is a set of sets.</td></tr>
+</table>
+
+<h3 id="parta-symbols">Symbols for Part (a)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td><code>users</code></td><td>state variable</td><td>the full set of all registered users</td></tr>
+<tr><td>$\setminus$</td><td>set difference</td><td>$A \setminus B$ &mdash; elements of A not in B</td></tr>
+<tr><td>$\bigcup$</td><td>generalised union</td><td>flattens a set of sets into one set</td></tr>
+<tr><td><code>ran</code></td><td>range</td><td>the set of all output values of a function</td></tr>
+<tr><td><code>playlist_subscribers</code></td><td>state variable</td><td>maps each playlist ID to its non-empty set of subscribers</td></tr>
+</table>
+
+<h3 id="parta-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need the set of all registered <span class="vocab" data-def="The full set of all registered users on the platform.">users</span> who do not subscribe to any playlist. The subscription data lives inside <span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span>, which maps each playlist to a set of user IDs.</p>
+</div>
+
+<h3 id="parta-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Strategy: first collect <em>all</em> users who subscribe to at least one playlist, then subtract them from the full <span class="vocab" data-def="The full set of all registered users on the platform.">users</span> set using <span class="vocab" data-def="Set difference &mdash; elements in A but not in B.">set difference</span> $\setminus$.</p>
+<p>The subscriber data is buried inside the <em>values</em> of <span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span>. Each value is a set of users. So we need <span class="vocab" data-def="Range &mdash; the set of all output values of a function.">ran</span> to get those sets, then <span class="vocab" data-def="Generalised union &mdash; flattens a set of sets into one set.">$\bigcup$</span> to flatten them into a single set.</p>
+</div>
+
+<h3 id="parta-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ol>
+<li><strong>Start with</strong> <span class="vocab" data-def="The full set of all registered users on the platform.">users</span> &mdash; the full user set.</li>
+<li><strong>Build the "all subscribers" set:</strong> <span class="vocab" data-def="Range &mdash; the set of all output values of a function.">ran</span> <span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span> gives a set of sets; <span class="vocab" data-def="Generalised union &mdash; flattens a set of sets into one set.">$\bigcup$</span> flattens it.</li>
+<li><strong>Subtract:</strong> <span class="vocab" data-def="Set difference &mdash; elements in A but not in B.">$\setminus$</span> removes the subscribers from the full set.</li>
+</ol>
+</div>
+
+<h3 id="parta-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Start with the full user set</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td><code>users</code></td><td>state variable &mdash; the full set of all registered users</td><td>our starting pool &mdash; everyone on the platform</td></tr>
+</table>
+<div class="walkthrough">
+<p>We begin with <span class="vocab" data-def="The full set of all registered users on the platform.">users</span>, the set of every registered user. We will subtract from this:</p>
+$$users \;\setminus\; \ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; Build the set of all subscribers: <span class="vocab" data-def="Generalised union &mdash; flattens a set of sets into one set.">$\bigcup$</span>(<span class="vocab" data-def="Range &mdash; the set of all output values of a function.">ran</span> <span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span>)</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td><code>ran</code></td><td>range &mdash; the set of all output values of a function</td><td>collects all the subscriber sets (one per playlist)</td></tr>
+<tr><td>$\bigcup$</td><td>generalised union &mdash; flattens a set of sets into one set</td><td>merges all subscriber sets into one big set of user IDs</td></tr>
+</table>
+<div class="walkthrough">
+<p><span class="vocab" data-def="Range &mdash; the set of all output values of a function.">ran</span> <span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span> gives the collection of all subscriber sets &mdash; one set per playlist. For example:</p>
+$$\text{ran}\; playlist\_subscribers = \{\{u_1, u_2\},\; \{u_1, u_3\},\; \{u_2\}\}$$
+<p><span class="vocab" data-def="Generalised union &mdash; flattens a set of sets into one set.">$\bigcup$</span> flattens these into a single set of all users who subscribe to at least one playlist:</p>
+$$\bigcup(\text{ran}\; playlist\_subscribers) = \{u_1, u_2, u_3\}$$
+<p>Our expression so far:</p>
+$$users \;\setminus\; \bigcup(\text{ran}\; playlist\_subscribers)$$
+</div>
+
+<h4>Build Step 3 &mdash; Apply <span class="vocab" data-def="Set difference &mdash; elements in A but not in B.">set difference</span> $\setminus$</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\setminus$</td><td>set difference &mdash; elements of A not in B</td><td>removes all subscribers from the full user set</td></tr>
+</table>
+<div class="walkthrough">
+<p><span class="vocab" data-def="Set difference &mdash; elements in A but not in B.">$\setminus$</span> removes the subscriber set from <span class="vocab" data-def="The full set of all registered users on the platform.">users</span>. If $users = \{u_1, u_2, u_3, u_4, u_5\}$, then:</p>
+$$A = \{u_1, u_2, u_3, u_4, u_5\} \;\setminus\; \{u_1, u_2, u_3\} = \{u_4, u_5\}$$
+<p>These are the users who have not subscribed to any playlist.</p>
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$A == users \;\setminus\; \bigcup(\text{ran}\; playlist\_subscribers)$$
+</div>
+<p>"All registered <span class="vocab" data-def="The full set of all registered users on the platform.">users</span> minus everyone who appears in at least one playlist's subscriber list."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-b">Part (b) &mdash; Playlists with at Least 100 Subscribers</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Find all <span class="key">playlist IDs</span> where the <span class="key">subscriber count is 100 or more</span>.</p>
+</div>
+
+<h3 id="partb-vocab">Vocab for Part (b)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Set comprehension</td><td>An expression $\{\ \text{decl}\ |\ \text{filter}\ \}$ that builds a set by iterating over a source and keeping elements that satisfy a predicate.</td></tr>
+<tr><td>Cardinality (#)</td><td>The number of elements in a finite set. $\#\{a, b, c\} = 3$.</td></tr>
+<tr><td>Domain (dom)</td><td>The set of all input values for which a function is defined.</td></tr>
+</table>
+
+<h3 id="partb-symbols">Symbols for Part (b)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\{\ |\ \}$</td><td>set comprehension</td><td>iterate over a source, keep elements satisfying a predicate</td></tr>
+<tr><td><code>dom</code></td><td>domain</td><td>the set of all input values of a function</td></tr>
+<tr><td><code>playlist_subscribers</code></td><td>state variable</td><td>maps each playlist ID to its non-empty set of subscribers</td></tr>
+<tr><td><code>#</code></td><td>cardinality</td><td>the number of elements in a set</td></tr>
+<tr><td>$\geq$</td><td>greater than or equal</td><td>numeric comparison: left side is at least as large as right side</td></tr>
+</table>
+
+<h3 id="partb-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating and keeping qualifying elements.">set comprehension</span> that collects playlist IDs where the subscriber count is at least 100. The subscriber data is in <span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span>.</p>
+</div>
+
+<h3 id="partb-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>A <span class="vocab" data-def="An expression {decl | filter} that builds a set by iterating and keeping qualifying elements.">set comprehension</span> with no output expression: $\{p : S \;|\; P\}$ collects all $p$ from $S$ satisfying $P$. Here the output defaults to $p$ itself (the playlist ID).</p>
+<ul>
+<li><strong>Source:</strong> <span class="vocab" data-def="Domain &mdash; the set of all input values for which a function is defined.">dom</span> <span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span></li>
+<li><strong>Filter:</strong> <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">$\#$</span>(<span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span> p) <span class="vocab" data-def="Greater than or equal &mdash; left side is at least as large as right side.">$\geq$</span> 100</li>
+</ul>
+</div>
+
+<h3 id="partb-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ol>
+<li><strong>Iterate:</strong> draw $p$ from <span class="vocab" data-def="Domain &mdash; the set of all input values for which a function is defined.">dom</span> <span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span> &mdash; the set of playlist IDs that have subscribers.</li>
+<li><strong>Count:</strong> <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">$\#$</span>(<span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span> p) gives the subscriber count for playlist $p$.</li>
+<li><strong>Filter:</strong> keep only those where the count <span class="vocab" data-def="Greater than or equal &mdash; left side is at least as large as right side.">$\geq$</span> 100.</li>
+</ol>
+</div>
+
+<h3 id="partb-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Start the comprehension: iterate over playlist IDs</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\{\ \}$</td><td>set braces &mdash; enclose a set comprehension</td><td>wraps the entire expression</td></tr>
+<tr><td>$p$</td><td>bound variable &mdash; represents each playlist ID in turn</td><td>stands for each playlist ID as we iterate</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "drawn from"</td><td>says $p$ comes from the source set</td></tr>
+<tr><td><code>dom</code></td><td>domain &mdash; the set of all input values of a function</td><td>gives the set of playlist IDs with subscriber data</td></tr>
+</table>
+<div class="walkthrough">
+<p>Open the braces, declare <span class="vocab" data-def="Bound variable &mdash; represents each playlist ID in turn.">p</span> <span class="vocab" data-def="Type declaration &mdash; drawn from.">:</span> <span class="vocab" data-def="Domain &mdash; the set of all input values for which a function is defined.">dom</span> <span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span>, leaving the filter as a placeholder:</p>
+$$\{p : \text{dom}\; playlist\_subscribers \;|\; \ldots\}$$
+</div>
+
+<h4>Build Step 2 &mdash; Count subscribers: <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">$\#$</span>(<span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span> p)</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td><code>playlist_subscribers</code> $p$</td><td>function application &mdash; applies the function to playlist $p$</td><td>gives the set of users subscribed to playlist $p$</td></tr>
+<tr><td><code>#</code></td><td>cardinality &mdash; the number of elements in a set</td><td>counts how many users are in that set</td></tr>
+</table>
+<div class="walkthrough">
+<p><span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span> $p$ gives the set of users subscribed to playlist $p$. <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">$\#$</span> counts them:</p>
+$$\#(playlist\_subscribers\; p) = \text{number of subscribers of playlist } p$$
+</div>
+
+<h4>Build Step 3 &mdash; Add the filter: <span class="vocab" data-def="Greater than or equal &mdash; left side is at least as large as right side.">$\geq$</span> 100</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$|$</td><td>filter bar &mdash; restricts which elements are considered</td><td>introduces the condition</td></tr>
+<tr><td>$\geq$</td><td>greater than or equal &mdash; left side is at least as large as right side</td><td>keeps only playlists with 100+ subscribers</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="Filter bar &mdash; restricts which elements are considered.">$|$</span>, require the count to be at least 100:</p>
+$$\{p : \text{dom}\; playlist\_subscribers \;|\; \#(playlist\_subscribers\; p) \geq 100\}$$
+<p>Since there is no output expression after <span class="vocab" data-def="Spot &mdash; separates constraint from expression.">$\bullet$</span>, the output defaults to $p$ itself &mdash; the playlist ID.</p>
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$B == \{p : \text{dom}\; playlist\_subscribers \;|\; \#(playlist\_subscribers\; p) \geq 100\}$$
+</div>
+<p>"The set of all playlist IDs <span class="vocab" data-def="Bound variable &mdash; represents each playlist ID in turn.">p</span> in the <span class="vocab" data-def="Domain &mdash; the set of all input values for which a function is defined.">domain</span> of <span class="vocab" data-def="Maps each playlist ID to its non-empty set of subscriber user IDs.">playlist_subscribers</span> such that the <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">cardinality</span> of the subscriber set is at least 100."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-c">Part (c) &mdash; The User Who Loves the Most Songs</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Find the <span class="key">unique user</span> who <span class="key">loves strictly more songs than any other user</span>. Assume this user is unique.</p>
+</div>
+
+<h3 id="partc-vocab">Vocab for Part (c)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Mu-expression ($\mu$)</td><td>$(\mu\, x : S \mid P)$ &mdash; "the unique $x$ in $S$ satisfying $P$." Only defined when exactly one such $x$ exists.</td></tr>
+<tr><td>Universal quantifier ($\forall$)</td><td>"For all." Asserts a property holds for every element in a set.</td></tr>
+<tr><td>Cardinality (#)</td><td>The number of elements in a finite set. $\#\{a, b, c\} = 3$.</td></tr>
+</table>
+
+<h3 id="partc-symbols">Symbols for Part (c)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\mu$</td><td>mu (unique selector)</td><td>"the unique element satisfying..."</td></tr>
+<tr><td><code>dom</code></td><td>domain</td><td>the set of all input values of a function</td></tr>
+<tr><td><code>loved</code></td><td>state variable</td><td>maps each user to the set of songs they love</td></tr>
+<tr><td>&forall;</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>&ne;</td><td>not equal</td><td>two values are different</td></tr>
+<tr><td>&bull;</td><td>spot</td><td>separates constraint from expression in a quantifier</td></tr>
+<tr><td><code>#</code></td><td>cardinality</td><td>the number of elements in a set</td></tr>
+<tr><td>&gt;</td><td>strictly greater than</td><td>left side exceeds right side</td></tr>
+</table>
+
+<h3 id="partc-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">mu-expression</span> that finds the unique user who <span class="vocab" data-def="Maps each user to the set of songs they love.">loves</span> more songs than every other user. The problem tells us to assume uniqueness.</p>
+</div>
+
+<div class="warning">
+<strong>Precondition.</strong> The problem says "assume this user is unique." Without uniqueness, the <span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">$\mu$-expression</span> would be undefined. We assume there is no tie for the top spot.
+</div>
+
+<h3 id="partc-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>A <span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">$\mu$-expression</span> has the form ($\mu$ x : S | P). We need:</p>
+<ul>
+<li><strong>Source $S$:</strong> <span class="vocab" data-def="Domain &mdash; the set of all input values for which a function is defined.">dom</span> <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> &mdash; users who love at least one song</li>
+<li><strong>Predicate $P$:</strong> for every <em>other</em> user, $u$ loves strictly more songs &mdash; use <span class="vocab" data-def="Universal quantifier &mdash; for all.">$\forall$</span> with <span class="vocab" data-def="Not equal &mdash; two values are different.">$\neq$</span> and <span class="vocab" data-def="Strictly greater than &mdash; left side exceeds right side.">$>$</span></li>
+</ul>
+</div>
+
+<h3 id="partc-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ol>
+<li><strong><span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">$\mu$</span> skeleton:</strong> draw $u$ from <span class="vocab" data-def="Domain &mdash; the set of all input values for which a function is defined.">dom</span> <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span>.</li>
+<li><strong>Predicate:</strong> <span class="vocab" data-def="Universal quantifier &mdash; for all.">$\forall$</span> $v$ : <span class="vocab" data-def="Domain &mdash; the set of all input values for which a function is defined.">dom</span> <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> | $u$ <span class="vocab" data-def="Not equal &mdash; two values are different.">$\neq$</span> $v$ <span class="vocab" data-def="Spot &mdash; separates constraint from expression in a quantifier.">$\bullet$</span> <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">$\#$</span>(<span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> $u$) <span class="vocab" data-def="Strictly greater than &mdash; left side exceeds right side.">$>$</span> <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">$\#$</span>(<span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> $v$).</li>
+<li><strong>Assemble</strong> into a complete expression.</li>
+</ol>
+</div>
+
+<h3 id="partc-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Start with the <span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">$\mu$</span> skeleton</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\mu$</td><td>mu &mdash; "the unique element satisfying..."</td><td>selects the single user who loves the most songs</td></tr>
+<tr><td>$u$</td><td>bound variable &mdash; represents a candidate user</td><td>stands for the user we are testing</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "drawn from"</td><td>says $u$ comes from the source set</td></tr>
+<tr><td><code>dom</code></td><td>domain &mdash; the set of all input values of a function</td><td>gives the set of users who love at least one song</td></tr>
+<tr><td><code>loved</code></td><td>state variable &mdash; maps each user to the set of songs they love</td><td>provides the source set via its domain</td></tr>
+</table>
+<div class="walkthrough">
+<p>Open the <span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">$\mu$-expression</span>, declare <span class="vocab" data-def="Bound variable &mdash; represents a candidate user.">u</span> <span class="vocab" data-def="Type declaration &mdash; drawn from.">:</span> <span class="vocab" data-def="Domain &mdash; the set of all input values for which a function is defined.">dom</span> <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span>, leaving the predicate as a placeholder:</p>
+$$(\mu\, u : \text{dom}\; loved \;|\; \ldots)$$
+</div>
+
+<h4>Build Step 2 &mdash; Fill in the "most songs" predicate</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&forall;</td><td>universal quantifier &mdash; "for all"</td><td>condition must hold for every other user</td></tr>
+<tr><td>$v$</td><td>bound variable &mdash; represents each comparison user</td><td>the user we compare $u$ against</td></tr>
+<tr><td>$|$</td><td>filter bar &mdash; restricts which elements are considered</td><td>introduces the condition $u \neq v$</td></tr>
+<tr><td>&ne;</td><td>not equal &mdash; two values are different</td><td>excludes $u$ itself from comparison</td></tr>
+<tr><td>&bull;</td><td>spot &mdash; separates constraint from expression</td><td>separates the filter from the condition</td></tr>
+<tr><td><code>#</code></td><td>cardinality &mdash; the number of elements in a set</td><td>counts how many songs each user loves</td></tr>
+<tr><td>&gt;</td><td>strictly greater than &mdash; left side exceeds right side</td><td>$u$'s count must beat every other user's</td></tr>
+</table>
+<div class="walkthrough">
+<p>The predicate says "$u$ loves more songs than every other user." Use <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> over <span class="vocab" data-def="Domain &mdash; the set of all input values for which a function is defined.">dom</span> <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span>, <span class="vocab" data-def="Filter bar &mdash; restricts which elements are considered.">filter</span> to exclude $u$ itself with <span class="vocab" data-def="Not equal &mdash; two values are different.">&ne;</span>, then require <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">#</span>(<span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> $u$) <span class="vocab" data-def="Strictly greater than &mdash; left side exceeds right side.">&gt;</span> <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">#</span>(<span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> $v$):</p>
+$$(\mu\, u : \text{dom}\; loved \;|\; (\forall\, v : \text{dom}\; loved \;|\; u \neq v \bullet \#(loved\; u) > \#(loved\; v)))$$
+</div>
+
+<h4>Build Step 3 &mdash; Complete expression</h4>
+<div class="walkthrough">
+<p>The expression is now complete. The <span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">$\mu$</span> selects the unique $u$ from <span class="vocab" data-def="Domain &mdash; the set of all input values for which a function is defined.">dom</span> <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> such that for every <em>other</em> user $v$, $u$ loves strictly more songs than $v$.</p>
+<p>Let us trace a concrete example. Suppose:</p>
+<ul>
+<li>$loved = \{u_1 \mapsto \{s_1, s_2, s_3\},\; u_2 \mapsto \{s_1, s_4\},\; u_3 \mapsto \{s_5\}\}$</li>
+</ul>
+<p>Then $\#(loved\; u_1) = 3$, $\#(loved\; u_2) = 2$, $\#(loved\; u_3) = 1$.</p>
+<ul>
+<li>$u = u_1$: Is $3 > 2$? Yes. Is $3 > 1$? Yes. Satisfies the predicate.</li>
+<li>$u = u_2$: Is $2 > 3$? No. Fails.</li>
+<li>$u = u_3$: Is $1 > 3$? No. Fails.</li>
+</ul>
+<p>Therefore $C = u_1$.</p>
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$C == (\mu\, u : \text{dom}\; loved \;|\; (\forall\, v : \text{dom}\; loved \;|\; u \neq v \bullet \#(loved\; u) > \#(loved\; v)))$$
+</div>
+<p><em>Assumes a unique maximum exists. If two users tie for most loved songs, <span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">$\mu$</span> is undefined.</em></p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-d">Part (d) &mdash; The Song Loved by the Most Users</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Find the <span class="key">unique song</span> that is <span class="key">loved by strictly more users than any other song</span>. Assume this song is unique.</p>
+</div>
+
+<h3 id="partd-vocab">Vocab for Part (d)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Mu-expression ($\mu$)</td><td>$(\mu\, x : S \mid P)$ &mdash; "the unique $x$ in $S$ satisfying $P$." Only defined when exactly one such $x$ exists.</td></tr>
+<tr><td>Nested comprehension</td><td>A set comprehension used inside another expression &mdash; here, inside $\#\{\ldots\}$ to count elements satisfying a condition.</td></tr>
+<tr><td>Cardinality (#)</td><td>The number of elements in a finite set. $\#\{a, b, c\} = 3$.</td></tr>
+</table>
+
+<h3 id="partd-symbols">Symbols for Part (d)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\mu$</td><td>mu (unique selector)</td><td>"the unique element satisfying..."</td></tr>
+<tr><td><code>songs</code></td><td>state variable</td><td>the full set of all songs on the platform</td></tr>
+<tr><td>&forall;</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>&ne;</td><td>not equal</td><td>two values are different</td></tr>
+<tr><td>&bull;</td><td>spot</td><td>separates constraint from expression in a quantifier</td></tr>
+<tr><td><code>#</code></td><td>cardinality</td><td>the number of elements in a set</td></tr>
+<tr><td>&gt;</td><td>strictly greater than</td><td>left side exceeds right side</td></tr>
+<tr><td>$\{\ |\ \}$</td><td>set comprehension</td><td>iterate over a source, keep elements satisfying a predicate</td></tr>
+<tr><td>&isin;</td><td>element of</td><td>"belongs to" &mdash; a value is a member of a set</td></tr>
+<tr><td><code>loved</code></td><td>state variable</td><td>maps each user to the set of songs they love</td></tr>
+</table>
+
+<h3 id="partd-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">mu-expression</span> that finds the unique song loved by more users than any other song. Unlike Part (c), <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> is indexed by <em>user</em>, not by <em>song</em>. So counting "how many users love song $s$" requires a <span class="vocab" data-def="A set comprehension used inside another expression &mdash; here, inside #{...} to count elements satisfying a condition.">nested comprehension</span>.</p>
+</div>
+
+<div class="warning">
+<strong>Key difficulty.</strong> In Part (c), counting was direct: <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">#</span>(<span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> $u$) gives the number of songs user $u$ loves. But here, <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> is keyed by user, not by song. To count "how many users love song $s$", we must scan all users via a <span class="vocab" data-def="A set comprehension used inside another expression &mdash; here, inside #{...} to count elements satisfying a condition.">nested comprehension</span>.
+</div>
+
+<h3 id="partd-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Same "unique maximum" pattern as Part (c), but with a different counting mechanism:</p>
+<ul>
+<li><strong>Source:</strong> $s$ from <span class="vocab" data-def="The full set of all songs on the platform.">songs</span></li>
+<li><strong>Counting:</strong> <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">#</span>$\{u : UserId \;|\; s$ <span class="vocab" data-def="Element of &mdash; belongs to.">&isin;</span> <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> $u\}$ counts users who love song $s$</li>
+<li><strong>Predicate:</strong> <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> with <span class="vocab" data-def="Not equal &mdash; two values are different.">&ne;</span> and <span class="vocab" data-def="Strictly greater than &mdash; left side exceeds right side.">&gt;</span></li>
+</ul>
+</div>
+
+<h3 id="partd-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ol>
+<li><strong><span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">$\mu$</span> skeleton:</strong> draw $s$ from <span class="vocab" data-def="The full set of all songs on the platform.">songs</span>.</li>
+<li><strong>Counting expression:</strong> <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">#</span>$\{u : UserId \;|\; s$ <span class="vocab" data-def="Element of &mdash; belongs to.">&isin;</span> <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> $u\}$ &mdash; the <span class="vocab" data-def="A set comprehension used inside another expression &mdash; here, inside #{...} to count elements satisfying a condition.">nested comprehension</span>.</li>
+<li><strong>Comparison predicate:</strong> <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> $t$ : <span class="vocab" data-def="The full set of all songs on the platform.">songs</span> | $s$ <span class="vocab" data-def="Not equal &mdash; two values are different.">&ne;</span> $t$ <span class="vocab" data-def="Spot &mdash; separates constraint from expression in a quantifier.">&bull;</span> count($s$) <span class="vocab" data-def="Strictly greater than &mdash; left side exceeds right side.">&gt;</span> count($t$).</li>
+<li><strong>Assemble</strong> into a complete expression.</li>
+</ol>
+</div>
+
+<h3 id="partd-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Start with the <span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">$\mu$</span> skeleton</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\mu$</td><td>mu &mdash; "the unique element satisfying..."</td><td>selects the single song loved by the most users</td></tr>
+<tr><td>$s$</td><td>bound variable &mdash; represents a candidate song</td><td>stands for the song we are testing</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "drawn from"</td><td>says $s$ comes from the source set</td></tr>
+<tr><td><code>songs</code></td><td>state variable &mdash; the full set of all songs on the platform</td><td>provides the source set</td></tr>
+</table>
+<div class="walkthrough">
+<p>Open the <span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">$\mu$-expression</span>, declare <span class="vocab" data-def="Bound variable &mdash; represents a candidate song.">s</span> <span class="vocab" data-def="Type declaration &mdash; drawn from.">:</span> <span class="vocab" data-def="The full set of all songs on the platform.">songs</span>, leaving the predicate as a placeholder:</p>
+$$(\mu\, s : songs \;|\; \ldots)$$
+<p>Note: we draw from <span class="vocab" data-def="The full set of all songs on the platform.">songs</span> (not <span class="vocab" data-def="Domain &mdash; the set of all input values for which a function is defined.">dom</span> <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span>), because <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> is keyed by users, not songs.</p>
+</div>
+
+<h4>Build Step 2 &mdash; Build the counting expression: <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">$\#$</span>{$u$ : UserId | $s$ <span class="vocab" data-def="Element of &mdash; belongs to.">&isin;</span> <span class="vocab" data-def="Maps each user to the set of songs they love.">loved</span> $u$}</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\{\ |\ \}$</td><td>set comprehension &mdash; iterate, filter, collect</td><td>builds the set of users who love song $s$</td></tr>
+<tr><td>$u$</td><td>bound variable &mdash; represents each user</td><td>iterates over all users</td></tr>
+<tr><td>&isin;</td><td>element of &mdash; "belongs to"</td><td>checks whether song $s$ is in user $u$'s love-set</td></tr>
+<tr><td><code>#</code></td><td>cardinality &mdash; the number of elements in a set</td><td>counts the resulting set of users</td></tr>
+</table>
+<div class="walkthrough">
+<p>We construct a <span class="vocab" data-def="A set comprehension used inside another expression &mdash; here, inside #{...} to count elements satisfying a condition.">nested comprehension</span> that collects all users who love a given song $s$:</p>
+$$\{u : UserId \;|\; s \in loved\; u\}$$
+<p>This reads: "the set of all users $u$ such that song $s$ <span class="vocab" data-def="Element of &mdash; belongs to.">belongs to</span> $u$'s love-set." The <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">cardinality</span> <span class="vocab" data-def="Cardinality &mdash; the number of elements in a finite set.">#</span>$\{u : UserId \;|\; s \in loved\; u\}$ is then the number of users who love song $s$.</p>
+</div>
+
+<h4>Build Step 3 &mdash; Fill in the comparison predicate: <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> $t$, <span class="vocab" data-def="Not equal &mdash; two values are different.">&ne;</span>, <span class="vocab" data-def="Strictly greater than &mdash; left side exceeds right side.">&gt;</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&forall;</td><td>universal quantifier &mdash; "for all"</td><td>condition must hold for every other song</td></tr>
+<tr><td>$t$</td><td>bound variable &mdash; represents each comparison song</td><td>the song we compare $s$ against</td></tr>
+<tr><td>&ne;</td><td>not equal &mdash; two values are different</td><td>excludes $s$ itself from comparison</td></tr>
+<tr><td>&bull;</td><td>spot &mdash; separates constraint from expression</td><td>separates the filter from the condition</td></tr>
+<tr><td>&gt;</td><td>strictly greater than &mdash; left side exceeds right side</td><td>$s$'s love-count must beat every other song's</td></tr>
+</table>
+<div class="walkthrough">
+<p>For each candidate song $s$, compare its "love count" against every other song $t$. Use <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> over <span class="vocab" data-def="The full set of all songs on the platform.">songs</span>, filter with <span class="vocab" data-def="Not equal &mdash; two values are different.">&ne;</span>, then require <span class="vocab" data-def="Strictly greater than &mdash; left side exceeds right side.">&gt;</span>:</p>
+$$\forall\, t : songs \;|\; s \neq t \bullet \#\{u : UserId \;|\; s \in loved\; u\} > \#\{u : UserId \;|\; t \in loved\; u\}$$
+</div>
+
+<h4>Build Step 4 &mdash; Complete expression</h4>
+<div class="walkthrough">
+<p>Wrap the predicate inside the <span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">$\mu$</span>:</p>
+$$(\mu\, s : songs \;|\; (\forall\, t : songs \;|\; s \neq t \bullet \#\{u : UserId \;|\; s \in loved\; u\} > \#\{u : UserId \;|\; t \in loved\; u\}))$$
+<p>Let us trace a concrete example. Suppose:</p>
+<ul>
+<li>$songs = \{s_1, s_2, s_3\}$</li>
+<li>$loved = \{u_1 \mapsto \{s_1, s_2\},\; u_2 \mapsto \{s_1, s_3\},\; u_3 \mapsto \{s_1\}\}$</li>
+</ul>
+<p>Count the love-fans for each song:</p>
+<ul>
+<li>$s_1$: Loved by $u_1, u_2, u_3$ &mdash; count = 3</li>
+<li>$s_2$: Loved by $u_1$ &mdash; count = 1</li>
+<li>$s_3$: Loved by $u_2$ &mdash; count = 1</li>
+</ul>
+<p>Checking $s = s_1$: Is $3 > 1$ (vs $s_2$)? Yes. Is $3 > 1$ (vs $s_3$)? Yes. So $s_1$ satisfies.</p>
+<p>Therefore $D = s_1$.</p>
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$D == (\mu\, s : songs \;|\; (\forall\, t : songs \;|\; s \neq t \bullet \#\{u : UserId \;|\; s \in loved\; u\} > \#\{u : UserId \;|\; t \in loved\; u\}))$$
+</div>
+<p><em>Assumes a unique maximum exists. If two songs tie for most loved, <span class="vocab" data-def="(mu x : S | P) &mdash; the unique x in S satisfying P. Only defined when exactly one such x exists.">$\mu$</span> is undefined.</em></p>
+
+<h4>Contrast with Part (c)</h4>
+<table>
+<tr><th>Aspect</th><th>Part (c)</th><th>Part (d)</th></tr>
+<tr>
+<td>What we are finding</td>
+<td>A user</td>
+<td>A song</td>
+</tr>
+<tr>
+<td>Source set</td>
+<td>$\text{dom}\; loved$</td>
+<td>$songs$</td>
+</tr>
+<tr>
+<td>How we count</td>
+<td>$\#(loved\; u)$ &mdash; direct lookup</td>
+<td>$\#\{u : UserId \;|\; s \in loved\; u\}$ &mdash; nested comprehension</td>
+</tr>
+<tr>
+<td>Why the difference</td>
+<td>$loved$ is keyed by user, so looking up "how many songs user $u$ loves" is direct.</td>
+<td>$loved$ is keyed by user, not song. To count "how many users love song $s$", we must scan all users.</td>
+</tr>
+</table>
+</details>
+
+
+<!-- ============================================================ -->
+<h2>Summary</h2>
+
+<table>
+<tr><th>Part</th><th>What it derives</th><th>Key technique</th></tr>
+<tr><td>(a)</td><td>Users with no subscriptions</td><td>$\bigcup$($\text{ran}$ ...) + set difference $\setminus$</td></tr>
+<tr><td>(b)</td><td>Popular playlists ($\geq$ 100 subscribers)</td><td>Set comprehension $\{\ |\ \}$ with $\#$</td></tr>
+<tr><td>(c)</td><td>User who loves the most songs</td><td>$\mu$-expression with $\forall$ + $\#$</td></tr>
+<tr><td>(d)</td><td>Song loved by the most users</td><td>$\mu$-expression with nested comprehension</td></tr>
+</table>
+
+<footer>
+<strong>Exercise 50</strong> &mdash; Streamify: Deriving Information &mdash; Part 3 of 5<br>
+Previous: <a href="exercise_49.html">Exercise 49</a> | Next: <a href="exercise_51.html">Exercise 51</a>
+</footer>
+
+<script>
+function toggleDropdown(el) {
+  var item = el.closest('.nav-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  }
+});
+</script>
+</body>
+</html>

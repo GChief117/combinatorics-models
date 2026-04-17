@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 43 &mdash; Cinema Booking System</title>
+<style>
+body { font-family: Georgia, "Times New Roman", serif; max-width: 860px; margin: 0 auto; padding: 0 20px 40px 20px; background: #ffffff; color: #111111; line-height: 1.55; }
+h1 { border-bottom: 2px solid #111; padding-bottom: 8px; scroll-margin-top: 100px; }
+h2 { margin-top: 40px; border-bottom: 1px solid #999; padding-bottom: 4px; scroll-margin-top: 100px; }
+h3 { margin-top: 28px; scroll-margin-top: 100px; }
+h4 { margin-top: 20px; color: #333; scroll-margin-top: 100px; }
+a { color: #0a3d91; }
+p { margin: 10px 0; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; margin: 12px 0; width: 100%; }
+th, td { border: 1px solid #bbb; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+.concept { background: #fafafa; border-left: 4px solid #888; padding: 10px 16px; margin: 14px 0; }
+.example { background: #fafafa; border-left: 4px solid #2a7a2a; padding: 10px 16px; margin: 14px 0; }
+.practice { background: #fafafa; border-left: 4px solid #1a5fb4; padding: 10px 16px; margin: 14px 0; }
+.warning { background: #fafafa; border-left: 4px solid #c0392b; padding: 10px 16px; margin: 14px 0; }
+.walkthrough { margin-top: 10px; padding: 10px 14px; background: #fffbea; border-left: 4px solid #b58900; }
+.schema-box { background: #f8f8f8; border: 1px solid #ccc; padding: 12px 16px; margin: 12px 0; font-size: 0.95em; overflow-x: auto; }
+details { margin: 10px 0; }
+summary { cursor: pointer; font-weight: bold; color: #0a3d91; }
+code, .sym { font-family: "Menlo", "Courier New", monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+.vocab { border-bottom: 1px dotted #1a5fb4; cursor: pointer; position: relative; color: #0a3d91; padding: 0 2px; }
+.vocab:hover { background-color: #fff3a3; }
+.vocab::after { content: attr(data-def); display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); background: #2a2a2a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; font-style: normal; font-weight: normal; white-space: normal; width: max-content; max-width: 280px; min-width: 180px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
+.vocab:hover::after { display: block; }
+.key { color: #1a5fb4; text-decoration: underline; text-underline-offset: 2px; }
+footer { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 0.85em; color: #666; }
+
+.section-nav { position: sticky; top: 0; z-index: 100; background: #fff; padding: 12px 0; margin: 0 0 24px 0; border-bottom: 1px solid #ccc; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.nav-item { position: relative; }
+.section-nav button { padding: 6px 10px; border: 1px solid #999; background: #fff; cursor: pointer; font-family: inherit; font-size: 0.9em; border-radius: 3px; }
+.section-nav button:hover { background: #eef; }
+.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #999; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 200px; z-index: 200; }
+.nav-item.open .nav-dropdown { display: block; }
+.nav-dropdown li { padding: 0; margin: 0; }
+.nav-dropdown a { display: block; padding: 6px 14px; text-decoration: none; color: #111; font-size: 0.9em; cursor: pointer; }
+.nav-dropdown a:hover { background: #eef; }
+.nav-link { font-size: 0.9em; color: #0a3d91; text-decoration: none; padding: 6px 10px; border: 1px solid #999; border-radius: 3px; }
+.nav-link:hover { background: #eef; }
+</style>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <a class="nav-link" href="exercise_42.html">&larr; Ex 42</a>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (a)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-a"><strong>Part (a)</strong></a></li>
+      <li><a href="#parta-vocab">Vocab</a></li>
+      <li><a href="#parta-symbols">Symbols</a></li>
+      <li><a href="#parta-step1">Step 1</a></li>
+      <li><a href="#parta-step2">Step 2</a></li>
+      <li><a href="#parta-step3">Step 3</a></li>
+      <li><a href="#parta-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (b)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-b"><strong>Part (b)</strong></a></li>
+      <li><a href="#partb-vocab">Vocab</a></li>
+      <li><a href="#partb-symbols">Symbols</a></li>
+      <li><a href="#partb-step1">Step 1</a></li>
+      <li><a href="#partb-step2">Step 2</a></li>
+      <li><a href="#partb-step3">Step 3</a></li>
+      <li><a href="#partb-solution">Solution</a></li>
+    </ul>
+  </div>
+  <a class="nav-link" href="exercise_44.html">Ex 44 &rarr;</a>
+  <a class="nav-link" href="index.html" style="margin-left:auto;">&larr; All Exercises</a>
+</nav>
+
+
+<h1>Exercise 43 &mdash; Cinema Booking System</h1>
+<p><em>Modelling exercise &mdash; building a formal specification step by step.</em></p>
+
+<!-- ============================================================ -->
+<h2>The Scenario</h2>
+
+<div class="concept">
+<p>An online booking system for a group of cinemas reserves seats for individual customers. Each <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span> is uniquely identified by a 4-tuple: (Cinema, Film, Date, Time). The system records which customers have booked which seats for which performances.</p>
+
+<p>The booking information is captured by an <span class="vocab" data-def="Declares a variable and constrains it with a predicate, rather than giving an explicit construction.">axiomatic definition</span>:</p>
+$$bookings : \text{Cinema} \times \text{Film} \times \text{Date} \times \text{Time} \pfun \mathbb{P}(\text{Customer} \times \mathbb{N} \times \mathbb{N})$$
+
+<p>Each performance maps to a set of <span class="vocab" data-def="A triple (customer, first-seat, last-seat) representing a contiguous block of reserved seats.">booking triples</span> $(c, m, n)$ where:</p>
+<ul>
+<li>$c \in \text{Customer}$ &mdash; the customer who made the booking</li>
+<li>$m \in \mathbb{N}$ &mdash; first seat number of the reserved block (lower bound)</li>
+<li>$n \in \mathbb{N}$ &mdash; last seat number of the reserved block (upper bound)</li>
+<li>The reserved seats are the <span class="vocab" data-def="Integer range &mdash; the set {a, a+1, ..., b}.">integer range</span> $m \,..\, n$</li>
+<li>If a person bought one ticket, then $m = n$</li>
+</ul>
+
+<p>You may assume the existence of a function $\text{max} : \text{Cinema} \to \mathbb{N}$ that maps a cinema to the number of seats available in that cinema. The range of seats for each cinema $c$ runs from $1$ to $\text{max}\,c$.</p>
+</div>
+
+<h3>Given Types</h3>
+<table>
+<tr><th>Declaration</th><th>What it is</th><th>Notes</th></tr>
+<tr><td>$[\text{Cinema}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Abstract set of all cinemas</td></tr>
+<tr><td>$[\text{Film}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Abstract set of all films</td></tr>
+<tr><td>$[\text{Date}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Abstract set of all dates</td></tr>
+<tr><td>$[\text{Time}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Abstract set of all times</td></tr>
+<tr><td>$[\text{Customer}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Abstract set of all customers</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>Symbol Table</h2>
+
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\pfun$</td><td>partial function</td><td>a function that may not be defined for every possible input</td></tr>
+<tr><td>$\mathbb{P}$</td><td>power set</td><td>the set of all subsets of a given set</td></tr>
+<tr><td>$\times$</td><td>Cartesian product</td><td>the set of all ordered pairs (or tuples) from two (or more) sets</td></tr>
+<tr><td>$\operatorname{dom}$</td><td>domain</td><td>the set of inputs for which a function is defined</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all" &mdash; a statement must hold for every value in scope</td></tr>
+<tr><td>$\bullet$</td><td>spot / such that</td><td>separates the binding/filter from the body of a quantified expression</td></tr>
+<tr><td>$|$</td><td>such that (filter)</td><td>introduces a filtering condition on bound variables</td></tr>
+<tr><td>$\ne$</td><td>not equal</td><td>two values are different</td></tr>
+<tr><td>$\cap$</td><td>intersection</td><td>the elements that two sets have in common</td></tr>
+<tr><td>$\emptyset$</td><td>empty set</td><td>the set with no members</td></tr>
+<tr><td>$\subseteq$</td><td>subset</td><td>every member of the left set is also a member of the right set</td></tr>
+<tr><td>$..$</td><td>integer range</td><td>$m \,..\, n$ is the set $\{m, m{+}1, \ldots, n\}$</td></tr>
+<tr><td>$\le$</td><td>less than or equal</td><td>the left number is at most the right number</td></tr>
+<tr><td>$\in$</td><td>element of</td><td>a value belongs to a set</td></tr>
+<tr><td>$=$</td><td>equality</td><td>two expressions denote the same value</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier</td><td>"there exists" &mdash; at least one value satisfying the condition</td></tr>
+<tr><td>$\wedge$</td><td>conjunction</td><td>"and" &mdash; both sides must be true</td></tr>
+<tr><td>$\#$</td><td>cardinality</td><td>the number of elements in a finite set</td></tr>
+<tr><td>$\{\ |\ \bullet\ \}$</td><td>set comprehension</td><td>iterate, filter, collect</td></tr>
+<tr><td>$p.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="part-a">Part (a) &mdash; Constraints on <code>bookings</code></h2>
+
+<p>We must express four constraints in predicate logic that ensure the booking system is well-formed.</p>
+
+<!-- ============================================================ -->
+<!-- (a)(i) -->
+<!-- ============================================================ -->
+<h3>(i) No seat sold to more than one customer</h3>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a predicate ensuring that for any single <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span>, <span class="key">no two distinct</span> <span class="vocab" data-def="A triple (customer, first-seat, last-seat) representing a contiguous block of reserved seats.">booking triples</span> reserve <span class="key">overlapping seats</span>.</p>
+</div>
+
+<h3 id="parta-vocab">Vocab for Part (a)(i)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Performance</td><td>A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).</td></tr>
+<tr><td>Block booking</td><td>A contiguous range of seats m..n reserved by one customer.</td></tr>
+<tr><td>Disjoint</td><td>Two sets share no elements &mdash; their intersection is empty.</td></tr>
+<tr><td>Integer range (a..b)</td><td>The set {a, a+1, ..., b}.</td></tr>
+<tr><td>Nested quantification</td><td>A universal quantifier inside another universal quantifier.</td></tr>
+</table>
+
+<h3 id="parta-symbols">Symbols for Part (a)(i)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all" &mdash; a statement must hold for every value in scope</td></tr>
+<tr><td>$\operatorname{dom}$</td><td>domain</td><td>the set of inputs for which a function is defined</td></tr>
+<tr><td>$\bullet$</td><td>spot / such that</td><td>separates the binding/filter from the body of a quantified expression</td></tr>
+<tr><td>$|$</td><td>such that (filter)</td><td>introduces a filtering condition on bound variables</td></tr>
+<tr><td>$\ne$</td><td>not equal</td><td>two values are different</td></tr>
+<tr><td>$..$</td><td>integer range</td><td>$m \,..\, n$ is the set $\{m, m{+}1, \ldots, n\}$</td></tr>
+<tr><td>$\cap$</td><td>intersection</td><td>the elements that two sets have in common</td></tr>
+<tr><td>$\emptyset$</td><td>empty set</td><td>the set with no members</td></tr>
+<tr><td>$p.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+</table>
+
+<h3 id="parta-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="A statement that is either true or false.">predicate</span> that prevents double-booking of seats. For each <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span> $i$, the set <code>bookings</code> $i$ contains all <span class="vocab" data-def="A triple (customer, first-seat, last-seat) representing a contiguous block of reserved seats.">booking triples</span> for that showing. No seat number should appear in two different bookings.</p>
+</div>
+
+<h3 id="parta-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>We use <span class="vocab" data-def="A universal quantifier inside another universal quantifier.">nested quantification</span>: an outer <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> iterates over performances, and an inner <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> iterates over pairs of distinct bookings within each performance. For each pair, we require their seat ranges to be <span class="vocab" data-def="Two sets share no elements &mdash; their intersection is empty.">disjoint</span>.</p>
+</div>
+
+<h3 id="parta-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li><strong>Outer loop:</strong> <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> i : <span class="vocab" data-def="domain &mdash; the set of inputs for which a function is defined">dom</span> <code>bookings</code> &mdash; iterate over every performance.</li>
+<li><strong>Inner loop:</strong> <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> x, y : <code>bookings</code> i <span class="vocab" data-def="such that (filter) &mdash; introduces a filtering condition on bound variables">|</span> x <span class="vocab" data-def="not equal &mdash; two values are different">&ne;</span> y &mdash; take any two different bookings.</li>
+<li><strong>Condition:</strong> (x.2<span class="vocab" data-def="integer range &mdash; the set {m, m+1, ..., n}">..</span>x.3) <span class="vocab" data-def="intersection &mdash; the elements that two sets have in common">&cap;</span> (y.2<span class="vocab" data-def="integer range &mdash; the set {m, m+1, ..., n}">..</span>y.3) = <span class="vocab" data-def="empty set &mdash; the set with no members">&empty;</span> &mdash; their seat ranges must not overlap.</li>
+</ul>
+</div>
+
+<h3 id="parta-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Outer <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> over performances</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>the constraint must hold for every performance</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; represents each performance</td><td>stands for each (Cinema, Film, Date, Time) tuple</td></tr>
+<tr><td>$\operatorname{dom}$</td><td>domain &mdash; the set of inputs for which a function is defined</td><td>gives us all performances that have bookings</td></tr>
+<tr><td>$\text{bookings}$</td><td>the booking function we are constraining</td><td>maps performances to sets of booking triples</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates binding from body</td><td>connects "for all $i$" to the inner predicate</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> to say "for every <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span> <span class="vocab" data-def="Bound variable &mdash; represents each performance.">i</span> in <span class="vocab" data-def="domain &mdash; the set of inputs for which a function is defined">dom</span> <code>bookings</code>":</p>
+$$\forall\, i : \operatorname{dom} bookings \bullet \ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; Inner <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> over pairs of distinct bookings</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>constraint must hold for every pair of bookings</td></tr>
+<tr><td>$x$</td><td>bound variable &mdash; one booking triple</td><td>the first booking being compared</td></tr>
+<tr><td>$y$</td><td>bound variable &mdash; another booking triple</td><td>the second booking being compared</td></tr>
+<tr><td>$\text{bookings}\,i$</td><td>function application &mdash; apply bookings to $i$</td><td>gives the set of booking triples for performance $i$</td></tr>
+<tr><td>$|$</td><td>such that (filter) &mdash; introduces a filtering condition</td><td>restricts to pairs where $x \ne y$</td></tr>
+<tr><td>$\ne$</td><td>not equal &mdash; two values are different</td><td>ensures we compare <em>different</em> bookings</td></tr>
+</table>
+<div class="walkthrough">
+<p>Inside the outer <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span>, use another <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> to iterate over all pairs of bookings <span class="vocab" data-def="Bound variable &mdash; one booking triple.">x</span> and <span class="vocab" data-def="Bound variable &mdash; another booking triple.">y</span> drawn from <code>bookings</code> i, <span class="vocab" data-def="such that (filter) &mdash; introduces a filtering condition">filtered</span> to those where x <span class="vocab" data-def="not equal &mdash; two values are different">&ne;</span> y:</p>
+$$\forall\, i : \operatorname{dom} bookings \bullet \forall\, x, y : bookings\,i\ |\ x \ne y \bullet \ldots$$
+</div>
+
+<h4>Build Step 3 &mdash; Build the seat ranges</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$x.2$</td><td>tuple projection &mdash; extracts the 2nd component</td><td>the lower seat bound of booking $x$</td></tr>
+<tr><td>$x.3$</td><td>tuple projection &mdash; extracts the 3rd component</td><td>the upper seat bound of booking $x$</td></tr>
+<tr><td>$..$</td><td>integer range &mdash; the set $\{m, m{+}1, \ldots, n\}$</td><td>builds the set of seat numbers for each booking</td></tr>
+<tr><td>$y.2$</td><td>tuple projection &mdash; extracts the 2nd component</td><td>the lower seat bound of booking $y$</td></tr>
+<tr><td>$y.3$</td><td>tuple projection &mdash; extracts the 3rd component</td><td>the upper seat bound of booking $y$</td></tr>
+</table>
+<div class="walkthrough">
+<p>Each <span class="vocab" data-def="A triple (customer, first-seat, last-seat) representing a contiguous block of reserved seats.">booking triple</span> is $(c, m, n)$. The seats covered by <span class="vocab" data-def="Bound variable &mdash; one booking triple.">x</span> are $x.2 \,..\, x.3$, and by <span class="vocab" data-def="Bound variable &mdash; another booking triple.">y</span> are $y.2 \,..\, y.3$:</p>
+$$\forall\, i : \operatorname{dom} bookings \bullet \forall\, x, y : bookings\,i\ |\ x \ne y \bullet (x.2 \,..\, x.3) \ldots (y.2 \,..\, y.3) \ldots$$
+</div>
+
+<h4>Build Step 4 &mdash; Require disjointness with <span class="vocab" data-def="intersection &mdash; the elements that two sets have in common">&cap;</span> = <span class="vocab" data-def="empty set &mdash; the set with no members">&empty;</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\cap$</td><td>intersection &mdash; the elements that two sets have in common</td><td>finds seats that appear in both ranges</td></tr>
+<tr><td>$=$</td><td>equality &mdash; two expressions denote the same value</td><td>requires the overlap to be nothing</td></tr>
+<tr><td>$\emptyset$</td><td>empty set &mdash; the set with no members</td><td>no seats may be shared between two bookings</td></tr>
+</table>
+<div class="walkthrough">
+<p>After the inner <span class="vocab" data-def="spot &mdash; separates binding from body">&bull;</span>, require that the seat ranges share no seat. Use <span class="vocab" data-def="intersection &mdash; the elements that two sets have in common">&cap;</span> to find any overlap and require equality with <span class="vocab" data-def="empty set &mdash; the set with no members">&empty;</span>:</p>
+$$\forall\, i : \operatorname{dom} bookings \bullet \forall\, x, y : bookings\,i\ |\ x \ne y \bullet (x.2 \,..\, x.3) \cap (y.2 \,..\, y.3) = \emptyset$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\forall\, i : \operatorname{dom} bookings \bullet \forall\, x, y : bookings\,i\ |\ x \ne y \bullet (x.2 \,..\, x.3) \cap (y.2 \,..\, y.3) = \emptyset$$
+</div>
+<p>"For every <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span>, any two different <span class="vocab" data-def="A triple (customer, first-seat, last-seat) representing a contiguous block of reserved seats.">booking triples</span> must have <span class="vocab" data-def="Two sets share no elements &mdash; their intersection is empty.">disjoint</span> seat ranges &mdash; no seat is sold to more than one customer."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<!-- (a)(ii) -->
+<!-- ============================================================ -->
+<h3>(ii) All seats within valid range</h3>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a predicate ensuring every <span class="key">booked seat number falls within the range</span> $1 \,..\, \text{max}\,c$ where $c$ is the cinema of the <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span>.</p>
+</div>
+
+<h3>Vocab for Part (a)(ii)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Seat validity</td><td>Seats must fall within 1..max c for the cinema c where the booking was made.</td></tr>
+<tr><td>Nested quantification</td><td>A universal quantifier inside another universal quantifier.</td></tr>
+<tr><td>Integer range (a..b)</td><td>The set {a, a+1, ..., b}.</td></tr>
+</table>
+
+<h3>Symbols for Part (a)(ii)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all" &mdash; a statement must hold for every value in scope</td></tr>
+<tr><td>$\operatorname{dom}$</td><td>domain</td><td>the set of inputs for which a function is defined</td></tr>
+<tr><td>$\bullet$</td><td>spot / such that</td><td>separates the binding/filter from the body of a quantified expression</td></tr>
+<tr><td>$\subseteq$</td><td>subset</td><td>every member of the left set is also a member of the right set</td></tr>
+<tr><td>$..$</td><td>integer range</td><td>$m \,..\, n$ is the set $\{m, m{+}1, \ldots, n\}$</td></tr>
+<tr><td>$p.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+<tr><td>$\text{max}$</td><td>seat capacity function</td><td>maps a cinema to its number of seats</td></tr>
+</table>
+
+<h3>Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="A statement that is either true or false.">predicate</span> that ensures every booked seat is a real seat in the cinema. For a <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span> $i$, the cinema is $i.1$ and the valid seat numbers are $1 \,..\, \text{max}(i.1)$. Both the lower and upper bounds of each <span class="vocab" data-def="A contiguous range of seats m..n reserved by one customer.">block booking</span> must lie in this range.</p>
+</div>
+
+<h3>Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Again we use <span class="vocab" data-def="A universal quantifier inside another universal quantifier.">nested quantification</span>: an outer <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> over performances and an inner <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> over booking triples within each performance. For each booking, we check that the seat endpoints fall within the valid range using <span class="vocab" data-def="subset &mdash; every member of the left set is also a member of the right set">&sube;</span>.</p>
+</div>
+
+<h3>Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li><strong>Outer loop:</strong> <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> i : <span class="vocab" data-def="domain &mdash; the set of inputs for which a function is defined">dom</span> <code>bookings</code> &mdash; iterate over every performance.</li>
+<li><strong>Inner loop:</strong> <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> x : <code>bookings</code> i &mdash; iterate over every booking triple.</li>
+<li><strong>Condition:</strong> {x.2, x.3} <span class="vocab" data-def="subset &mdash; every member of the left set is also a member of the right set">&sube;</span> 1..<code>max</code>(i.1) &mdash; both endpoints lie in valid range.</li>
+</ul>
+</div>
+
+<h3>Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Outer <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> over performances</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>the constraint must hold for every performance</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; represents each performance</td><td>stands for each (Cinema, Film, Date, Time) tuple</td></tr>
+<tr><td>$\operatorname{dom}$</td><td>domain &mdash; the set of inputs for which a function is defined</td><td>gives us all performances that have bookings</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates binding from body</td><td>connects "for all $i$" to the inner predicate</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> to say "for every <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span> <span class="vocab" data-def="Bound variable &mdash; represents each performance.">i</span> in <span class="vocab" data-def="domain &mdash; the set of inputs for which a function is defined">dom</span> <code>bookings</code>":</p>
+$$\forall\, i : \operatorname{dom} bookings \bullet \ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; Inner <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> over bookings</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>constraint must hold for every booking triple</td></tr>
+<tr><td>$x$</td><td>bound variable &mdash; one booking triple</td><td>represents each (Customer, lower, upper) in the set</td></tr>
+<tr><td>$\text{bookings}\,i$</td><td>function application &mdash; apply bookings to $i$</td><td>gives the set of booking triples for performance $i$</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates binding from body</td><td>connects "for all $x$" to the condition</td></tr>
+</table>
+<div class="walkthrough">
+<p>Inside the outer <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span>, iterate over each booking <span class="vocab" data-def="Bound variable &mdash; one booking triple.">x</span> in <code>bookings</code> i:</p>
+$$\forall\, i : \operatorname{dom} bookings \bullet \forall\, x : bookings\,i \bullet \ldots$$
+</div>
+
+<h4>Build Step 3 &mdash; Check seat validity with <span class="vocab" data-def="subset &mdash; every member of the left set is also a member of the right set">&sube;</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\{x.2,\, x.3\}$</td><td>set literal &mdash; the two seat endpoints</td><td>collects the lower and upper seat numbers into a set</td></tr>
+<tr><td>$x.2$</td><td>tuple projection &mdash; extracts the 2nd component</td><td>the lower seat bound of booking $x$</td></tr>
+<tr><td>$x.3$</td><td>tuple projection &mdash; extracts the 3rd component</td><td>the upper seat bound of booking $x$</td></tr>
+<tr><td>$\subseteq$</td><td>subset &mdash; every member of the left set is in the right set</td><td>both endpoints must be valid seat numbers</td></tr>
+<tr><td>$1$</td><td>constant &mdash; the lowest valid seat number</td><td>seats start at 1</td></tr>
+<tr><td>$..$</td><td>integer range &mdash; the set $\{m, m{+}1, \ldots, n\}$</td><td>builds the set of valid seat numbers</td></tr>
+<tr><td>$\text{max}(i.1)$</td><td>function application &mdash; apply max to the cinema</td><td>gives the number of seats in the cinema for performance $i$</td></tr>
+<tr><td>$i.1$</td><td>tuple projection &mdash; extracts the 1st component</td><td>gets the Cinema from the performance tuple</td></tr>
+</table>
+<div class="walkthrough">
+<p>After the inner <span class="vocab" data-def="spot &mdash; separates binding from body">&bull;</span>, check that both the lower bound $x.2$ and upper bound $x.3$ are valid seats. We put them in a set $\{x.2, x.3\}$ and require it to be a <span class="vocab" data-def="subset &mdash; every member of the left set is also a member of the right set">subset</span> of $1 \,..\, \text{max}(i.1)$. Since constraint (iii) ensures $x.2 \le x.3$, all intermediate seats are also in range:</p>
+$$\forall\, i : \operatorname{dom} bookings \bullet \forall\, x : bookings\,i \bullet \{x.2,\, x.3\} \subseteq 1 \,..\, \text{max}(i.1)$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\forall\, i : \operatorname{dom} bookings \bullet \forall\, x : bookings\,i \bullet \{x.2,\, x.3\} \subseteq 1 \,..\, \text{max}(i.1)$$
+</div>
+<p>"For every <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span>, every <span class="vocab" data-def="A triple (customer, first-seat, last-seat) representing a contiguous block of reserved seats.">booking triple's</span> lower and upper seat numbers must fall within $1$ to <code>max</code> of that cinema &mdash; <span class="vocab" data-def="Seats must fall within 1..max c for the cinema c where the booking was made.">seat validity</span>."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<!-- (a)(iii) -->
+<!-- ============================================================ -->
+<h3>(iii) Lower bound does not exceed upper bound</h3>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a predicate ensuring every <span class="vocab" data-def="A contiguous range of seats m..n reserved by one customer.">block booking</span> has its <span class="key">lower bound at most equal to its upper bound</span> ($b.2 \le b.3$), so the seat range is <span class="key">non-empty</span>.</p>
+</div>
+
+<h3>Vocab for Part (a)(iii)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Block booking</td><td>A contiguous range of seats m..n reserved by one customer.</td></tr>
+<tr><td>Integer range (a..b)</td><td>The set {a, a+1, ..., b}.</td></tr>
+</table>
+
+<h3>Symbols for Part (a)(iii)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all" &mdash; a statement must hold for every value in scope</td></tr>
+<tr><td>$\operatorname{dom}$</td><td>domain</td><td>the set of inputs for which a function is defined</td></tr>
+<tr><td>$\bullet$</td><td>spot / such that</td><td>separates the binding/filter from the body of a quantified expression</td></tr>
+<tr><td>$\le$</td><td>less than or equal</td><td>the left number is at most the right number</td></tr>
+<tr><td>$p.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+</table>
+
+<h3>Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>Each <span class="vocab" data-def="A triple (customer, first-seat, last-seat) representing a contiguous block of reserved seats.">booking triple</span> $b = (c, m, n)$ represents seats $m \,..\, n$. If $m > n$, then $m \,..\, n = \emptyset$ and the customer would have booked zero seats &mdash; a meaningless booking. We must prevent this.</p>
+</div>
+
+<h3>Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Simple <span class="vocab" data-def="A universal quantifier inside another universal quantifier.">nested quantification</span>: for every performance and every booking within it, require $b.2 \le b.3$.</p>
+</div>
+
+<h3>Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li><strong>Outer loop:</strong> <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> i : <span class="vocab" data-def="domain &mdash; the set of inputs for which a function is defined">dom</span> <code>bookings</code></li>
+<li><strong>Inner loop:</strong> <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> b : <code>bookings</code> i</li>
+<li><strong>Condition:</strong> b.2 <span class="vocab" data-def="less than or equal &mdash; the left number is at most the right number">&le;</span> b.3</li>
+</ul>
+</div>
+
+<h3>Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> over performances and bookings</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>constraint must hold for every performance and every booking</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; represents each performance</td><td>stands for each (Cinema, Film, Date, Time) tuple</td></tr>
+<tr><td>$\operatorname{dom}$</td><td>domain &mdash; the set of inputs for which a function is defined</td><td>gives us all performances that have bookings</td></tr>
+<tr><td>$b$</td><td>bound variable &mdash; one booking triple</td><td>represents each (Customer, lower, upper) triple</td></tr>
+<tr><td>$\text{bookings}\,i$</td><td>function application &mdash; apply bookings to $i$</td><td>gives the set of booking triples for performance $i$</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates binding from body</td><td>connects the quantifiers to the condition</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use nested <span class="vocab" data-def="universal quantifier &mdash; &quot;for all&quot;">&forall;</span> to iterate over every performance <span class="vocab" data-def="Bound variable &mdash; represents each performance.">i</span> and every booking <span class="vocab" data-def="Bound variable &mdash; one booking triple.">b</span>:</p>
+$$\forall\, i : \operatorname{dom} bookings \bullet \forall\, b : bookings\,i \bullet \ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; The ordering condition b.2 <span class="vocab" data-def="less than or equal &mdash; the left number is at most the right number">&le;</span> b.3</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$b.2$</td><td>tuple projection &mdash; extracts the 2nd component</td><td>the lower seat bound of booking $b$</td></tr>
+<tr><td>$\le$</td><td>less than or equal &mdash; the left number is at most the right number</td><td>requires the lower bound not to exceed the upper bound</td></tr>
+<tr><td>$b.3$</td><td>tuple projection &mdash; extracts the 3rd component</td><td>the upper seat bound of booking $b$</td></tr>
+</table>
+<div class="walkthrough">
+<p>After the inner <span class="vocab" data-def="spot &mdash; separates binding from body">&bull;</span>, require that the lower seat bound $b.2$ is at most the upper seat bound $b.3$:</p>
+$$\forall\, i : \operatorname{dom} bookings \bullet \forall\, b : bookings\,i \bullet b.2 \le b.3$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\forall\, i : \operatorname{dom} bookings \bullet \forall\, b : bookings\,i \bullet b.2 \le b.3$$
+</div>
+<p>"For every <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span>, every <span class="vocab" data-def="A triple (customer, first-seat, last-seat) representing a contiguous block of reserved seats.">booking triple's</span> lower bound must not exceed its upper bound &mdash; the seat range is always non-empty."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<!-- (a)(iv) -->
+<!-- ============================================================ -->
+<h3>(iv) No two reserved blocks overlap</h3>
+
+<div class="practice">
+<p><strong>Task:</strong> State whether a <span class="key">separate constraint is needed</span> to prevent two reserved <span class="vocab" data-def="A contiguous range of seats m..n reserved by one customer.">blocks</span> from overlapping, or whether this is <span class="key">already captured by an earlier constraint</span>.</p>
+</div>
+
+<h3>Vocab for Part (a)(iv)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Disjoint</td><td>Two sets share no elements &mdash; their intersection is empty.</td></tr>
+<tr><td>Block booking</td><td>A contiguous range of seats m..n reserved by one customer.</td></tr>
+</table>
+
+<h3>Symbols for Part (a)(iv)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\cap$</td><td>intersection</td><td>the elements that two sets have in common</td></tr>
+<tr><td>$\emptyset$</td><td>empty set</td><td>the set with no members</td></tr>
+<tr><td>$\ne$</td><td>not equal</td><td>two values are different</td></tr>
+</table>
+
+<h3>Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>"No two reserved blocks overlap" means that for distinct bookings at the same <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span>, their seat ranges share no seat number. This is a <span class="vocab" data-def="Two sets share no elements &mdash; their intersection is empty.">disjointness</span> requirement.</p>
+</div>
+
+<h3>Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Compare this requirement with constraint (i). Constraint (i) says: for any two different bookings $x \ne y$ at the same <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span>, $(x.2 \,..\, x.3) \cap (y.2 \,..\, y.3) = \emptyset$. This is exactly the "no overlapping blocks" requirement.</p>
+</div>
+
+<h3>Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p>No new formula is needed. The pairwise <span class="vocab" data-def="Two sets share no elements &mdash; their intersection is empty.">disjointness</span> of seat ranges in constraint (i) already prevents any two reserved blocks from sharing a seat.</p>
+</div>
+
+<h3>Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Observe that constraint (i) already covers this</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$(x.2 \,..\, x.3) \cap (y.2 \,..\, y.3) = \emptyset$</td><td>disjointness of seat ranges &mdash; from constraint (i)</td><td>prevents any two distinct bookings from sharing any seat</td></tr>
+</table>
+<div class="walkthrough">
+<p>The requirement "no two reserved blocks can overlap" is identical to the <span class="vocab" data-def="Two sets share no elements &mdash; their intersection is empty.">disjointness</span> condition from constraint (i): $(x.2 \,..\, x.3) \cap (y.2 \,..\, y.3) = \emptyset$ for $x \ne y$ at the same <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span>. No additional formula is required.</p>
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+<p>Already enforced by constraint (i): the pairwise disjointness of seat ranges $(x.2 \,..\, x.3) \cap (y.2 \,..\, y.3) = \emptyset$ for distinct bookings $x \ne y$ at the same performance is exactly the "no overlapping blocks" requirement.</p>
+</div>
+<p>"No two reserved blocks can overlap" and "no seat is sold to more than one customer" are the same constraint, expressed differently."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-b">Part (b) &mdash; Set Comprehensions</h2>
+
+<p>We now write set comprehensions to extract information from the booking system.</p>
+
+<!-- ============================================================ -->
+<!-- (b)(i) -->
+<!-- ============================================================ -->
+<h3>(i) Films shown at the Banbury cinema</h3>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span> that returns the set of <span class="key">all films</span> that have at least one <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span> at the <span class="key"><code>Banbury</code> cinema</span>.</p>
+</div>
+
+<h3 id="partb-vocab">Vocab for Part (b)(i)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Set comprehension</td><td>An expression { decl | filter . output } that builds a set by iterating, filtering, and collecting.</td></tr>
+<tr><td>Declaration</td><td>The variable and its source set &mdash; where we draw elements from.</td></tr>
+<tr><td>Filter</td><td>A predicate that restricts which elements are kept.</td></tr>
+<tr><td>Output expression</td><td>What we collect for each qualifying element.</td></tr>
+</table>
+
+<h3 id="partb-symbols">Symbols for Part (b)(i)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\{\ |\ \bullet\ \}$</td><td>set comprehension</td><td>iterate, filter, collect</td></tr>
+<tr><td>$\operatorname{dom}$</td><td>domain</td><td>the set of inputs for which a function is defined</td></tr>
+<tr><td>$|$</td><td>filter bar</td><td>restricts which elements are considered</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates constraint from expression</td></tr>
+<tr><td>$=$</td><td>equality</td><td>two expressions denote the same value</td></tr>
+<tr><td>$p.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+</table>
+
+<h3 id="partb-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span> that collects <em>films</em> (not full performance tuples) that have been shown at <code>Banbury</code>. Each <span class="vocab" data-def="A unique showing of a film, identified by the 4-tuple (Cinema, Film, Date, Time).">performance</span> in <span class="vocab" data-def="domain &mdash; the set of inputs for which a function is defined">dom</span> <code>bookings</code> is a tuple $(Cinema, Film, Date, Time)$.</p>
+</div>
+
+<h3 id="partb-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>A <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span> has three slots: { <span class="vocab" data-def="The variable and its source set &mdash; where we draw elements from.">declaration</span> <span class="vocab" data-def="filter bar &mdash; restricts which elements are considered">|</span> <span class="vocab" data-def="A predicate that restricts which elements are kept.">filter</span> <span class="vocab" data-def="spot &mdash; separates constraint from expression">&bull;</span> <span class="vocab" data-def="What we collect for each qualifying element.">output</span> }. We iterate over all performances, keep only those at <code>Banbury</code>, and extract the film.</p>
+</div>
+
+<h3 id="partb-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li><strong><span class="vocab" data-def="The variable and its source set &mdash; where we draw elements from.">Declaration</span>:</strong> draw i from <span class="vocab" data-def="domain &mdash; the set of inputs for which a function is defined">dom</span> <code>bookings</code></li>
+<li><strong><span class="vocab" data-def="A predicate that restricts which elements are kept.">Filter</span>:</strong> i.1 = <code>Banbury</code> (the cinema component is Banbury)</li>
+<li><strong><span class="vocab" data-def="What we collect for each qualifying element.">Output</span>:</strong> i.2 (the film component)</li>
+</ul>
+</div>
+
+<h3 id="partb-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Declare the iteration variable</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\{$</td><td>set comprehension &mdash; opening brace</td><td>begins the set comprehension</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; represents each performance</td><td>iterates over all performances in the system</td></tr>
+<tr><td>$\operatorname{dom}$</td><td>domain &mdash; the set of inputs for which a function is defined</td><td>gives us all performances that have bookings</td></tr>
+<tr><td>$\text{bookings}$</td><td>the booking function</td><td>the source we are querying</td></tr>
+</table>
+<div class="walkthrough">
+<p>Start the <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span> by declaring <span class="vocab" data-def="Bound variable &mdash; represents each performance.">i</span> drawn from <span class="vocab" data-def="domain &mdash; the set of inputs for which a function is defined">dom</span> <code>bookings</code>:</p>
+$$\{i : \operatorname{dom} bookings\ \ldots\ \}$$
+</div>
+
+<h4>Build Step 2 &mdash; Filter to <code>Banbury</code> performances</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$|$</td><td>filter bar &mdash; restricts which elements are considered</td><td>introduces the condition on $i$</td></tr>
+<tr><td>$i.1$</td><td>tuple projection &mdash; extracts the 1st component</td><td>gets the Cinema from the performance tuple</td></tr>
+<tr><td>$=$</td><td>equality &mdash; two expressions denote the same value</td><td>requires the cinema to be Banbury</td></tr>
+<tr><td>$\text{Banbury}$</td><td>constant &mdash; a specific cinema</td><td>the cinema we are filtering for</td></tr>
+</table>
+<div class="walkthrough">
+<p>Add the <span class="vocab" data-def="A predicate that restricts which elements are kept.">filter</span>: keep only performances where the cinema (component 1) is <code>Banbury</code>:</p>
+$$\{i : \operatorname{dom} bookings\ |\ i.1 = \text{Banbury}\ \ldots\ \}$$
+</div>
+
+<h4>Build Step 3 &mdash; Output the film with <span class="vocab" data-def="spot &mdash; separates constraint from expression">&bull;</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates constraint from expression</td><td>separates the filter from what we collect</td></tr>
+<tr><td>$i.2$</td><td>tuple projection &mdash; extracts the 2nd component</td><td>gets the Film from the performance tuple</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="spot &mdash; separates constraint from expression">&bull;</span>, output the film component $i.2$. Since the result is a set, duplicate films are automatically removed:</p>
+$$\{i : \operatorname{dom} bookings\ |\ i.1 = \text{Banbury} \bullet i.2\}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\{i : \operatorname{dom} bookings \mid i.1 = \text{Banbury} \bullet i.2\}$$
+</div>
+<p>"The set of films from all performances where the cinema is Banbury."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<!-- (b)(ii) -->
+<!-- ============================================================ -->
+<h3>(ii) Pairs of (Film, (Cinema, Number of Days))</h3>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span> that produces, for each <span class="key">(cinema, film) combination</span> present in the bookings, a pair $(f,\; (c,\; \text{<span class="key">number of distinct days</span>}))$.</p>
+</div>
+
+<h3>Vocab for Part (b)(ii)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Set comprehension</td><td>An expression { decl | filter . output } that builds a set by iterating, filtering, and collecting.</td></tr>
+<tr><td>Nested set comprehension</td><td>A set comprehension used inside another expression, often for counting.</td></tr>
+<tr><td>Cardinality</td><td>The number of elements in a finite set, written #S.</td></tr>
+</table>
+
+<h3>Symbols for Part (b)(ii)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\{\ |\ \bullet\ \}$</td><td>set comprehension</td><td>iterate, filter, collect</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier</td><td>"there exists" &mdash; at least one value satisfying the condition</td></tr>
+<tr><td>$\wedge$</td><td>conjunction</td><td>"and" &mdash; both sides must be true</td></tr>
+<tr><td>$\operatorname{dom}$</td><td>domain</td><td>the set of inputs for which a function is defined</td></tr>
+<tr><td>$\#$</td><td>cardinality</td><td>the number of elements in a finite set</td></tr>
+<tr><td>$=$</td><td>equality</td><td>two expressions denote the same value</td></tr>
+<tr><td>$p.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates constraint from expression</td></tr>
+<tr><td>$|$</td><td>filter bar</td><td>restricts which elements are considered</td></tr>
+</table>
+
+<h3>Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span> that pairs each film with a (cinema, day-count) pair. The day-count is the number of distinct dates on which that film was shown at that cinema. This requires a <span class="vocab" data-def="A set comprehension used inside another expression, often for counting.">nested set comprehension</span> to count the dates.</p>
+</div>
+
+<h3>Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Two layers of work:</p>
+<ol>
+<li><strong>Outer:</strong> iterate over all (Cinema, Film) combinations that actually appear in the bookings.</li>
+<li><strong>Inner:</strong> for each such pair, count the distinct dates using <span class="vocab" data-def="The number of elements in a finite set, written #S.">cardinality</span> of a <span class="vocab" data-def="A set comprehension used inside another expression, often for counting.">nested set comprehension</span>.</li>
+</ol>
+<p>We use an <span class="vocab" data-def="existential quantifier &mdash; &quot;there exists&quot;">existential</span> quantifier in the filter to ensure we only output (cinema, film) pairs that genuinely appear in the bookings.</p>
+</div>
+
+<h3>Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li><strong>Declaration:</strong> c : Cinema; f : Film</li>
+<li><strong>Filter:</strong> <span class="vocab" data-def="existential quantifier &mdash; &quot;there exists&quot;">&exist;</span> i : <span class="vocab" data-def="domain &mdash; the set of inputs for which a function is defined">dom</span> <code>bookings</code> <span class="vocab" data-def="spot &mdash; separates constraint from expression">&bull;</span> i.1 = c <span class="vocab" data-def="conjunction &mdash; &quot;and&quot;">&and;</span> i.2 = f</li>
+<li><strong>Count:</strong> <span class="vocab" data-def="The number of elements in a finite set, written #S.">#</span>{d : Date | <span class="vocab" data-def="existential quantifier &mdash; &quot;there exists&quot;">&exist;</span> j : <span class="vocab" data-def="domain &mdash; the set of inputs for which a function is defined">dom</span> <code>bookings</code> <span class="vocab" data-def="spot &mdash; separates constraint from expression">&bull;</span> j.1 = c <span class="vocab" data-def="conjunction &mdash; &quot;and&quot;">&and;</span> j.2 = f <span class="vocab" data-def="conjunction &mdash; &quot;and&quot;">&and;</span> j.3 = d}</li>
+<li><strong>Output:</strong> (f, (c, count))</li>
+</ul>
+</div>
+
+<h3>Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Declare c and f with an existential filter</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\{$</td><td>set comprehension &mdash; opening brace</td><td>begins the outer set comprehension</td></tr>
+<tr><td>$c$</td><td>bound variable &mdash; a cinema</td><td>iterates over all cinemas</td></tr>
+<tr><td>$\text{Cinema}$</td><td>given type &mdash; the set of all cinemas</td><td>the type $c$ is drawn from</td></tr>
+<tr><td>$;$</td><td>separator &mdash; separates declarations</td><td>separates the two bound variables</td></tr>
+<tr><td>$f$</td><td>bound variable &mdash; a film</td><td>iterates over all films</td></tr>
+<tr><td>$\text{Film}$</td><td>given type &mdash; the set of all films</td><td>the type $f$ is drawn from</td></tr>
+<tr><td>$|$</td><td>filter bar &mdash; restricts which elements are considered</td><td>introduces the existence check</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier &mdash; "there exists"</td><td>requires at least one matching performance</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; a performance in dom bookings</td><td>witnesses that the (c, f) pair actually appears</td></tr>
+<tr><td>$\wedge$</td><td>conjunction &mdash; "and"</td><td>combines the two matching conditions</td></tr>
+<tr><td>$i.1$</td><td>tuple projection &mdash; extracts the 1st component</td><td>the cinema of performance $i$</td></tr>
+<tr><td>$i.2$</td><td>tuple projection &mdash; extracts the 2nd component</td><td>the film of performance $i$</td></tr>
+</table>
+<div class="walkthrough">
+<p>Start the outer <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span> by declaring <span class="vocab" data-def="Bound variable &mdash; a cinema.">c</span> : Cinema and <span class="vocab" data-def="Bound variable &mdash; a film.">f</span> : Film. Use the <span class="vocab" data-def="filter bar &mdash; restricts which elements are considered">filter bar</span> with <span class="vocab" data-def="existential quantifier &mdash; &quot;there exists&quot;">&exist;</span> to keep only pairs that actually appear in the bookings:</p>
+$$\{c : \text{Cinema};\; f : \text{Film}\ |\ (\exists\, i : \operatorname{dom} bookings \bullet i.1 = c \wedge i.2 = f)\ \ldots\ \}$$
+</div>
+
+<h4>Build Step 2 &mdash; Build the counting expression <span class="vocab" data-def="The number of elements in a finite set, written #S.">#</span>{...}</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\#$</td><td>cardinality &mdash; the number of elements in a finite set</td><td>counts the distinct dates</td></tr>
+<tr><td>$d$</td><td>bound variable &mdash; a date</td><td>iterates over all dates</td></tr>
+<tr><td>$\text{Date}$</td><td>given type &mdash; the set of all dates</td><td>the type $d$ is drawn from</td></tr>
+</table>
+<div class="walkthrough">
+<p>We need the number of distinct dates on which film <span class="vocab" data-def="Bound variable &mdash; a film.">f</span> was shown at cinema <span class="vocab" data-def="Bound variable &mdash; a cinema.">c</span>. Use <span class="vocab" data-def="The number of elements in a finite set, written #S.">#</span> applied to a <span class="vocab" data-def="A set comprehension used inside another expression, often for counting.">nested set comprehension</span> that collects matching dates:</p>
+$$\#\{d : \text{Date}\ |\ \ldots\ \}$$
+</div>
+
+<h4>Build Step 3 &mdash; Build the nested existential for matching performances</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\exists$</td><td>existential quantifier &mdash; "there exists"</td><td>requires at least one performance matching $c$, $f$, and $d$</td></tr>
+<tr><td>$j$</td><td>bound variable &mdash; a performance (different name to avoid clash)</td><td>witnesses the existence of a performance on date $d$</td></tr>
+<tr><td>$j.1$</td><td>tuple projection &mdash; extracts the 1st component</td><td>the cinema of performance $j$</td></tr>
+<tr><td>$j.2$</td><td>tuple projection &mdash; extracts the 2nd component</td><td>the film of performance $j$</td></tr>
+<tr><td>$j.3$</td><td>tuple projection &mdash; extracts the 3rd component</td><td>the date of performance $j$</td></tr>
+<tr><td>$\wedge$</td><td>conjunction &mdash; "and"</td><td>combines the three matching conditions</td></tr>
+</table>
+<div class="walkthrough">
+<p>Inside the <span class="vocab" data-def="A set comprehension used inside another expression, often for counting.">nested set comprehension</span>, the filter checks that date <span class="vocab" data-def="Bound variable &mdash; a date.">d</span> actually appears in a performance for cinema <span class="vocab" data-def="Bound variable &mdash; a cinema.">c</span> and film <span class="vocab" data-def="Bound variable &mdash; a film.">f</span>. We use a fresh variable <span class="vocab" data-def="Bound variable &mdash; a performance (different name to avoid clash).">j</span> to avoid clashing with the outer $i$:</p>
+$$\#\{d : \text{Date} \mid \exists\, j : \operatorname{dom} bookings \bullet j.1 = c \wedge j.2 = f \wedge j.3 = d\}$$
+</div>
+
+<h4>Build Step 4 &mdash; Assemble the output pair</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates constraint from expression</td><td>separates the filter from the output</td></tr>
+<tr><td>$(f,\; (c,\; \ldots))$</td><td>nested pair &mdash; the output shape</td><td>pairs the film with (cinema, day-count)</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="spot &mdash; separates constraint from expression">&bull;</span>, output a nested pair: the film <span class="vocab" data-def="Bound variable &mdash; a film.">f</span> paired with (<span class="vocab" data-def="Bound variable &mdash; a cinema.">c</span>, count). Putting everything together:</p>
+$$\{c : \text{Cinema};\; f : \text{Film} \mid (\exists\, i : \operatorname{dom} bookings \bullet i.1 = c \wedge i.2 = f) \bullet$$
+$$\quad (f,\; (c,\; \#\{d : \text{Date} \mid \exists\, j : \operatorname{dom} bookings \bullet j.1 = c \wedge j.2 = f \wedge j.3 = d\}))\}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\{c : \text{Cinema};\; f : \text{Film} \mid (\exists\, i : \operatorname{dom} bookings \bullet i.1 = c \wedge i.2 = f) \bullet$$
+$$\quad (f,\; (c,\; \#\{d : \text{Date} \mid \exists\, j : \operatorname{dom} bookings \bullet j.1 = c \wedge j.2 = f \wedge j.3 = d\}))\}$$
+</div>
+<p>"For every (cinema, film) pair that actually appears in the bookings, output the film paired with the cinema and the count of distinct dates that film was shown at that cinema."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2>Summary</h2>
+
+<table>
+<tr><th>Part</th><th>What it expresses</th><th>Key technique</th></tr>
+<tr><td>(a)(i)</td><td>No seat sold to more than one customer</td><td>Nested $\forall$ with pairwise disjointness: $(x.2\,..\,x.3) \cap (y.2\,..\,y.3) = \emptyset$</td></tr>
+<tr><td>(a)(ii)</td><td>All seats within valid range</td><td>Nested $\forall$ with $\{x.2, x.3\} \subseteq 1\,..\,\text{max}(i.1)$</td></tr>
+<tr><td>(a)(iii)</td><td>Lower bound $\le$ upper bound</td><td>Nested $\forall$ with $b.2 \le b.3$</td></tr>
+<tr><td>(a)(iv)</td><td>No overlapping blocks</td><td>Already enforced by (a)(i)</td></tr>
+<tr><td>(b)(i)</td><td>Films shown at Banbury</td><td>Set comprehension with filter $i.1 = \text{Banbury}$, output $i.2$</td></tr>
+<tr><td>(b)(ii)</td><td>Film, Cinema, day-count pairs</td><td>Nested set comprehension with $\exists$ filter and $\#\{\ldots\}$ counting</td></tr>
+</table>
+
+<footer>Exercise 43 &mdash; Cinema Booking System &mdash; Z Specification</footer>
+
+<script>
+function toggleDropdown(el) {
+  var item = el.closest('.nav-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  }
+});
+</script>
+</body>
+</html>

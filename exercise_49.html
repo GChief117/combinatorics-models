@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 49 &mdash; Streamify: Love/Hate Songs</title>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+body { font-family: Georgia, "Times New Roman", serif; max-width: 860px; margin: 0 auto; padding: 0 20px 40px 20px; background: #ffffff; color: #111111; line-height: 1.55; }
+h1 { border-bottom: 2px solid #111; padding-bottom: 8px; scroll-margin-top: 100px; }
+h2 { margin-top: 40px; border-bottom: 1px solid #999; padding-bottom: 4px; scroll-margin-top: 100px; }
+h3 { margin-top: 28px; scroll-margin-top: 100px; }
+h4 { margin-top: 20px; color: #333; scroll-margin-top: 100px; }
+a { color: #0a3d91; }
+p { margin: 10px 0; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; margin: 12px 0; width: 100%; }
+th, td { border: 1px solid #bbb; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+.concept { background: #fafafa; border-left: 4px solid #888; padding: 10px 16px; margin: 14px 0; }
+.example { background: #fafafa; border-left: 4px solid #2a7a2a; padding: 10px 16px; margin: 14px 0; }
+.practice { background: #fafafa; border-left: 4px solid #1a5fb4; padding: 10px 16px; margin: 14px 0; }
+.warning { background: #fafafa; border-left: 4px solid #c0392b; padding: 10px 16px; margin: 14px 0; }
+.walkthrough { margin-top: 10px; padding: 10px 14px; background: #fffbea; border-left: 4px solid #b58900; }
+.schema-box { background: #f8f8f8; border: 1px solid #ccc; padding: 12px 16px; margin: 12px 0; font-size: 0.95em; overflow-x: auto; }
+details { margin: 10px 0; }
+summary { cursor: pointer; font-weight: bold; color: #0a3d91; }
+code, .sym { font-family: "Menlo", "Courier New", monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+.vocab { border-bottom: 1px dotted #1a5fb4; cursor: pointer; position: relative; color: #0a3d91; padding: 0 2px; }
+.vocab:hover { background-color: #fff3a3; }
+.vocab::after { content: attr(data-def); display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); background: #2a2a2a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; font-style: normal; font-weight: normal; white-space: normal; width: max-content; max-width: 280px; min-width: 180px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
+.vocab:hover::after { display: block; }
+.key { color: #1a5fb4; text-decoration: underline; text-underline-offset: 2px; }
+footer { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 0.85em; color: #666; }
+
+.section-nav { position: sticky; top: 0; z-index: 100; background: #fff; padding: 12px 0; margin: 0 0 24px 0; border-bottom: 1px solid #ccc; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.nav-item { position: relative; }
+.section-nav button { padding: 6px 10px; border: 1px solid #999; background: #fff; cursor: pointer; font-family: inherit; font-size: 0.9em; border-radius: 3px; }
+.section-nav button:hover { background: #eef; }
+.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #999; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 200px; z-index: 200; }
+.nav-item.open .nav-dropdown { display: block; }
+.nav-dropdown li { padding: 0; margin: 0; }
+.nav-dropdown a { display: block; padding: 6px 14px; text-decoration: none; color: #111; font-size: 0.9em; cursor: pointer; }
+.nav-dropdown a:hover { background: #eef; }
+.nav-link { font-size: 0.9em; color: #0a3d91; text-decoration: none; padding: 6px 10px; border: 1px solid #999; border-radius: 3px; }
+.nav-link:hover { background: #eef; }
+</style>
+</head>
+<body>
+
+<nav class="section-nav">
+  <a class="nav-link" href="exercise_48.html">&larr; Ex 48</a>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (a)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-a"><strong>Part (a)</strong></a></li>
+      <li><a href="#parta-vocab">Vocab</a></li>
+      <li><a href="#parta-symbols">Symbols</a></li>
+      <li><a href="#parta-step1">Step 1</a></li>
+      <li><a href="#parta-step2">Step 2</a></li>
+      <li><a href="#parta-step3">Step 3</a></li>
+      <li><a href="#parta-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (b)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-b"><strong>Part (b)</strong></a></li>
+      <li><a href="#partb-vocab">Vocab</a></li>
+      <li><a href="#partb-symbols">Symbols</a></li>
+      <li><a href="#partb-step1">Step 1</a></li>
+      <li><a href="#partb-step2">Step 2</a></li>
+      <li><a href="#partb-step3">Step 3</a></li>
+      <li><a href="#partb-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (c)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-c"><strong>Part (c)</strong></a></li>
+      <li><a href="#partc-vocab">Vocab</a></li>
+      <li><a href="#partc-symbols">Symbols</a></li>
+      <li><a href="#partc-step1">Step 1</a></li>
+      <li><a href="#partc-step2">Step 2</a></li>
+      <li><a href="#partc-step3">Step 3</a></li>
+      <li><a href="#partc-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (d)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-d"><strong>Part (d)</strong></a></li>
+      <li><a href="#partd-vocab">Vocab</a></li>
+      <li><a href="#partd-symbols">Symbols</a></li>
+      <li><a href="#partd-step1">Step 1</a></li>
+      <li><a href="#partd-step2">Step 2</a></li>
+      <li><a href="#partd-step3">Step 3</a></li>
+      <li><a href="#partd-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (e)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-e"><strong>Part (e)</strong></a></li>
+      <li><a href="#parte-vocab">Vocab</a></li>
+      <li><a href="#parte-symbols">Symbols</a></li>
+      <li><a href="#parte-step1">Step 1</a></li>
+      <li><a href="#parte-step2">Step 2</a></li>
+      <li><a href="#parte-step3">Step 3</a></li>
+      <li><a href="#parte-solution">Solution</a></li>
+    </ul>
+  </div>
+  <a class="nav-link" href="exercise_50.html">Ex 50 &rarr;</a>
+  <a class="nav-link" href="index.html" style="margin-left:auto;">&larr; All Exercises</a>
+</nav>
+
+
+<h1>Exercise 49 &mdash; Streamify: Love/Hate Songs</h1>
+<p><em>Z Notation Modelling &mdash; Part 2 of a 5-exercise series</em></p>
+
+<!-- ============================================================ -->
+<h2>The Scenario</h2>
+
+<div class="concept">
+<p>This exercise extends the Streamify base system defined in <a href="exercise_48.html">Exercise 48</a>. Users can now express opinions about songs by <em>loving</em> or <em>hating</em> them. Each user maps to a finite set of songs they love and a finite set of songs they hate.</p>
+<p>The key modelling challenge is ensuring that love and hate are <span class="vocab" data-def="Mutual exclusivity &mdash; a song cannot be in both sets for the same user.">mutually exclusive</span> for the same user and song.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Context from Exercise 48</h2>
+
+<p>The base system already tracks:</p>
+<ul>
+<li>$songs : \mathbb{F}\; SongId$ &mdash; the catalogue of songs on the platform.</li>
+<li>$users : \mathbb{F}\; UserId$ &mdash; the registered users.</li>
+<li>$playlists$, $playlist\_owner$, $playlist\_subscribers$ &mdash; playlist data with associated integrity constraints.</li>
+</ul>
+<p>We now extend this system with two new state variables.</p>
+
+<!-- ============================================================ -->
+<h2>New Declarations</h2>
+
+<div class="schema-box">
+<strong>StreamifyLoveHate (extends Streamify)</strong><br>
+$hated : UserId \;{\pfun}\; \mathbb{F}\; SongId$<br>
+$loved : UserId \;{\pfun}\; \mathbb{F}\; SongId$
+</div>
+
+<div class="walkthrough">
+<strong>Reading the declarations:</strong>
+<table>
+<tr><th>Variable</th><th>Type</th><th>English meaning</th></tr>
+<tr>
+<td>$hated$</td>
+<td>$UserId \;{\pfun}\; \mathbb{F}\; SongId$</td>
+<td>A <span class="vocab" data-def="Partial function &mdash; a function that may not be defined for every element of its source type. If a user has never hated anything, they simply do not appear as a key.">partial function</span> mapping each user to the finite set of songs they hate.</td>
+</tr>
+<tr>
+<td>$loved$</td>
+<td>$UserId \;{\pfun}\; \mathbb{F}\; SongId$</td>
+<td>A <span class="vocab" data-def="Partial function &mdash; a function that may not be defined for every element of its source type. If a user has never loved anything, they simply do not appear as a key.">partial function</span> mapping each user to the finite set of songs they love.</td>
+</tr>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<h2>Master Symbol Table</h2>
+
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\pfun$</td><td>partial function</td><td>a function not defined for every input</td></tr>
+<tr><td>$\mathbb{F}$</td><td>finite power set</td><td>$\mathbb{F}\;X$ is the set of all finite subsets of $X$</td></tr>
+<tr><td>$\text{dom}$</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>$\subseteq$</td><td>subset</td><td>every element of the left set is also in the right set</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all" &mdash; the statement holds for every value in the specified set</td></tr>
+<tr><td>$\bullet$</td><td>spot / such that</td><td>separates the bound variable from the body in a quantified expression</td></tr>
+<tr><td>$\cap$</td><td>intersection</td><td>the set of elements that belong to both sets simultaneously</td></tr>
+<tr><td>$\varnothing$</td><td>empty set</td><td>the set with no elements</td></tr>
+<tr><td>$\cup$</td><td>union</td><td>the set of elements that belong to at least one of the two sets</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>The Task</h2>
+
+<div class="practice">
+<strong>Task:</strong> Complete the schema by adding predicates that capture the following <span class="key">five constraints</span>:
+<ol type="a">
+<li>Only users in $users$ can appear in $hated$.</li>
+<li>Only songs in $songs$ can appear in $hated$.</li>
+<li>Only users in $users$ can appear in $loved$.</li>
+<li>Only songs in $songs$ can appear in $loved$.</li>
+<li>No user can both hate and love the same song.</li>
+</ol>
+</div>
+
+
+<!-- ============================================================ -->
+<h2 id="part-a">Part (a) &mdash; Only users in users can appear in hated</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a predicate ensuring that every user who has <span class="key">hated at least one song</span> must be a <span class="key">registered user</span> in $users$.</p>
+</div>
+
+<h3 id="parta-vocab">Vocab for Part (a)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Referential integrity</td><td>Ensuring that references to entities (songs, users, playlists) point to things that actually exist.</td></tr>
+<tr><td>Domain constraint</td><td>Restricting which keys can appear in a function.</td></tr>
+</table>
+
+<h3 id="parta-symbols">Symbols for Part (a)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>dom</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>&sube;</td><td>subset</td><td>every element of the left set is also in the right set</td></tr>
+</table>
+
+<h3 id="parta-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="Domain constraint &mdash; restricting which keys can appear in a function.">domain constraint</span> that prevents $hated$ from containing a user who does not exist. This is <span class="vocab" data-def="Referential integrity &mdash; ensuring that references to entities (songs, users, playlists) point to things that actually exist.">referential integrity</span> on the key side of the function: no orphaned hate-lists for phantom users.</p>
+</div>
+
+<h3 id="parta-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>The function $hated$ is keyed by $UserId$. The set $users$ contains all valid user IDs. We need every key of $hated$ to also be in $users$. This is a direct <span class="vocab" data-def="Domain constraint &mdash; restricting which keys can appear in a function.">domain constraint</span>: <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> of the function <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">&sube;</span> the reference set.</p>
+</div>
+
+<h3 id="parta-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li>Extract the keys of $hated$ using <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span>.</li>
+<li>Assert they are a <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">subset</span> of $users$.</li>
+</ul>
+</div>
+
+<h3 id="parta-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Extract the <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">domain</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>extracts the set of user IDs who have hate-lists</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> to get the set of all users who appear as keys in $hated$:</p>
+$$\text{dom}\; hated \quad\ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; Assert the <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">subset</span> relationship</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&sube;</td><td>subset &mdash; every element of the left set is also in the right set</td><td>ensures every user with a hate-list is a registered user</td></tr>
+<tr><td>users</td><td>the global set of all registered users</td><td>the reference set that hated keys must belong to</td></tr>
+</table>
+<div class="walkthrough">
+<p>Connect with <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">&sube;</span> users:</p>
+$$\text{dom}\; hated \subseteq users$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\text{dom}\; hated \subseteq users$$
+</div>
+<p>"The set of user IDs that have hate-lists must be a <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">subset</span> of the registered $users$."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-b">Part (b) &mdash; Only songs in songs can appear in hated</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a predicate ensuring that for every user who has hated songs, each <span class="key">song in their hate-list</span> must <span class="key">exist in the catalogue</span> $songs$.</p>
+</div>
+
+<h3 id="partb-vocab">Vocab for Part (b)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Referential integrity</td><td>Ensuring that references to entities (songs, users, playlists) point to things that actually exist.</td></tr>
+<tr><td>Domain constraint</td><td>Restricting which keys can appear in a function.</td></tr>
+</table>
+
+<h3 id="partb-symbols">Symbols for Part (b)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>&forall;</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>dom</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>&bull;</td><td>spot</td><td>separates the bound variable from the body in a quantified expression</td></tr>
+<tr><td>&sube;</td><td>subset</td><td>every element of the left set is also in the right set</td></tr>
+</table>
+
+<h3 id="partb-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need <span class="vocab" data-def="Referential integrity &mdash; ensuring that references to entities (songs, users, playlists) point to things that actually exist.">referential integrity</span> for the song values inside $hated$. Every song that any user hates must actually exist in the platform's catalogue. This prevents hate-lists from referencing phantom or deleted tracks.</p>
+</div>
+
+<h3 id="partb-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Each value of $hated$ is a <em>set</em> of songs ($\mathbb{F}\; SongId$), not a single song. So $\text{ran}\; hated$ would give a set of <em>sets of songs</em>, not individual songs &mdash; we cannot write ran hated &sube; songs.</p>
+<p>Instead, we must use <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to iterate over each user in the <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">domain</span>, unwrap the set-valued function, and check each hate-set individually.</p>
+</div>
+
+<h3 id="partb-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li>Use <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to iterate over every user ID $i$ in <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> hated.</li>
+<li>For each user $i$, apply hated to get their hate-set: $hated\; i$.</li>
+<li>Assert that set is a <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">subset</span> of $songs$.</li>
+</ul>
+</div>
+
+<h3 id="partb-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Begin with the <span class="vocab" data-def="Universal quantifier &mdash; for all.">universal quantifier</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&forall;</td><td>universal quantifier &mdash; "for all"</td><td>the constraint must hold for every user with a hate-list</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; represents each user ID in turn</td><td>stands for each user ID as we iterate</td></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>gives the set of user IDs who have hate-lists</td></tr>
+</table>
+<div class="walkthrough">
+<p>Start with <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to say "for every user ID <span class="vocab" data-def="Bound variable &mdash; represents each user ID in turn.">i</span>", drawing from <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> hated:</p>
+$$\forall\, i : \text{dom}\; hated\ \ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; Add the <span class="vocab" data-def="Spot &mdash; separates the bound variable from the body in a quantified expression.">spot</span> and apply the function</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&bull;</td><td>spot &mdash; separates the bound variable from the body</td><td>connects "for all $i$" to the condition</td></tr>
+<tr><td>$hated\; i$</td><td>function application &mdash; the hate-set for user $i$</td><td>yields the $\mathbb{F}\; SongId$ for this specific user</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="Spot &mdash; separates the bound variable from the body in a quantified expression.">&bull;</span>, apply hated to $i$ to get the hate-set for that user:</p>
+$$\forall\, i : \text{dom}\; hated \bullet (hated\; i)\ \ldots$$
+</div>
+
+<h4>Build Step 3 &mdash; Assert the <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">subset</span> relationship</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&sube;</td><td>subset &mdash; every element of the left set is also in the right set</td><td>requires every hated song to exist in the catalogue</td></tr>
+<tr><td>songs</td><td>the global set of all songs on the platform</td><td>the reference set that hated songs must belong to</td></tr>
+</table>
+<div class="walkthrough">
+<p>Complete the predicate by asserting <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">&sube;</span> songs:</p>
+$$\forall\, i : \text{dom}\; hated \bullet (hated\; i) \subseteq songs$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\forall\, i : \text{dom}\; hated \bullet (hated\; i) \subseteq songs$$
+</div>
+<p>"For every user ID $i$ who has a hate-list, the set of songs they hate must be a <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">subset</span> of $songs$."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-c">Part (c) &mdash; Only users in users can appear in loved</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a predicate ensuring that every user who has <span class="key">loved at least one song</span> must be a <span class="key">registered user</span> in $users$.</p>
+</div>
+
+<h3 id="partc-vocab">Vocab for Part (c)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Referential integrity</td><td>Ensuring that references to entities (songs, users, playlists) point to things that actually exist.</td></tr>
+<tr><td>Domain constraint</td><td>Restricting which keys can appear in a function.</td></tr>
+</table>
+
+<h3 id="partc-symbols">Symbols for Part (c)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>dom</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>&sube;</td><td>subset</td><td>every element of the left set is also in the right set</td></tr>
+</table>
+
+<h3 id="partc-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="Domain constraint &mdash; restricting which keys can appear in a function.">domain constraint</span> that prevents $loved$ from containing a user who does not exist. This is <span class="vocab" data-def="Referential integrity &mdash; ensuring that references to entities (songs, users, playlists) point to things that actually exist.">referential integrity</span> on the key side of the function: no orphaned love-lists for phantom users.</p>
+</div>
+
+<h3 id="partc-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Structurally identical to Part (a). The function $loved$ is keyed by $UserId$, and the set $users$ contains all valid user IDs. We need every key of $loved$ to also be in $users$. This is the same <span class="vocab" data-def="Domain constraint &mdash; restricting which keys can appear in a function.">domain constraint</span> pattern: <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> of the function <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">&sube;</span> the reference set.</p>
+</div>
+
+<h3 id="partc-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li>Extract the keys of $loved$ using <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span>.</li>
+<li>Assert they are a <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">subset</span> of $users$.</li>
+</ul>
+</div>
+
+<h3 id="partc-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Extract the <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">domain</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>extracts the set of user IDs who have love-lists</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> to get the set of all users who appear as keys in $loved$:</p>
+$$\text{dom}\; loved \quad\ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; Assert the <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">subset</span> relationship</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&sube;</td><td>subset &mdash; every element of the left set is also in the right set</td><td>ensures every user with a love-list is a registered user</td></tr>
+<tr><td>users</td><td>the global set of all registered users</td><td>the reference set that loved keys must belong to</td></tr>
+</table>
+<div class="walkthrough">
+<p>Connect with <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">&sube;</span> users:</p>
+$$\text{dom}\; loved \subseteq users$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\text{dom}\; loved \subseteq users$$
+</div>
+<p>"The set of user IDs that have love-lists must be a <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">subset</span> of the registered $users$."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-d">Part (d) &mdash; Only songs in songs can appear in loved</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a predicate ensuring that for every user who has loved songs, each <span class="key">song in their love-list</span> must <span class="key">exist in the catalogue</span> $songs$.</p>
+</div>
+
+<h3 id="partd-vocab">Vocab for Part (d)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Referential integrity</td><td>Ensuring that references to entities (songs, users, playlists) point to things that actually exist.</td></tr>
+<tr><td>Domain constraint</td><td>Restricting which keys can appear in a function.</td></tr>
+</table>
+
+<h3 id="partd-symbols">Symbols for Part (d)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>&forall;</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>dom</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>&bull;</td><td>spot</td><td>separates the bound variable from the body in a quantified expression</td></tr>
+<tr><td>&sube;</td><td>subset</td><td>every element of the left set is also in the right set</td></tr>
+</table>
+
+<h3 id="partd-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need <span class="vocab" data-def="Referential integrity &mdash; ensuring that references to entities (songs, users, playlists) point to things that actually exist.">referential integrity</span> for the song values inside $loved$. Every song that any user loves must actually exist in the platform's catalogue. This prevents love-lists from referencing phantom or deleted tracks.</p>
+</div>
+
+<h3 id="partd-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Structurally identical to Part (b). Each value of $loved$ is a <em>set</em> of songs ($\mathbb{F}\; SongId$), not a single song. We cannot write ran loved &sube; songs. Instead, we use <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to iterate over each user in the <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">domain</span>, unwrap the set-valued function, and check each love-set individually.</p>
+</div>
+
+<h3 id="partd-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li>Use <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to iterate over every user ID $i$ in <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> loved.</li>
+<li>For each user $i$, apply loved to get their love-set: $loved\; i$.</li>
+<li>Assert that set is a <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">subset</span> of $songs$.</li>
+</ul>
+</div>
+
+<h3 id="partd-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Begin with the <span class="vocab" data-def="Universal quantifier &mdash; for all.">universal quantifier</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&forall;</td><td>universal quantifier &mdash; "for all"</td><td>the constraint must hold for every user with a love-list</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; represents each user ID in turn</td><td>stands for each user ID as we iterate</td></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>gives the set of user IDs who have love-lists</td></tr>
+</table>
+<div class="walkthrough">
+<p>Start with <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to say "for every user ID <span class="vocab" data-def="Bound variable &mdash; represents each user ID in turn.">i</span>", drawing from <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> loved:</p>
+$$\forall\, i : \text{dom}\; loved\ \ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; Add the <span class="vocab" data-def="Spot &mdash; separates the bound variable from the body in a quantified expression.">spot</span> and apply the function</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&bull;</td><td>spot &mdash; separates the bound variable from the body</td><td>connects "for all $i$" to the condition</td></tr>
+<tr><td>$loved\; i$</td><td>function application &mdash; the love-set for user $i$</td><td>yields the $\mathbb{F}\; SongId$ for this specific user</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="Spot &mdash; separates the bound variable from the body in a quantified expression.">&bull;</span>, apply loved to $i$ to get the love-set for that user:</p>
+$$\forall\, i : \text{dom}\; loved \bullet (loved\; i)\ \ldots$$
+</div>
+
+<h4>Build Step 3 &mdash; Assert the <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">subset</span> relationship</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&sube;</td><td>subset &mdash; every element of the left set is also in the right set</td><td>requires every loved song to exist in the catalogue</td></tr>
+<tr><td>songs</td><td>the global set of all songs on the platform</td><td>the reference set that loved songs must belong to</td></tr>
+</table>
+<div class="walkthrough">
+<p>Complete the predicate by asserting <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">&sube;</span> songs:</p>
+$$\forall\, i : \text{dom}\; loved \bullet (loved\; i) \subseteq songs$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\forall\, i : \text{dom}\; loved \bullet (loved\; i) \subseteq songs$$
+</div>
+<p>"For every user ID $i$ who has a love-list, the set of songs they love must be a <span class="vocab" data-def="Subset &mdash; every element of the left set is also in the right set.">subset</span> of $songs$."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-e">Part (e) &mdash; No user can both love and hate the same song</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Write a predicate ensuring that for every user who has expressed any opinion (love or hate), their <span class="key">love-set and hate-set must be disjoint</span> &mdash; <span class="key">no song can appear in both</span>.</p>
+</div>
+
+<h3 id="parte-vocab">Vocab for Part (e)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Mutual exclusivity</td><td>A song cannot be in both sets for the same user.</td></tr>
+<tr><td>Disjoint sets</td><td>Two sets with no elements in common (intersection is empty).</td></tr>
+<tr><td>Union of domains</td><td>Combining two sets of keys to cover all relevant users.</td></tr>
+</table>
+
+<h3 id="parte-symbols">Symbols for Part (e)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>&forall;</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>dom</td><td>domain</td><td>the set of inputs on which a function is defined</td></tr>
+<tr><td>&cup;</td><td>union</td><td>the set of elements that belong to at least one of the two sets</td></tr>
+<tr><td>&bull;</td><td>spot</td><td>separates the bound variable from the body in a quantified expression</td></tr>
+<tr><td>&cap;</td><td>intersection</td><td>the set of elements that belong to both sets simultaneously</td></tr>
+<tr><td>&empty;</td><td>empty set</td><td>the set with no elements</td></tr>
+</table>
+
+<h3 id="parte-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="Mutual exclusivity &mdash; a song cannot be in both sets for the same user.">mutual exclusivity</span> constraint. For each user, the songs they love and the songs they hate must be <span class="vocab" data-def="Disjoint sets &mdash; two sets with no elements in common (intersection is empty).">disjoint</span>: no song can simultaneously be loved and hated by the same person.</p>
+</div>
+
+<h3 id="parte-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>We need to check every user who has expressed <em>any</em> opinion. A user might appear only in $hated$, only in $loved$, or in both. To cover all cases, we quantify over the <span class="vocab" data-def="Union of domains &mdash; combining two sets of keys to cover all relevant users.">union of domains</span>: dom hated &cup; dom loved. For each such user, we require that the <span class="vocab" data-def="Intersection &mdash; the set of elements that belong to both sets simultaneously.">intersection</span> of their hate-set and love-set equals the <span class="vocab" data-def="Empty set &mdash; the set with no elements.">empty set</span>.</p>
+</div>
+
+<h3 id="parte-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li>Use <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to iterate over every user $i$ in <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> hated <span class="vocab" data-def="Union &mdash; the set of elements that belong to at least one of the two sets.">&cup;</span> <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">dom</span> loved.</li>
+<li>For each user $i$, compute the <span class="vocab" data-def="Intersection &mdash; the set of elements that belong to both sets simultaneously.">intersection</span> of their hate-set and love-set: hated i <span class="vocab" data-def="Intersection &mdash; the set of elements that belong to both sets simultaneously.">&cap;</span> loved i.</li>
+<li>Assert that intersection equals <span class="vocab" data-def="Empty set &mdash; the set with no elements.">&empty;</span>.</li>
+</ul>
+</div>
+
+<h3 id="parte-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Begin with <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> over the combined <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">domain</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&forall;</td><td>universal quantifier &mdash; "for all"</td><td>the constraint must hold for every user with any opinion</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; represents each user ID in turn</td><td>stands for each user ID as we iterate</td></tr>
+<tr><td>dom</td><td>domain &mdash; the set of inputs on which a function is defined</td><td>extracts user IDs from each function</td></tr>
+<tr><td>&cup;</td><td>union &mdash; the set of elements that belong to at least one of the two sets</td><td>combines both domains to cover all users with opinions</td></tr>
+</table>
+<div class="walkthrough">
+<p>Start with <span class="vocab" data-def="Universal quantifier &mdash; for all.">&forall;</span> to say "for every user <span class="vocab" data-def="Bound variable &mdash; represents each user ID in turn.">i</span>", drawing from the <span class="vocab" data-def="Union &mdash; the set of elements that belong to at least one of the two sets.">union</span> of both <span class="vocab" data-def="Domain &mdash; the set of inputs on which a function is defined.">domains</span>:</p>
+$$\forall\, i : \text{dom}\; hated \cup \text{dom}\; loved\ \ldots$$
+</div>
+
+<h4>Build Step 2 &mdash; Add the <span class="vocab" data-def="Spot &mdash; separates the bound variable from the body in a quantified expression.">spot</span> and access both sets for user $i$</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&bull;</td><td>spot &mdash; separates the bound variable from the body</td><td>connects "for all $i$" to the condition</td></tr>
+<tr><td>$hated\; i$</td><td>function application &mdash; the hate-set for user $i$</td><td>the set of songs user $i$ hates</td></tr>
+<tr><td>$loved\; i$</td><td>function application &mdash; the love-set for user $i$</td><td>the set of songs user $i$ loves</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="Spot &mdash; separates the bound variable from the body in a quantified expression.">&bull;</span>, we access both $hated\; i$ and $loved\; i$ for the current user:</p>
+$$\forall\, i : \text{dom}\; hated \cup \text{dom}\; loved \bullet hated\; i \quad\ldots\quad loved\; i\ \ldots$$
+</div>
+
+<h4>Build Step 3 &mdash; <span class="vocab" data-def="Intersection &mdash; the set of elements that belong to both sets simultaneously.">Intersect</span> the two sets</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>&cap;</td><td>intersection &mdash; the set of elements that belong to both sets simultaneously</td><td>finds songs that appear in both the hate-set and the love-set</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="Intersection &mdash; the set of elements that belong to both sets simultaneously.">&cap;</span> to compute the overlap between the two sets:</p>
+$$\forall\, i : \text{dom}\; hated \cup \text{dom}\; loved \bullet hated\; i \cap loved\; i\ \ldots$$
+</div>
+
+<h4>Build Step 4 &mdash; Require the intersection to be <span class="vocab" data-def="Empty set &mdash; the set with no elements.">empty</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$=$</td><td>equality &mdash; the left side equals the right side</td><td>asserts the intersection has a specific value</td></tr>
+<tr><td>&empty;</td><td>empty set &mdash; the set with no elements</td><td>no songs in common &mdash; the sets are disjoint</td></tr>
+</table>
+<div class="walkthrough">
+<p>Assert that the <span class="vocab" data-def="Intersection &mdash; the set of elements that belong to both sets simultaneously.">intersection</span> equals the <span class="vocab" data-def="Empty set &mdash; the set with no elements.">empty set</span> &mdash; nothing in common:</p>
+$$\forall\, i : \text{dom}\; hated \cup \text{dom}\; loved \bullet hated\; i \cap loved\; i = \varnothing$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\forall\, i : \text{dom}\; hated \cup \text{dom}\; loved \bullet hated\; i \cap loved\; i = \varnothing$$
+</div>
+<p>"For every user $i$ who has expressed any opinion, the <span class="vocab" data-def="Intersection &mdash; the set of elements that belong to both sets simultaneously.">intersection</span> of their hate-set and love-set must be the <span class="vocab" data-def="Empty set &mdash; the set with no elements.">empty set</span> &mdash; no song can be both loved and hated by the same user."</p>
+
+<div class="warning">
+<p><strong>Why dom hated &cup; dom loved?</strong> We quantify over the <span class="vocab" data-def="Union of domains &mdash; combining two sets of keys to cover all relevant users.">union of domains</span> to cover every user who has <em>either</em> a hate-list or a love-list (or both). A user who only appears in one domain trivially satisfies the constraint: the missing set is empty, so the intersection is empty.</p>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2>Complete Definition &mdash; Full Schema</h2>
+
+<p>Assembling both declarations and all five constraints into a single schema:</p>
+
+<div class="schema-box">
+<strong>StreamifyLoveHate (extends Streamify)</strong><br>
+$hated : UserId \;{\pfun}\; \mathbb{F}\; SongId$<br>
+$loved : UserId \;{\pfun}\; \mathbb{F}\; SongId$<br>
+<hr style="border-top: 1px solid #999; margin: 8px 0;">
+$\text{dom}\; hated \subseteq users$ &emsp;&emsp; ...(a)<br>
+$\forall\, i : \text{dom}\; hated \bullet (hated\; i) \subseteq songs$ &emsp;&emsp; ...(b)<br>
+$\text{dom}\; loved \subseteq users$ &emsp;&emsp; ...(c)<br>
+$\forall\, i : \text{dom}\; loved \bullet (loved\; i) \subseteq songs$ &emsp;&emsp; ...(d)<br>
+$\forall\, i : \text{dom}\; hated \cup \text{dom}\; loved \bullet hated\; i \cap loved\; i = \varnothing$ &emsp;&emsp; ...(e)
+</div>
+
+<div class="walkthrough">
+<p><strong>Reading the schema:</strong> Above the line are the two new variable declarations. Below the line are the five constraints &mdash; the invariants. Constraints (a) and (c) enforce <span class="vocab" data-def="Domain constraint &mdash; restricting which keys can appear in a function.">domain constraints</span> on users. Constraints (b) and (d) enforce <span class="vocab" data-def="Referential integrity &mdash; ensuring that references to entities (songs, users, playlists) point to things that actually exist.">referential integrity</span> on songs. Constraint (e) enforces <span class="vocab" data-def="Mutual exclusivity &mdash; a song cannot be in both sets for the same user.">mutual exclusivity</span> between love and hate.</p>
+</div>
+
+
+<!-- ============================================================ -->
+<h2>Summary Table</h2>
+
+<div class="concept">
+<table>
+<tr><th>Constraint</th><th>Pattern</th><th>When to use</th></tr>
+<tr>
+<td>(a), (c)</td>
+<td>dom $f$ &sube; $S$</td>
+<td><span class="vocab" data-def="Domain constraint &mdash; restricting which keys can appear in a function.">Domain constraint</span> &mdash; the function's keys must come from a known reference set.</td>
+</tr>
+<tr>
+<td>(b), (d)</td>
+<td>&forall; $i$ : dom $f$ &bull; $f\; i$ &sube; $S$</td>
+<td><span class="vocab" data-def="Referential integrity &mdash; ensuring that references to entities (songs, users, playlists) point to things that actually exist.">Referential integrity</span> &mdash; the function maps to <em>sets</em>, and every element of those sets must come from a reference set.</td>
+</tr>
+<tr>
+<td>(e)</td>
+<td>&forall; $i$ : $D$ &bull; $A\; i$ &cap; $B\; i$ = &empty;</td>
+<td><span class="vocab" data-def="Mutual exclusivity &mdash; a song cannot be in both sets for the same user.">Mutual exclusivity</span> &mdash; two set-valued functions must be <span class="vocab" data-def="Disjoint sets &mdash; two sets with no elements in common (intersection is empty).">disjoint</span> for each key.</td>
+</tr>
+</table>
+</div>
+
+<footer>
+<strong>Exercise 49</strong> &mdash; Streamify: Love/Hate Songs &mdash; Part 2 of 5<br>
+Previous: <a href="exercise_48.html">Exercise 48</a> | Next: <a href="exercise_50.html">Exercise 50</a>
+</footer>
+
+<script>
+function toggleDropdown(el) {
+  var item = el.closest('.nav-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 52 &mdash; Streamify: Playing Songs</title>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+body { font-family: Georgia, "Times New Roman", serif; max-width: 860px; margin: 0 auto; padding: 0 20px 40px 20px; background: #ffffff; color: #111111; line-height: 1.55; }
+h1 { border-bottom: 2px solid #111; padding-bottom: 8px; scroll-margin-top: 100px; }
+h2 { margin-top: 40px; border-bottom: 1px solid #999; padding-bottom: 4px; scroll-margin-top: 100px; }
+h3 { margin-top: 28px; scroll-margin-top: 100px; }
+h4 { margin-top: 20px; color: #333; scroll-margin-top: 100px; }
+a { color: #0a3d91; }
+p { margin: 10px 0; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; margin: 12px 0; width: 100%; }
+th, td { border: 1px solid #bbb; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+.concept { background: #fafafa; border-left: 4px solid #888; padding: 10px 16px; margin: 14px 0; }
+.example { background: #fafafa; border-left: 4px solid #2a7a2a; padding: 10px 16px; margin: 14px 0; }
+.practice { background: #fafafa; border-left: 4px solid #1a5fb4; padding: 10px 16px; margin: 14px 0; }
+.warning { background: #fafafa; border-left: 4px solid #c0392b; padding: 10px 16px; margin: 14px 0; }
+.walkthrough { margin-top: 10px; padding: 10px 14px; background: #fffbea; border-left: 4px solid #b58900; }
+.schema-box { background: #f8f8f8; border: 1px solid #ccc; padding: 12px 16px; margin: 12px 0; font-size: 0.95em; overflow-x: auto; }
+details { margin: 10px 0; }
+summary { cursor: pointer; font-weight: bold; color: #0a3d91; }
+code, .sym { font-family: "Menlo", "Courier New", monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+.vocab { border-bottom: 1px dotted #1a5fb4; cursor: pointer; position: relative; color: #0a3d91; padding: 0 2px; }
+.vocab:hover { background-color: #fff3a3; }
+.vocab::after { content: attr(data-def); display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); background: #2a2a2a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; font-style: normal; font-weight: normal; white-space: normal; width: max-content; max-width: 280px; min-width: 180px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
+.vocab:hover::after { display: block; }
+.key { color: #1a5fb4; text-decoration: underline; text-underline-offset: 2px; }
+footer { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 0.85em; color: #666; }
+
+.section-nav { position: sticky; top: 0; z-index: 100; background: #fff; padding: 12px 0; margin: 0 0 24px 0; border-bottom: 1px solid #ccc; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.nav-item { position: relative; }
+.section-nav button { padding: 6px 10px; border: 1px solid #999; background: #fff; cursor: pointer; font-family: inherit; font-size: 0.9em; border-radius: 3px; }
+.section-nav button:hover { background: #eef; }
+.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #999; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 200px; z-index: 200; }
+.nav-item.open .nav-dropdown { display: block; }
+.nav-dropdown li { padding: 0; margin: 0; }
+.nav-dropdown a { display: block; padding: 6px 14px; text-decoration: none; color: #111; font-size: 0.9em; cursor: pointer; }
+.nav-dropdown a:hover { background: #eef; }
+.nav-link { font-size: 0.9em; color: #0a3d91; text-decoration: none; padding: 6px 10px; border: 1px solid #999; border-radius: 3px; }
+.nav-link:hover { background: #eef; }
+</style>
+</head>
+<body>
+
+<nav class="section-nav">
+  <a class="nav-link" href="exercise_51.html">&larr; Ex 51</a>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (a)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-a"><strong>Part (a)</strong></a></li>
+      <li><a href="#parta-vocab">Vocab</a></li>
+      <li><a href="#parta-symbols">Symbols</a></li>
+      <li><a href="#parta-step1">Step 1</a></li>
+      <li><a href="#parta-step2">Step 2</a></li>
+      <li><a href="#parta-step3">Step 3</a></li>
+      <li><a href="#parta-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (b)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-b"><strong>Part (b)</strong></a></li>
+      <li><a href="#partb-vocab">Vocab</a></li>
+      <li><a href="#partb-symbols">Symbols</a></li>
+      <li><a href="#partb-step1">Step 1</a></li>
+      <li><a href="#partb-step2">Step 2</a></li>
+      <li><a href="#partb-step3">Step 3</a></li>
+      <li><a href="#partb-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (c)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-c"><strong>Part (c)</strong></a></li>
+      <li><a href="#partc-vocab">Vocab</a></li>
+      <li><a href="#partc-symbols">Symbols</a></li>
+      <li><a href="#partc-step1">Step 1</a></li>
+      <li><a href="#partc-step2">Step 2</a></li>
+      <li><a href="#partc-step3">Step 3</a></li>
+      <li><a href="#partc-solution">Solution</a></li>
+    </ul>
+  </div>
+  <a class="nav-link" href="index.html" style="margin-left:auto;">&larr; All Exercises</a>
+</nav>
+
+
+<h1>Exercise 52 &mdash; Streamify: Playing Songs</h1>
+
+<p><em>Software Engineering Mathematics &mdash; Z Notation Modelling (Part 5 of a 5-exercise series)</em></p>
+
+<!-- ============================================================ -->
+<h2>The Scenario</h2>
+
+<div class="concept">
+<p>We now consider users playing songs. To do this, we introduce timestamps, user status (premium vs. standard), and <span class="vocab" data-def="A recursive function is defined in terms of itself. It has a base case (for the simplest input) and a recursive case that reduces the problem toward the base case.">recursive functions</span> that filter and aggregate play records.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>New Types and Functions</h2>
+
+<div class="schema-box">
+<p><strong>New type definitions:</strong></p>
+$$Tstamp == \mathbb{N} \quad\text{(a timestamp, represented as a natural number)}$$
+$$Status ::= premium \mid standard$$
+$$Play == SongId \times UserId \times Tstamp$$
+<p><strong>New function:</strong></p>
+$$user\_status : UserId \pfun Status$$
+<p>$user\_status$ assigns each user a fixed status (premium or standard). It does not change.</p>
+</div>
+
+<div class="concept">
+<p><strong>Reading a Play tuple:</strong> A value $x : Play$ is a triple $(s, u, t)$ where:</p>
+<ul>
+<li>$x.1 = s$ is the $SongId$ of the song that was played.</li>
+<li>$x.2 = u$ is the $UserId$ of the user who played it.</li>
+<li>$x.3 = t$ is the $Tstamp$ when it was played.</li>
+</ul>
+</div>
+
+<!-- ============================================================ -->
+<h2>Context from Exercises 48&ndash;51</h2>
+
+<div class="concept">
+<p>The following are assumed to exist from prior exercises: <code>songs</code>, <code>users</code>, <code>playlists</code>, <code>hated</code>, <code>loved</code>, <code>length</code> ($SongId \pfun \mathbb{N}$, giving song length in seconds), <code>popularity</code>, <code>user_status</code>.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Master Symbol Table</h2>
+
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr>
+<td>$::=$</td>
+<td>free type definition</td>
+<td>defines a type by listing its possible values</td>
+</tr>
+<tr>
+<td>$==$</td>
+<td>abbreviation / type synonym</td>
+<td>introduces a shorthand name for a type or expression</td>
+</tr>
+<tr>
+<td>$\times$</td>
+<td>Cartesian product</td>
+<td>combines types into tuples</td>
+</tr>
+<tr>
+<td>$\to$</td>
+<td>total function</td>
+<td>a function defined for every element of its source type</td>
+</tr>
+<tr>
+<td>$\text{seq}$</td>
+<td>sequence</td>
+<td>a finite ordered list</td>
+</tr>
+<tr>
+<td>$\langle\rangle$</td>
+<td>empty sequence</td>
+<td>a sequence with no elements</td>
+</tr>
+<tr>
+<td>$\langle x \rangle$</td>
+<td>singleton sequence</td>
+<td>a sequence containing exactly one element $x$</td>
+</tr>
+<tr>
+<td>$\frown$</td>
+<td>concatenation</td>
+<td>joins two sequences end-to-end</td>
+</tr>
+<tr>
+<td>$=$</td>
+<td>equality</td>
+<td>the left side equals the right side</td>
+</tr>
+<tr>
+<td>$\forall$</td>
+<td>universal quantifier</td>
+<td>"for all"</td>
+</tr>
+<tr>
+<td>$\bullet$</td>
+<td>spot / separator</td>
+<td>separates the bound variable from the body of a quantified expression</td>
+</tr>
+<tr>
+<td>$+$</td>
+<td>addition</td>
+<td>arithmetic sum of two numbers</td>
+</tr>
+<tr>
+<td>$:$</td>
+<td>type declaration</td>
+<td>"is of type" / "drawn from"</td>
+</tr>
+<tr>
+<td>$\mathbb{N}$</td>
+<td>natural numbers</td>
+<td>the set $\{0, 1, 2, 3, \ldots\}$</td>
+</tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="part-a">Part (a) &mdash; Recursive <code>premium_plays</code></h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define a <span class="key">recursive function</span> <span class="key"><code>premium_plays</code></span> that takes a sequence of type <code>seq Play</code> and filters it with respect to those songs played by users whose status is <span class="key"><code>premium</code></span>.</p>
+</div>
+
+<h3 id="parta-vocab">Vocab for Part (a)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Recursive filter</td><td>A function that processes elements one at a time, keeping or skipping each based on a condition.</td></tr>
+<tr><td>Base case</td><td>The simplest input that can be answered directly without recursion (here, the empty sequence returns empty).</td></tr>
+<tr><td>Recursive case</td><td>The step that processes the head element, then calls the function again on the tail.</td></tr>
+<tr><td>User status</td><td>Whether a user is premium or standard (fixed, does not change).</td></tr>
+<tr><td>Function application</td><td>Applying a function to an argument to get a result &mdash; e.g. applying user_status to x.2.</td></tr>
+</table>
+
+<h3 id="parta-symbols">Symbols for Part (a)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td><code>premium_plays</code></td><td>premium_plays</td><td>the recursive filter function we are defining</td></tr>
+<tr><td>$:$</td><td>type declaration</td><td>"is of type"</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>a finite ordered list</td></tr>
+<tr><td>$Play$</td><td>Play</td><td>the type $SongId \times UserId \times Tstamp$</td></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined for every possible input</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>a sequence with no elements</td></tr>
+<tr><td>$=$</td><td>equality</td><td>the left side equals the right side</td></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition</td><td>splits a non-empty sequence into its first element $x$ and the remaining tail $s$</td></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>joins two sequences end-to-end</td></tr>
+<tr><td><code>x.2</code></td><td>tuple projection</td><td>extracts the 2nd component (the UserId) from a Play triple</td></tr>
+<tr><td><code>user_status</code></td><td>user_status</td><td>function that returns a user's status (premium or standard)</td></tr>
+<tr><td><code>premium</code></td><td>premium</td><td>one of the two values of the Status free type</td></tr>
+<tr><td><code>standard</code></td><td>standard</td><td>the other value of the Status free type</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates declaration from expression in a quantifier</td></tr>
+</table>
+
+<h3 id="parta-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="A function that processes elements one at a time, keeping or skipping each based on a condition.">recursive filter</span> that walks through a sequence of Play records and keeps only those where the user has <span class="vocab" data-def="Whether a user is premium or standard (fixed, does not change).">status</span> <code>premium</code>. The output is a sequence of the same type &mdash; just with standard-user plays removed.</p>
+</div>
+
+<h3 id="parta-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Every <span class="vocab" data-def="A function that processes elements one at a time, keeping or skipping each based on a condition.">recursive filter</span> on sequences follows the same skeleton:</p>
+<ul>
+<li><strong><span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns empty).">Base case</span>:</strong> what happens with the empty sequence?</li>
+<li><strong><span class="vocab" data-def="The step that processes the head element, then calls the function again on the tail.">Recursive case</span>:</strong> decompose into head and tail, check the head's user status, keep or skip, then recurse on the tail.</li>
+</ul>
+</div>
+
+<h3 id="parta-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong><span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns empty).">Base case</span>:</strong> filtering an empty sequence yields an empty sequence.</p>
+<p><strong><span class="vocab" data-def="The step that processes the head element, then calls the function again on the tail.">Recursive case</span>:</strong> the head $x$ is a Play triple. Apply <code>user_status</code> to <code>x.2</code> (the UserId). If the result is <code>premium</code>, keep $x$ by prepending it. If <code>standard</code>, skip $x$ and recurse on the tail alone.</p>
+</div>
+
+<h3 id="parta-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Type signature</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td><code>premium_plays</code></td><td>premium_plays &mdash; the recursive filter function we are defining</td><td>takes a sequence of plays, returns a filtered sequence</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares the input and output types</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence &mdash; a finite ordered list</td><td>input and output are both sequences of Play values</td></tr>
+<tr><td>$Play$</td><td>Play &mdash; the type $SongId \times UserId \times Tstamp$</td><td>the element type of the sequence</td></tr>
+<tr><td>$\to$</td><td>total function &mdash; a function defined for every possible input</td><td><code>premium_plays</code> accepts any sequence of plays</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the function <span class="vocab" data-def="The recursive filter function we are defining.">premium_plays</span>, use <span class="vocab" data-def="type declaration &mdash; &quot;is of type&quot;">:</span> to declare its type. Input and output are both <span class="vocab" data-def="sequence &mdash; a finite ordered list">seq</span> <span class="vocab" data-def="Play &mdash; the type SongId x UserId x Tstamp">Play</span>, connected by <span class="vocab" data-def="total function &mdash; a function defined for every possible input">&rarr;</span>:</p>
+$$premium\_plays : \text{seq}\;Play \to \text{seq}\;Play$$
+</div>
+
+<h4>Build Step 2 &mdash; Base case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence &mdash; a sequence with no elements</td><td>base case input and output</td></tr>
+<tr><td>$=$</td><td>equality &mdash; the left side equals the right side</td><td>defines the result for the empty input</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns empty).">base case</span>: an <span class="vocab" data-def="empty sequence &mdash; a sequence with no elements">empty sequence</span> has no plays in it, so there are no premium plays to keep. Return <span class="vocab" data-def="empty sequence &mdash; a sequence with no elements">&langle;&rangle;</span>:</p>
+$$premium\_plays\;\langle\rangle = \langle\rangle$$
+</div>
+
+<h4>Build Step 3 &mdash; Recursive case: check <code>user_status(x.2)</code></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition &mdash; splits a non-empty sequence into first element $x$ and tail $s$</td><td>splits off the first play</td></tr>
+<tr><td><code>x.2</code></td><td>tuple projection &mdash; extracts the 2nd component (the UserId)</td><td>gets the user who made this play</td></tr>
+<tr><td><code>user_status</code></td><td>user_status &mdash; function that returns a user's status (premium or standard)</td><td>checks whether this user is premium or standard</td></tr>
+<tr><td><code>premium</code></td><td>premium &mdash; one of the two values of the Status free type</td><td>the condition for keeping the play</td></tr>
+<tr><td><code>standard</code></td><td>standard &mdash; the other value of the Status free type</td><td>the condition for skipping the play</td></tr>
+<tr><td>$\frown$</td><td>concatenation &mdash; joins two sequences end-to-end</td><td>prepends $\langle x \rangle$ to the recursive result when keeping</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The step that processes the head element, then calls the function again on the tail.">recursive case</span>: decompose into <span class="vocab" data-def="head-tail decomposition &mdash; splits a non-empty sequence into first element x and tail s">&langle;x&rangle; &frown; s</span>. The play $x$ is a triple $(song, user, timestamp)$. Extract the user with <span class="vocab" data-def="tuple projection &mdash; extracts the 2nd component (the UserId)">x.2</span>. Apply <span class="vocab" data-def="user_status &mdash; function that returns a user's status (premium or standard)">user_status</span> to check their status:</p>
+<p>If <code>user_status</code>(<code>x.2</code>) = <span class="vocab" data-def="premium &mdash; one of the two values of the Status free type">premium</span>: keep $x$, prepend it, recurse on tail &rarr; $\langle x \rangle \frown (premium\_plays\;s)$</p>
+<p>If <code>user_status</code>(<code>x.2</code>) = <span class="vocab" data-def="standard &mdash; the other value of the Status free type">standard</span>: skip $x$, recurse on tail alone &rarr; $premium\_plays\;s$</p>
+$$\forall\; x : Play;\; s : \text{seq}\;Play \;\bullet$$
+$$\quad premium\_plays(\langle x \rangle \frown s) = \begin{cases}
+\langle x \rangle \frown (premium\_plays\;s) & \text{if } user\_status(x.2) = premium \\
+premium\_plays\;s & \text{if } user\_status(x.2) = standard
+\end{cases}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$premium\_plays : \text{seq}\;Play \to \text{seq}\;Play$$
+$$\rule{22em}{0.5pt}$$
+$$premium\_plays\;\langle\rangle = \langle\rangle$$
+$$\forall\; x : Play;\; s : \text{seq}\;Play \;\bullet$$
+$$\quad premium\_plays(\langle x \rangle \frown s) =$$
+$$\qquad \begin{cases}
+\langle x \rangle \frown (premium\_plays\;s) & \text{if } user\_status(x.2) = premium \\
+premium\_plays\;s & \text{if } user\_status(x.2) = standard
+\end{cases}$$
+</div>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p>Let $a = (s_1, u_1, 10)$, $b = (s_2, u_2, 20)$, $c = (s_3, u_1, 30)$ where
+$user\_status(u_1) = premium$ and
+$user\_status(u_2) = standard$.</p>
+
+<p>Compute $premium\_plays\;\langle a, b, c \rangle$:</p>
+
+<table>
+<tr><th>Call</th><th>Head $x$</th><th><code>user_status(x.2)</code></th><th>Action</th><th>Building result</th></tr>
+<tr><td>1</td><td>$a = (s_1, u_1, 10)$</td><td>$premium$</td><td>keep $a$, recurse</td><td>$\langle a \rangle \frown \ldots$</td></tr>
+<tr><td>2</td><td>$b = (s_2, u_2, 20)$</td><td>$standard$</td><td>skip $b$, recurse</td><td>$\langle a \rangle \frown \ldots$</td></tr>
+<tr><td>3</td><td>$c = (s_3, u_1, 30)$</td><td>$premium$</td><td>keep $c$, recurse</td><td>$\langle a \rangle \frown \langle c \rangle \frown \ldots$</td></tr>
+<tr><td>base</td><td>&mdash;</td><td>&mdash;</td><td>base case</td><td>$\langle a \rangle \frown \langle c \rangle \frown \langle\rangle = \langle a, c \rangle$</td></tr>
+</table>
+
+<p><strong>Result:</strong> $premium\_plays\;\langle a, b, c \rangle = \langle a, c \rangle$.</p>
+<p>The standard user's play ($b$) was filtered out. The two premium plays ($a$ and $c$) were kept in their original order.</p>
+</div>
+
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-b">Part (b) &mdash; Recursive <code>standard_plays</code></h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define a <span class="key">recursive function</span> <span class="key"><code>standard_plays</code></span> &mdash; the mirror of Part (a), keeping only plays by <span class="key"><code>standard</code> users</span>.</p>
+</div>
+
+<h3 id="partb-vocab">Vocab for Part (b)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Recursive filter</td><td>A function that processes elements one at a time, keeping or skipping each based on a condition.</td></tr>
+<tr><td>Base case</td><td>The simplest input that can be answered directly without recursion (here, the empty sequence returns empty).</td></tr>
+<tr><td>Recursive case</td><td>The step that processes the head element, then calls the function again on the tail.</td></tr>
+<tr><td>User status</td><td>Whether a user is premium or standard (fixed, does not change).</td></tr>
+<tr><td>Function application</td><td>Applying a function to an argument to get a result &mdash; e.g. applying user_status to x.2.</td></tr>
+</table>
+
+<h3 id="partb-symbols">Symbols for Part (b)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td><code>standard_plays</code></td><td>standard_plays</td><td>the recursive filter function we are defining (mirror of premium_plays)</td></tr>
+<tr><td>$:$</td><td>type declaration</td><td>"is of type"</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>a finite ordered list</td></tr>
+<tr><td>$Play$</td><td>Play</td><td>the type $SongId \times UserId \times Tstamp$</td></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined for every possible input</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>a sequence with no elements</td></tr>
+<tr><td>$=$</td><td>equality</td><td>the left side equals the right side</td></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition</td><td>splits a non-empty sequence into its first element $x$ and the remaining tail $s$</td></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>joins two sequences end-to-end</td></tr>
+<tr><td><code>x.2</code></td><td>tuple projection</td><td>extracts the 2nd component (the UserId) from a Play triple</td></tr>
+<tr><td><code>user_status</code></td><td>user_status</td><td>function that returns a user's status (premium or standard)</td></tr>
+<tr><td><code>standard</code></td><td>standard</td><td>one of the two values of the Status free type</td></tr>
+<tr><td><code>premium</code></td><td>premium</td><td>the other value of the Status free type</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates declaration from expression in a quantifier</td></tr>
+</table>
+
+<h3 id="partb-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="A function that processes elements one at a time, keeping or skipping each based on a condition.">recursive filter</span> that is the mirror of <code>premium_plays</code>: it walks through a sequence of Play records and keeps only those where the user has <span class="vocab" data-def="Whether a user is premium or standard (fixed, does not change).">status</span> <code>standard</code>. Premium-user plays are discarded.</p>
+</div>
+
+<h3 id="partb-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>The structure is identical to Part (a). The only difference is which status value triggers "keep" and which triggers "skip" &mdash; the roles of <code>premium</code> and <code>standard</code> are swapped.</p>
+<ul>
+<li><strong><span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns empty).">Base case</span>:</strong> empty sequence returns empty sequence (same as Part a).</li>
+<li><strong><span class="vocab" data-def="The step that processes the head element, then calls the function again on the tail.">Recursive case</span>:</strong> keep when <code>standard</code>, skip when <code>premium</code> (opposite of Part a).</li>
+</ul>
+</div>
+
+<h3 id="partb-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong><span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns empty).">Base case</span>:</strong> filtering an empty sequence yields an empty sequence.</p>
+<p><strong><span class="vocab" data-def="The step that processes the head element, then calls the function again on the tail.">Recursive case</span>:</strong> the head $x$ is a Play triple. Apply <code>user_status</code> to <code>x.2</code>. If the result is <code>standard</code>, keep $x$. If <code>premium</code>, skip $x$.</p>
+</div>
+
+<h3 id="partb-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Type signature</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td><code>standard_plays</code></td><td>standard_plays &mdash; the recursive filter function we are defining (mirror of premium_plays)</td><td>takes a sequence of plays, returns a filtered sequence</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares the input and output types</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence &mdash; a finite ordered list</td><td>input and output are both sequences of Play values</td></tr>
+<tr><td>$Play$</td><td>Play &mdash; the type $SongId \times UserId \times Tstamp$</td><td>the element type of the sequence</td></tr>
+<tr><td>$\to$</td><td>total function &mdash; a function defined for every possible input</td><td><code>standard_plays</code> accepts any sequence of plays</td></tr>
+</table>
+<div class="walkthrough">
+<p>Same type as <code>premium_plays</code> &mdash; <span class="vocab" data-def="sequence &mdash; a finite ordered list">seq</span> <span class="vocab" data-def="Play &mdash; the type SongId x UserId x Tstamp">Play</span> in, <span class="vocab" data-def="sequence &mdash; a finite ordered list">seq</span> <span class="vocab" data-def="Play &mdash; the type SongId x UserId x Tstamp">Play</span> out, connected by <span class="vocab" data-def="total function &mdash; a function defined for every possible input">&rarr;</span>:</p>
+$$standard\_plays : \text{seq}\;Play \to \text{seq}\;Play$$
+</div>
+
+<h4>Build Step 2 &mdash; Base case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence &mdash; a sequence with no elements</td><td>base case input and output</td></tr>
+<tr><td>$=$</td><td>equality &mdash; the left side equals the right side</td><td>defines the result for the empty input</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns empty).">base case</span>: an <span class="vocab" data-def="empty sequence &mdash; a sequence with no elements">empty sequence</span> has no plays, so return <span class="vocab" data-def="empty sequence &mdash; a sequence with no elements">&langle;&rangle;</span>:</p>
+$$standard\_plays\;\langle\rangle = \langle\rangle$$
+</div>
+
+<h4>Build Step 3 &mdash; Recursive case: keep <code>standard</code>, skip <code>premium</code> (opposite of Part a)</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition &mdash; splits a non-empty sequence into first element $x$ and tail $s$</td><td>splits off the first play</td></tr>
+<tr><td><code>x.2</code></td><td>tuple projection &mdash; extracts the 2nd component (the UserId)</td><td>gets the user who made this play</td></tr>
+<tr><td><code>user_status</code></td><td>user_status &mdash; function that returns a user's status (premium or standard)</td><td>checks whether this user is standard or premium</td></tr>
+<tr><td><code>standard</code></td><td>standard &mdash; one of the two values of the Status free type</td><td>the condition for keeping the play</td></tr>
+<tr><td><code>premium</code></td><td>premium &mdash; the other value of the Status free type</td><td>the condition for skipping the play</td></tr>
+<tr><td>$\frown$</td><td>concatenation &mdash; joins two sequences end-to-end</td><td>prepends $\langle x \rangle$ to the recursive result when keeping</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The step that processes the head element, then calls the function again on the tail.">recursive case</span>: decompose into <span class="vocab" data-def="head-tail decomposition &mdash; splits a non-empty sequence into first element x and tail s">&langle;x&rangle; &frown; s</span>. Extract the user with <span class="vocab" data-def="tuple projection &mdash; extracts the 2nd component (the UserId)">x.2</span>. Apply <span class="vocab" data-def="user_status &mdash; function that returns a user's status (premium or standard)">user_status</span> &mdash; but now the keep/skip logic is reversed:</p>
+<p>If <code>user_status</code>(<code>x.2</code>) = <span class="vocab" data-def="standard &mdash; one of the two values of the Status free type">standard</span>: keep $x$, prepend it, recurse on tail &rarr; $\langle x \rangle \frown (standard\_plays\;s)$</p>
+<p>If <code>user_status</code>(<code>x.2</code>) = <span class="vocab" data-def="premium &mdash; the other value of the Status free type">premium</span>: skip $x$, recurse on tail alone &rarr; $standard\_plays\;s$</p>
+$$\forall\; x : Play;\; s : \text{seq}\;Play \;\bullet$$
+$$\quad standard\_plays(\langle x \rangle \frown s) = \begin{cases}
+\langle x \rangle \frown (standard\_plays\;s) & \text{if } user\_status(x.2) = standard \\
+standard\_plays\;s & \text{if } user\_status(x.2) = premium
+\end{cases}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$standard\_plays : \text{seq}\;Play \to \text{seq}\;Play$$
+$$\rule{22em}{0.5pt}$$
+$$standard\_plays\;\langle\rangle = \langle\rangle$$
+$$\forall\; x : Play;\; s : \text{seq}\;Play \;\bullet$$
+$$\quad standard\_plays(\langle x \rangle \frown s) =$$
+$$\qquad \begin{cases}
+\langle x \rangle \frown (standard\_plays\;s) & \text{if } user\_status(x.2) = standard \\
+standard\_plays\;s & \text{if } user\_status(x.2) = premium
+\end{cases}$$
+</div>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p>Using the same plays as Part (a): $a = (s_1, u_1, 10)$, $b = (s_2, u_2, 20)$, $c = (s_3, u_1, 30)$ where
+$user\_status(u_1) = premium$ and
+$user\_status(u_2) = standard$.</p>
+
+<p>Compute $standard\_plays\;\langle a, b, c \rangle$:</p>
+
+<table>
+<tr><th>Call</th><th>Head $x$</th><th><code>user_status(x.2)</code></th><th>Action</th><th>Building result</th></tr>
+<tr><td>1</td><td>$a = (s_1, u_1, 10)$</td><td>$premium$</td><td>skip $a$, recurse</td><td>$\ldots$</td></tr>
+<tr><td>2</td><td>$b = (s_2, u_2, 20)$</td><td>$standard$</td><td>keep $b$, recurse</td><td>$\langle b \rangle \frown \ldots$</td></tr>
+<tr><td>3</td><td>$c = (s_3, u_1, 30)$</td><td>$premium$</td><td>skip $c$, recurse</td><td>$\langle b \rangle \frown \ldots$</td></tr>
+<tr><td>base</td><td>&mdash;</td><td>&mdash;</td><td>base case</td><td>$\langle b \rangle \frown \langle\rangle = \langle b \rangle$</td></tr>
+</table>
+
+<p><strong>Result:</strong> $standard\_plays\;\langle a, b, c \rangle = \langle b \rangle$.</p>
+<p>Only the standard user's play ($b$) was kept. Notice that applying <code>premium_plays</code> and <code>standard_plays</code> to the same input gives complementary results: $\langle a, c \rangle$ and $\langle b \rangle$, which together account for every play in the original sequence.</p>
+</div>
+
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-c">Part (c) &mdash; Recursive <code>cumulative_length</code></h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define a <span class="key">recursive function</span> <span class="key"><code>cumulative_length</code></span> that takes a sequence of type <code>seq Play</code> and returns the <span class="key">cumulative length of the songs</span> in the sequence.</p>
+</div>
+
+<h3 id="partc-vocab">Vocab for Part (c)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Recursive function</td><td>A function defined in terms of itself: a base case handles the simplest input, and a recursive case reduces towards it.</td></tr>
+<tr><td>Base case</td><td>The simplest input that can be answered directly without recursion (here, the empty sequence returns 0).</td></tr>
+<tr><td>Recursive case</td><td>The step that processes the head element, then calls the function again on the tail.</td></tr>
+<tr><td>Accumulator</td><td>A value that builds up across recursive calls &mdash; here, the running total of song lengths in seconds.</td></tr>
+<tr><td>Function application</td><td>Applying a function to an argument to get a result &mdash; e.g. applying length to x.1.</td></tr>
+</table>
+
+<h3 id="partc-symbols">Symbols for Part (c)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td><code>cumulative_length</code></td><td>cumulative_length</td><td>the recursive summing function we are defining</td></tr>
+<tr><td>$:$</td><td>type declaration</td><td>"is of type"</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>a finite ordered list</td></tr>
+<tr><td>$Play$</td><td>Play</td><td>the type $SongId \times UserId \times Tstamp$</td></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined for every possible input</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers</td><td>the set $\{0, 1, 2, 3, \ldots\}$</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>a sequence with no elements</td></tr>
+<tr><td>$=$</td><td>equality</td><td>the left side equals the right side</td></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition</td><td>splits a non-empty sequence into its first element $x$ and the remaining tail $s$</td></tr>
+<tr><td><code>x.1</code></td><td>tuple projection</td><td>extracts the 1st component (the SongId) from a Play triple</td></tr>
+<tr><td><code>length</code></td><td>length</td><td>function from Exercise 51 that gives a song's duration in seconds</td></tr>
+<tr><td>$+$</td><td>addition</td><td>adds two numbers together</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates declaration from expression in a quantifier</td></tr>
+</table>
+
+<h3 id="partc-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="A function defined in terms of itself: a base case handles the simplest input, and a recursive case reduces towards it.">recursive function</span> that walks through a sequence of Play records and sums up the duration of every song played. Unlike Parts (a) and (b), which filtered and returned sequences, this function returns a single natural number &mdash; it is an <span class="vocab" data-def="A value that builds up across recursive calls &mdash; here, the running total of song lengths in seconds.">accumulator</span> rather than a filter.</p>
+</div>
+
+<h3 id="partc-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>The same recursive skeleton applies:</p>
+<ul>
+<li><strong><span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns 0).">Base case</span>:</strong> what is the total length of zero plays? Zero seconds.</li>
+<li><strong><span class="vocab" data-def="The step that processes the head element, then calls the function again on the tail.">Recursive case</span>:</strong> decompose into head and tail. Extract the song's length from the head, add it to the recursive total of the tail.</li>
+</ul>
+</div>
+
+<h3 id="partc-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong><span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns 0).">Base case</span>:</strong> the total of zero plays is 0 seconds.</p>
+<p><strong><span class="vocab" data-def="The step that processes the head element, then calls the function again on the tail.">Recursive case</span>:</strong> the head $x$ is a Play triple. Its first component <code>x.1</code> is the SongId. Apply <code>length</code> to <code>x.1</code> to get the song's duration in seconds. Add that to the <span class="vocab" data-def="A value that builds up across recursive calls &mdash; here, the running total of song lengths in seconds.">accumulator</span> &mdash; the recursive total of the remaining plays.</p>
+</div>
+
+<h3 id="partc-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Type signature</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td><code>cumulative_length</code></td><td>cumulative_length &mdash; the recursive summing function we are defining</td><td>takes a sequence of plays, returns a natural number (total seconds)</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares the input and output types</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence &mdash; a finite ordered list</td><td>the input is a sequence of Play values</td></tr>
+<tr><td>$Play$</td><td>Play &mdash; the type $SongId \times UserId \times Tstamp$</td><td>the element type of the input sequence</td></tr>
+<tr><td>$\to$</td><td>total function &mdash; a function defined for every possible input</td><td><code>cumulative_length</code> accepts any sequence of plays</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers &mdash; the set $\{0, 1, 2, 3, \ldots\}$</td><td>the output type (a count of seconds)</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the function <span class="vocab" data-def="The recursive summing function we are defining.">cumulative_length</span>, use <span class="vocab" data-def="type declaration &mdash; &quot;is of type&quot;">:</span> to declare its type. Input is <span class="vocab" data-def="sequence &mdash; a finite ordered list">seq</span> <span class="vocab" data-def="Play &mdash; the type SongId x UserId x Tstamp">Play</span>, output is <span class="vocab" data-def="natural numbers &mdash; the set {0, 1, 2, 3, ...}">N</span>, connected by <span class="vocab" data-def="total function &mdash; a function defined for every possible input">&rarr;</span>:</p>
+$$cumulative\_length : \text{seq}\;Play \to \mathbb{N}$$
+</div>
+
+<h4>Build Step 2 &mdash; Base case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence &mdash; a sequence with no elements</td><td>triggers the base case</td></tr>
+<tr><td>$=$</td><td>equality &mdash; the left side equals the right side</td><td>defines the result for the empty input</td></tr>
+<tr><td>$0$</td><td>zero &mdash; the additive identity</td><td>the total length of zero plays is zero seconds</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns 0).">base case</span>: an <span class="vocab" data-def="empty sequence &mdash; a sequence with no elements">empty sequence</span> has no plays, so the cumulative length is <span class="vocab" data-def="The additive identity.">0</span> seconds:</p>
+$$cumulative\_length\;\langle\rangle = 0$$
+</div>
+
+<h4>Build Step 3 &mdash; Recursive case: extract <code>length(x.1)</code> and add to total</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition &mdash; splits a non-empty sequence into first element $x$ and tail $s$</td><td>splits off the first play</td></tr>
+<tr><td><code>x.1</code></td><td>tuple projection &mdash; extracts the 1st component (the SongId)</td><td>gets the song that was played</td></tr>
+<tr><td><code>length</code></td><td>length &mdash; function from Exercise 51 that gives a song's duration in seconds</td><td>looks up how long this song is</td></tr>
+<tr><td>$+$</td><td>addition &mdash; adds two numbers together</td><td>adds this song's length to the recursive total of the remaining plays</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The step that processes the head element, then calls the function again on the tail.">recursive case</span>: decompose into <span class="vocab" data-def="head-tail decomposition &mdash; splits a non-empty sequence into first element x and tail s">&langle;x&rangle; &frown; s</span>. The play $x$ is a triple $(song, user, timestamp)$. Extract the SongId with <span class="vocab" data-def="tuple projection &mdash; extracts the 1st component (the SongId)">x.1</span>. Apply <span class="vocab" data-def="length &mdash; function from Exercise 51 that gives a song's duration in seconds">length</span> to get the duration. <span class="vocab" data-def="addition &mdash; adds two numbers together">Add</span> it to the recursive call on the tail. The running sum is the <span class="vocab" data-def="A value that builds up across recursive calls &mdash; here, the running total of song lengths in seconds.">accumulator</span>:</p>
+$$\forall\; x : Play;\; s : \text{seq}\;Play \;\bullet$$
+$$\quad cumulative\_length(\langle x \rangle \frown s) = length(x.1) + cumulative\_length(s)$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$cumulative\_length : \text{seq}\;Play \to \mathbb{N}$$
+$$\rule{22em}{0.5pt}$$
+$$cumulative\_length\;\langle\rangle = 0$$
+$$\forall\; x : Play;\; s : \text{seq}\;Play \;\bullet$$
+$$\quad cumulative\_length(\langle x \rangle \frown s) = length(x.1) + cumulative\_length(s)$$
+</div>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p>Let $a = (s_1, u_1, 10)$, $b = (s_2, u_2, 20)$, $c = (s_3, u_1, 30)$ where
+$length(s_1) = 210$ (3 min 30 sec),
+$length(s_2) = 180$ (3 min),
+$length(s_3) = 240$ (4 min).</p>
+
+<p>Compute $cumulative\_length\;\langle a, b, c \rangle$:</p>
+
+<table>
+<tr><th>Call</th><th>Head $x$</th><th><code>x.1</code></th><th><code>length(x.1)</code></th><th>Remaining</th><th>Running sum</th></tr>
+<tr><td>1</td><td>$a = (s_1, u_1, 10)$</td><td>$s_1$</td><td>$210$</td><td>$\langle b, c \rangle$</td><td>$210 + \ldots$</td></tr>
+<tr><td>2</td><td>$b = (s_2, u_2, 20)$</td><td>$s_2$</td><td>$180$</td><td>$\langle c \rangle$</td><td>$210 + 180 + \ldots$</td></tr>
+<tr><td>3</td><td>$c = (s_3, u_1, 30)$</td><td>$s_3$</td><td>$240$</td><td>$\langle\rangle$</td><td>$210 + 180 + 240 + \ldots$</td></tr>
+<tr><td>base</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>$210 + 180 + 240 + 0 = \mathbf{630}$</td></tr>
+</table>
+
+<p><strong>Result:</strong> $cumulative\_length\;\langle a, b, c \rangle = 630$ seconds (10 minutes 30 seconds).</p>
+</div>
+
+</details>
+
+
+<!-- ============================================================ -->
+<h2>Summary</h2>
+
+<table>
+<tr>
+<th>Part</th>
+<th>Function</th>
+<th>Type</th>
+<th>Key Technique</th>
+</tr>
+<tr>
+<td>(a)</td>
+<td><code>premium_plays</code></td>
+<td>$\text{seq}\;Play \to \text{seq}\;Play$</td>
+<td>Recursive filter: keep plays where <code>user_status(x.2)</code> = <code>premium</code>; skip otherwise</td>
+</tr>
+<tr>
+<td>(b)</td>
+<td><code>standard_plays</code></td>
+<td>$\text{seq}\;Play \to \text{seq}\;Play$</td>
+<td>Recursive filter: keep plays where <code>user_status(x.2)</code> = <code>standard</code>; skip otherwise</td>
+</tr>
+<tr>
+<td>(c)</td>
+<td><code>cumulative_length</code></td>
+<td>$\text{seq}\;Play \to \mathbb{N}$</td>
+<td>Recursive accumulation: add <code>length(x.1)</code> at each step; base case returns $0$</td>
+</tr>
+</table>
+
+<footer>
+<strong>Exercise 52</strong> &mdash; Streamify: Playing Songs &mdash; Part 5 of 5<br>
+Previous: <a href="exercise_51.html">Exercise 51</a> | Back to start: <a href="exercise_48.html">Exercise 48</a>
+</footer>
+
+<script>
+function toggleDropdown(el) {
+  var item = el.closest('.nav-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  }
+});
+</script>
+</body>
+</html>

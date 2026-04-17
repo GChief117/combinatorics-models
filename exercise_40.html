@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 40 — TV Recording System</title>
+<style>
+body { font-family: Georgia, "Times New Roman", serif; max-width: 860px; margin: 0 auto; padding: 0 20px 40px 20px; background: #ffffff; color: #111111; line-height: 1.55; }
+h1 { border-bottom: 2px solid #111; padding-bottom: 8px; scroll-margin-top: 100px; }
+h2 { margin-top: 40px; border-bottom: 1px solid #999; padding-bottom: 4px; scroll-margin-top: 100px; }
+h3 { margin-top: 28px; scroll-margin-top: 100px; }
+h4 { margin-top: 20px; color: #333; scroll-margin-top: 100px; }
+a { color: #0a3d91; }
+p { margin: 10px 0; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; margin: 12px 0; width: 100%; }
+th, td { border: 1px solid #bbb; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+.concept { background: #fafafa; border-left: 4px solid #888; padding: 10px 16px; margin: 14px 0; }
+.example { background: #fafafa; border-left: 4px solid #2a7a2a; padding: 10px 16px; margin: 14px 0; }
+.practice { background: #fafafa; border-left: 4px solid #1a5fb4; padding: 10px 16px; margin: 14px 0; }
+.warning { background: #fafafa; border-left: 4px solid #c0392b; padding: 10px 16px; margin: 14px 0; }
+.walkthrough { margin-top: 10px; padding: 10px 14px; background: #fffbea; border-left: 4px solid #b58900; }
+.schema-box { background: #f8f8f8; border: 1px solid #ccc; padding: 12px 16px; margin: 12px 0; font-size: 0.95em; overflow-x: auto; }
+details { margin: 10px 0; }
+summary { cursor: pointer; font-weight: bold; color: #0a3d91; }
+code, .sym { font-family: "Menlo", "Courier New", monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 2px; }
+.vocab { border-bottom: 1px dotted #1a5fb4; cursor: pointer; position: relative; color: #0a3d91; padding: 0 2px; }
+.vocab:hover { background-color: #fff3a3; }
+.vocab::after { content: attr(data-def); display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); background: #2a2a2a; color: #fff; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; font-style: normal; font-weight: normal; white-space: normal; width: max-content; max-width: 280px; min-width: 180px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
+.vocab:hover::after { display: block; }
+.key { color: #1a5fb4; text-decoration: underline; text-underline-offset: 2px; }
+footer { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 0.85em; color: #666; }
+
+.section-nav { position: sticky; top: 0; z-index: 100; background: #fff; padding: 12px 0; margin: 0 0 24px 0; border-bottom: 1px solid #ccc; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.nav-item { position: relative; }
+.section-nav button { padding: 6px 10px; border: 1px solid #999; background: #fff; cursor: pointer; font-family: inherit; font-size: 0.9em; border-radius: 3px; }
+.section-nav button:hover { background: #eef; }
+.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #999; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); list-style: none; padding: 6px 0; margin: 4px 0 0 0; min-width: 200px; z-index: 200; }
+.nav-item.open .nav-dropdown { display: block; }
+.nav-dropdown li { padding: 0; margin: 0; }
+.nav-dropdown a { display: block; padding: 6px 14px; text-decoration: none; color: #111; font-size: 0.9em; cursor: pointer; }
+.nav-dropdown a:hover { background: #eef; }
+.nav-link { font-size: 0.9em; color: #0a3d91; text-decoration: none; padding: 6px 10px; border: 1px solid #999; border-radius: 3px; }
+.nav-link:hover { background: #eef; }
+</style>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (a)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-a"><strong>Part (a)</strong></a></li>
+      <li><a href="#parta-vocab">Vocab</a></li>
+      <li><a href="#parta-symbols">Symbols</a></li>
+      <li><a href="#parta-step1">Step 1</a></li>
+      <li><a href="#parta-step2">Step 2</a></li>
+      <li><a href="#parta-step3">Step 3</a></li>
+      <li><a href="#parta-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (b)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-b"><strong>Part (b)</strong></a></li>
+      <li><a href="#partb-vocab">Vocab</a></li>
+      <li><a href="#partb-symbols">Symbols</a></li>
+      <li><a href="#partb-step1">Step 1</a></li>
+      <li><a href="#partb-step2">Step 2</a></li>
+      <li><a href="#partb-step3">Step 3</a></li>
+      <li><a href="#partb-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (c)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-c"><strong>Part (c)</strong></a></li>
+      <li><a href="#partc-vocab">Vocab</a></li>
+      <li><a href="#partc-symbols">Symbols</a></li>
+      <li><a href="#partc-step1">Step 1</a></li>
+      <li><a href="#partc-step2">Step 2</a></li>
+      <li><a href="#partc-step3">Step 3</a></li>
+      <li><a href="#partc-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (d)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-d"><strong>Part (d)</strong></a></li>
+      <li><a href="#partd-vocab">Vocab</a></li>
+      <li><a href="#partd-symbols">Symbols</a></li>
+      <li><a href="#partd-step1">Step 1</a></li>
+      <li><a href="#partd-step2">Step 2</a></li>
+      <li><a href="#partd-step3">Step 3</a></li>
+      <li><a href="#partd-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (e)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-e"><strong>Part (e)</strong></a></li>
+      <li><a href="#parte-vocab">Vocab</a></li>
+      <li><a href="#parte-symbols">Symbols</a></li>
+      <li><a href="#parte-step1">Step 1</a></li>
+      <li><a href="#parte-step2">Step 2</a></li>
+      <li><a href="#parte-step3">Step 3</a></li>
+      <li><a href="#parte-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (f)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-f"><strong>Part (f)</strong></a></li>
+      <li><a href="#partf-vocab">Vocab</a></li>
+      <li><a href="#partf-symbols">Symbols</a></li>
+      <li><a href="#partf-step1">Step 1</a></li>
+      <li><a href="#partf-step2">Step 2</a></li>
+      <li><a href="#partf-step3">Step 3</a></li>
+      <li><a href="#partf-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (g)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-g"><strong>Part (g)</strong></a></li>
+      <li><a href="#partg-vocab">Vocab</a></li>
+      <li><a href="#partg-symbols">Symbols</a></li>
+      <li><a href="#partg-step1">Step 1</a></li>
+      <li><a href="#partg-step2">Step 2</a></li>
+      <li><a href="#partg-step3">Step 3</a></li>
+      <li><a href="#partg-solution">Solution</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="toggleDropdown(this)">Part (h)</button>
+    <ul class="nav-dropdown">
+      <li><a href="#part-h"><strong>Part (h)</strong></a></li>
+      <li><a href="#parth-vocab">Vocab</a></li>
+      <li><a href="#parth-symbols">Symbols</a></li>
+      <li><a href="#parth-step1">Step 1</a></li>
+      <li><a href="#parth-step2">Step 2</a></li>
+      <li><a href="#parth-step3">Step 3</a></li>
+      <li><a href="#parth-solution">Solution</a></li>
+    </ul>
+  </div>
+  <a class="nav-link" href="exercise_41.html">Ex 41 &rarr;</a>
+  <a class="nav-link" href="index.html" style="margin-left:auto;">&larr; All Exercises</a>
+</nav>
+
+
+<h1>Exercise 40 &mdash; TV Recording System</h1>
+<p><em>Modelling exercise &mdash; building a formal specification step by step.</em></p>
+
+<!-- ============================================================ -->
+<h2>The Scenario</h2>
+
+<div class="concept">
+<p>A TV recording system records television programmes to a hard-drive.</p>
+<ul>
+  <li>The hard-drive can store up to <strong>200 hours</strong> of programming.</li>
+  <li>Each programme may be at most <strong>6 hours</strong> in length.</li>
+</ul>
+<p>The viewer sees a menu listing each programme's <strong>title</strong>, <strong>programme length</strong>, and <strong>whether or not it has been viewed</strong>.</p>
+</div>
+
+<h3>Given Types</h3>
+<table>
+<tr><th>Declaration</th><th>What it is</th><th>Notes</th></tr>
+<tr><td>$[\mathit{Title}]$</td><td><span class="vocab" data-def="A type introduced without internal structure.">Basic type</span></td><td>Abstract set of all possible titles</td></tr>
+<tr><td>$\mathit{Length} == \mathbb{N}$</td><td><span class="vocab" data-def="A shorthand name for an existing type.">Abbreviation</span></td><td>A natural number, in <strong>minutes</strong></td></tr>
+<tr><td>$\mathit{Viewed} ::= yes \mid no$</td><td><span class="vocab" data-def="A type listing all its possible values explicitly.">Free type</span></td><td>Exactly two values</td></tr>
+</table>
+
+<div class="warning">
+<p><strong>Key detail:</strong> lengths are in <strong>minutes</strong>. "200 hours" = $12\,000$ minutes. "6 hours" = $360$ minutes.</p>
+</div>
+
+<p>Each programme is a triple of type $\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}$, and the hard-drive stores a <strong><span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span></strong> of these:</p>
+$$hd : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed})$$
+
+<!-- ============================================================ -->
+<h2>Symbol Table</h2>
+
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>an ordered list (function from $\{1,\ldots,n\}$ to values)</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function/sequence</td></tr>
+<tr><td>$\text{dom}$</td><td>domain</td><td>the set of indices of a sequence</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier</td><td>"there exists at least one"</td></tr>
+<tr><td>$\times$</td><td>Cartesian product</td><td>combines types into tuples</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates constraint from expression</td></tr>
+<tr><td>$|$</td><td>filter bar</td><td>restricts which elements are considered</td></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>sequence with no elements</td></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>joins two sequences end-to-end</td></tr>
+<tr><td>$\upharpoonright$</td><td>sequence restriction</td><td>filter a sequence to elements in a set</td></tr>
+<tr><td>$\mu$</td><td>mu (definite description)</td><td>"the unique element satisfying..."</td></tr>
+<tr><td>$\mapsto$</td><td>maplet</td><td>"$a$ maps to $b$"</td></tr>
+<tr><td>$\nrightarrow$</td><td>partial function</td><td>a function not defined for every input</td></tr>
+<tr><td>$\#$</td><td>cardinality / length</td><td>number of elements in a set or sequence</td></tr>
+<tr><td>$\text{items}$</td><td>bag conversion</td><td>converts a sequence to a multiset</td></tr>
+</table>
+
+
+<!-- ============================================================ -->
+<h2 id="part-a">Part (a) &mdash; Axiomatic Definition with Constraints</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Complete the <span class="key">axiomatic definition</span> of $hd$ with constraints for the <span class="key">200-hour capacity limit</span> and the <span class="key">6-hour per-programme limit</span>. You may assume $\mathit{cumulative\_total}$ exists (defined in part d).</p>
+</div>
+
+<h3 id="parta-vocab">Vocab for Part (a)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Axiomatic definition</td><td>Declares a variable above a line, with predicates below that must always hold.</td></tr>
+<tr><td>Predicate</td><td>A statement that is either true or false.</td></tr>
+<tr><td>Invariant</td><td>A condition that must be satisfied in every valid state of the system.</td></tr>
+<tr><td>Constraint</td><td>A restriction on the valid values a variable may take.</td></tr>
+</table>
+
+<h3 id="parta-symbols">Symbols for Part (a)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>an ordered list (function from $\{1,\ldots,n\}$ to values)</td></tr>
+<tr><td>$\times$</td><td>Cartesian product</td><td>combines types into tuples</td></tr>
+<tr><td>$\leq$</td><td>less than or equal</td><td>standard numeric comparison</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function/sequence</td></tr>
+<tr><td>$p.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates constraint from expression in quantifiers</td></tr>
+</table>
+
+<h3 id="parta-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need to complete an <span class="vocab" data-def="Declares a variable above a line, with predicates below that must always hold.">axiomatic definition</span>. The declaration ($hd$ and its type) goes above the line. Below the line, we write <span class="vocab" data-def="A statement that is either true or false.">predicates</span> &mdash; <span class="vocab" data-def="A condition that must be satisfied in every valid state of the system.">invariants</span> that must always hold.</p>
+</div>
+
+<h3 id="parta-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>We have two English <span class="vocab" data-def="A restriction on the valid values a variable may take.">constraints</span>. Each becomes one <span class="vocab" data-def="A statement that is either true or false.">predicate</span> below the line.</p>
+<ol>
+<li>"the hard-drive can store up to 200 hours" &rarr; bound the total length</li>
+<li>"each programme may be at most 6 hours" &rarr; bound each individual length</li>
+</ol>
+</div>
+
+<h3 id="parta-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong><span class="vocab" data-def="A restriction on the valid values a variable may take.">Constraint</span> 1:</strong> sum of all lengths <span class="vocab" data-def="less than or equal — standard numeric comparison">&le;</span> 12,000 minutes (200 &times; 60). Use <span class="vocab" data-def="Helper function — sums the length fields of every programme.">cumulative_total</span> to compute the sum.</p>
+<p><strong><span class="vocab" data-def="A restriction on the valid values a variable may take.">Constraint</span> 2:</strong> for <em>every</em> programme, its length <span class="vocab" data-def="less than or equal — standard numeric comparison">&le;</span> 360 minutes (6 &times; 60). Use <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> over <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> hd to reach each programme, and <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.2</span> to extract the length.</p>
+</div>
+
+<div class="warning">
+<p><strong>Why <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> hd, not <span class="vocab" data-def="domain — the set of indices of a sequence">dom</span> hd?</strong> A <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> is a function from indices {1, 2, ..., n} to values. The <span class="vocab" data-def="domain — the set of indices of a sequence">domain</span> is the indices. The <span class="vocab" data-def="range — the set of output values of a function/sequence">range</span> is the actual programme triples.</p>
+</div>
+
+<h3 id="parta-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Write the declaration (above the line)</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$hd$</td><td>variable name &mdash; the hard-drive storage variable</td><td>the variable we are defining</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares what type $hd$ has</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence &mdash; an ordered list (function from $\{1,\ldots,n\}$ to values)</td><td>$hd$ is a sequence of programme triples</td></tr>
+<tr><td>$\times$</td><td>Cartesian product &mdash; combines types into tuples</td><td>builds the triple: $\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}$</td></tr>
+</table>
+<div class="walkthrough">
+<p>We name our variable <span class="vocab" data-def="The hard-drive storage variable we are defining.">hd</span>, use <span class="vocab" data-def="Type declaration — &quot;is of type&quot;.">:</span> to declare its type, <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">seq</span> to make it a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span>, and <span class="vocab" data-def="Cartesian product — combines types into tuples">&times;</span> to combine the three component types:</p>
+$$hd : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed})$$
+</div>
+
+<h4>Build Step 2 &mdash; Write the total capacity <span class="vocab" data-def="A statement that is either true or false.">predicate</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\mathit{cumulative\_total}$</td><td>helper function &mdash; sums all programme lengths (defined in part d)</td><td>computes the total recording time on $hd$</td></tr>
+<tr><td>$\leq$</td><td>less than or equal &mdash; standard numeric comparison</td><td>bounds the total at 12,000 minutes</td></tr>
+<tr><td>$12\,000$</td><td>constant &mdash; 200 hours converted to minutes ($200 \times 60$)</td><td>the capacity limit</td></tr>
+</table>
+<div class="walkthrough">
+<p>The constraint says "200 hours." Since lengths are in <strong>minutes</strong>, we convert:</p>
+$$200 \text{ hours} \times 60 \text{ min/hour} = 12\,000 \text{ minutes}$$
+<p>Apply <span class="vocab" data-def="Helper function — sums the length fields of every programme.">cumulative_total</span> to hd and bound with <span class="vocab" data-def="less than or equal — standard numeric comparison">&le;</span>:</p>
+$$\mathit{cumulative\_total}\; hd \leq 12\,000$$
+</div>
+
+<h4>Build Step 3 &mdash; Start the per-programme predicate with <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>constraint must hold for every programme</td></tr>
+<tr><td>$p$</td><td>bound variable &mdash; represents each element in turn</td><td>stands for each programme triple as we iterate</td></tr>
+<tr><td>$\text{ran}$</td><td>range &mdash; the set of output values of a function/sequence</td><td>gives us the stored triples (not the indices)</td></tr>
+</table>
+<div class="walkthrough">
+<p>Use <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> to say "for every programme <span class="vocab" data-def="Bound variable — represents each programme triple in turn.">p</span>", drawing from <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> hd:</p>
+$$\forall\, p : \text{ran}\; hd\ \ldots$$
+</div>
+
+<h4>Build Step 4 &mdash; Add the condition with <span class="vocab" data-def="spot — separates constraint from expression in quantifiers">&bull;</span> and <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.n</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates constraint from expression in quantifiers</td><td>connects "for all $p$" to the condition</td></tr>
+<tr><td>$p.2$</td><td>tuple projection &mdash; extracts the $n$th component of a tuple</td><td>gets the length (2nd component) from each triple</td></tr>
+<tr><td>$\leq 360$</td><td>constant &mdash; 6 hours converted to minutes ($6 \times 60$)</td><td>the per-programme limit</td></tr>
+</table>
+<div class="walkthrough">
+<p>The constraint says "6 hours." Convert:</p>
+$$6 \text{ hours} \times 60 \text{ min/hour} = 360 \text{ minutes}$$
+<p>After <span class="vocab" data-def="spot — separates constraint from expression in quantifiers">&bull;</span>, state the condition: extract the length with <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.2</span> and bound it at <span class="vocab" data-def="less than or equal — standard numeric comparison">&le;</span> <span class="vocab" data-def="At most 6 hours in minutes.">360</span>:</p>
+$$\forall\, p : \text{ran}\; hd \bullet p.2 \leq 360$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\begin{array}{|l}
+hd : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \\
+\hline
+\mathit{cumulative\_total}\; hd \leq 12\,000 \\
+\forall\, p : \text{ran}\; hd \bullet p.2 \leq 360
+\end{array}$$
+</div>
+<p>Line 1 below the bar = total capacity <span class="vocab" data-def="A restriction on the valid values a variable may take.">constraint</span>. Line 2 = per-programme <span class="vocab" data-def="A condition that must be satisfied in every valid state of the system.">invariant</span>.</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-b">Part (b) &mdash; Titles of Programmes Over 2 Hours</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define, via <span class="key">set comprehension</span>, the collection of <span class="key">titles of programmes</span> (in $hd$) that are <span class="key">over two hours</span> in length.</p>
+</div>
+
+<h3 id="partb-vocab">Vocab for Part (b)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Set comprehension</td><td>An expression $\{\ \text{decl}\ |\ \text{filter}\ \bullet\ \text{output}\ \}$ that builds a set by iterating, filtering, and collecting.</td></tr>
+<tr><td>Declaration</td><td>The variable and its source set &mdash; where we draw elements from.</td></tr>
+<tr><td>Filter</td><td>A predicate that restricts which elements are kept.</td></tr>
+<tr><td>Output expression</td><td>What we collect for each qualifying element.</td></tr>
+</table>
+
+<h3 id="partb-symbols">Symbols for Part (b)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\{\ |\ \bullet\ \}$</td><td>set comprehension</td><td>iterate, filter, collect</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function/sequence</td></tr>
+<tr><td>$p.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+<tr><td>$|$</td><td>filter bar</td><td>restricts which elements are considered</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates constraint from expression</td></tr>
+<tr><td>$>$</td><td>strictly greater than</td><td>standard numeric comparison</td></tr>
+</table>
+
+<h3 id="partb-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span> that collects <em>titles</em> (not full triples) of programmes whose length exceeds 2 hours. The programmes live in <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> hd.</p>
+</div>
+
+<h3 id="partb-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>A <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span> has three slots: { <span class="vocab" data-def="The variable and its source set — where we draw elements from.">declaration</span> <span class="vocab" data-def="filter bar — restricts which elements are considered">|</span> <span class="vocab" data-def="A predicate that restricts which elements are kept.">filter</span> <span class="vocab" data-def="spot — separates constraint from expression">&bull;</span> <span class="vocab" data-def="What we collect for each qualifying element.">output</span> }. We need to fill each one.</p>
+</div>
+
+<h3 id="partb-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<ul>
+<li><strong><span class="vocab" data-def="The variable and its source set — where we draw elements from.">Declaration</span>:</strong> draw <span class="vocab" data-def="Bound variable — represents each programme triple.">p</span> from <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> hd (the stored programme triples)</li>
+<li><strong><span class="vocab" data-def="A predicate that restricts which elements are kept.">Filter</span>:</strong> <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.2</span> &gt; 120 (length exceeds 120 minutes = 2 hours)</li>
+<li><strong><span class="vocab" data-def="What we collect for each qualifying element.">Output</span>:</strong> <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.1</span> (the title)</li>
+</ul>
+</div>
+
+<h3 id="partb-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Start the comprehension with the <span class="vocab" data-def="The variable and its source set — where we draw elements from.">declaration</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\{\ \}$</td><td>set braces &mdash; enclose a set comprehension</td><td>wraps the entire expression</td></tr>
+<tr><td>$p$</td><td>bound variable &mdash; represents each element in turn</td><td>stands for each programme triple</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type" / "drawn from"</td><td>says $p$ comes from the source set</td></tr>
+<tr><td>$\text{ran}$</td><td>range &mdash; the set of output values of a function/sequence</td><td>gives the stored programme triples</td></tr>
+</table>
+<div class="walkthrough">
+<p>Open the braces, declare <span class="vocab" data-def="Bound variable — represents each programme triple in turn.">p</span> <span class="vocab" data-def="Type declaration — drawn from.">:</span> <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> hd, leaving the <span class="vocab" data-def="A predicate that restricts which elements are kept.">filter</span> and <span class="vocab" data-def="What we collect for each qualifying element.">output</span> as placeholders:</p>
+$$\{\ p : \text{ran}\; hd\ |\ \ldots\ \bullet\ \ldots\ \}$$
+</div>
+
+<h4>Build Step 2 &mdash; Add the <span class="vocab" data-def="A predicate that restricts which elements are kept.">filter</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$|$</td><td>filter bar &mdash; restricts which elements are considered</td><td>introduces the condition</td></tr>
+<tr><td>$p.2$</td><td>tuple projection &mdash; extracts the $n$th component</td><td>gets the length (2nd component) from each triple</td></tr>
+<tr><td>$>$</td><td>strictly greater than &mdash; standard numeric comparison</td><td>checks length exceeds the threshold</td></tr>
+<tr><td>$120$</td><td>constant &mdash; 2 hours converted to minutes ($2 \times 60$)</td><td>the threshold</td></tr>
+</table>
+<div class="walkthrough">
+<p>The constraint says "over two hours." Convert:</p>
+$$2 \text{ hours} \times 60 \text{ min/hour} = 120 \text{ minutes}$$
+<p>After <span class="vocab" data-def="filter bar — restricts which elements are considered">|</span>, use <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.2</span> to get the length and compare with <span class="vocab" data-def="strictly greater than — standard numeric comparison">&gt;</span>:</p>
+$$\{\ p : \text{ran}\; hd\ |\ p.2 > 120\ \bullet\ \ldots\ \}$$
+</div>
+
+<h4>Build Step 3 &mdash; Add the <span class="vocab" data-def="What we collect for each qualifying element.">output expression</span></h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates constraint from expression</td><td>divides the filter from the output</td></tr>
+<tr><td>$p.1$</td><td>tuple projection &mdash; extracts the $n$th component</td><td>gets the title (1st component)</td></tr>
+</table>
+<div class="walkthrough">
+<p>After <span class="vocab" data-def="spot — separates constraint from expression">&bull;</span>, collect the title with <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.1</span>:</p>
+$$\{\ p : \text{ran}\; hd\ |\ p.2 > 120\ \bullet\ p.1\ \}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\{\ p : \text{ran}\; hd\ |\ p.2 > 120\ \bullet\ p.1\ \}$$
+</div>
+<p>"The set of titles <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.1</span> for each programme <span class="vocab" data-def="Bound variable.">p</span> on the drive whose length <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.2</span> exceeds 120 minutes."</p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-c">Part (c) &mdash; <em>viewed</em> and <em>not_viewed</em> Filters</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define functions $\mathit{viewed}$ and $\mathit{not\_viewed}$ that <span class="key">filter a sequence</span>, keeping only <span class="key">viewed or not-viewed programmes</span>.</p>
+<p><strong>Example:</strong>
+$\mathit{viewed}\;\langle(t_1,3,yes),(t_2,4,yes),(t_1,5,no)\rangle = \langle(t_1,3,yes),(t_2,4,yes)\rangle$</p>
+</div>
+
+<h3 id="partc-vocab">Vocab for Part (c)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Recursive definition</td><td>A definition where the function calls itself: a base case handles the simplest input, and a recursive case reduces towards it.</td></tr>
+<tr><td>Base case</td><td>The simplest input that can be answered directly without recursion (here, the empty sequence).</td></tr>
+<tr><td>Recursive case</td><td>The step that processes one element and calls the function again on the remainder.</td></tr>
+<tr><td>Sequence restriction</td><td>$s \upharpoonright A$ keeps only those elements of sequence $s$ that belong to set $A$, preserving order.</td></tr>
+</table>
+
+<h3 id="partc-symbols">Symbols for Part (c)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>a sequence with no elements</td></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition</td><td>splits a non-empty sequence into its first element $x$ and the remaining tail $s$</td></tr>
+<tr><td>$x.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+<tr><td>$\frown$</td><td>concatenation</td><td>joins two sequences end-to-end</td></tr>
+<tr><td>$\upharpoonright$</td><td>sequence restriction</td><td>filters a sequence to elements belonging to a given set</td></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined for every possible input</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>an ordered list (function from $\{1,\ldots,n\}$ to values)</td></tr>
+<tr><td>$\times$</td><td>Cartesian product</td><td>combines types into tuples</td></tr>
+<tr><td>$:$</td><td>type declaration</td><td>"is of type" / "drawn from"</td></tr>
+<tr><td>$=$</td><td>equality</td><td>the left side equals the right side</td></tr>
+</table>
+
+<h3 id="partc-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need two functions that filter a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> of programmes. The function viewed keeps only entries whose third component is $yes$. The function not_viewed keeps only entries whose third component is $no$. Both return a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> of the same type.</p>
+</div>
+
+<h3 id="partc-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Two clean ways to filter a sequence in Z:</p>
+<ol>
+<li><strong><span class="vocab" data-def="A definition where the function calls itself: a base case handles the simplest input, and a recursive case reduces towards it.">Recursive definition</span>:</strong> process one element at a time (<span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence).">base case</span> + <span class="vocab" data-def="The step that processes one element and calls the function again on the remainder.">recursive case</span>).</li>
+<li><strong><span class="vocab" data-def="s ↾ A keeps only those elements of sequence s that belong to set A, preserving order.">Sequence restriction</span>:</strong> use <span class="vocab" data-def="sequence restriction — filters a sequence to elements belonging to a given set">↾</span> to keep only elements from a given set.</li>
+</ol>
+<p>We show recursive for $\mathit{viewed}$ and restriction for $\mathit{not\_viewed}$.</p>
+</div>
+
+<h3 id="partc-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong>Recursive viewed:</strong> the <span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence).">base case</span> returns <span class="vocab" data-def="empty sequence — a sequence with no elements">&langle;&rangle;</span>. The <span class="vocab" data-def="The step that processes one element and calls the function again on the remainder.">recursive case</span> checks <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">x.3</span>: if $yes$, keep; otherwise skip.</p>
+<p><strong>Restriction not_viewed:</strong> build the set of all triples with $no$, then apply <span class="vocab" data-def="sequence restriction — filters a sequence to elements belonging to a given set">↾</span>.</p>
+</div>
+
+<h3 id="partc-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<p><strong>Recursive <em>viewed</em>:</strong></p>
+
+<h4>Build Step 1 &mdash; Type signature</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\mathit{viewed}$</td><td>viewed &mdash; the filter function we are defining</td><td>takes a sequence, returns a filtered sequence</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares the input and output types of $\mathit{viewed}$</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence &mdash; an ordered list (function from $\{1,\ldots,n\}$ to values)</td><td>input and output are both sequences of triples</td></tr>
+<tr><td>$\times$</td><td>Cartesian product &mdash; combines types into tuples</td><td>builds the triple: $\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}$</td></tr>
+<tr><td>$\to$</td><td>total function &mdash; a function defined for every possible input</td><td>$\mathit{viewed}$ accepts any sequence</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the function <span class="vocab" data-def="The filter function we are defining.">viewed</span>, use <span class="vocab" data-def="type declaration — &quot;is of type&quot; / &quot;drawn from&quot;">:</span> to declare its type. Input and output are both <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">seq</span> of triples built with <span class="vocab" data-def="Cartesian product — combines types into tuples">&times;</span>, connected by <span class="vocab" data-def="total function — a function defined for every possible input">&rarr;</span>:</p>
+$$\mathit{viewed} : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \to \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed})$$
+</div>
+
+<h4>Build Step 2 &mdash; Base case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence &mdash; a sequence with no elements</td><td>base case input and output</td></tr>
+<tr><td>$=$</td><td>equality &mdash; the left side equals the right side</td><td>defines the result for the empty input</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence).">base case</span>: an <span class="vocab" data-def="empty sequence — a sequence with no elements">empty sequence</span> has nothing to filter, so return <span class="vocab" data-def="empty sequence — a sequence with no elements">&langle;&rangle;</span>:</p>
+$$\mathit{viewed}\;\langle\rangle = \langle\rangle$$
+</div>
+
+<h4>Build Step 3 &mdash; Recursive case: check $x.3$</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition &mdash; splits a non-empty sequence into first element $x$ and tail $s$</td><td>splits off the first programme</td></tr>
+<tr><td>$x.3$</td><td>tuple projection &mdash; extracts the 3rd component of a tuple</td><td>checks the viewed status of the head element</td></tr>
+<tr><td>$\frown$</td><td>concatenation &mdash; joins two sequences end-to-end</td><td>prepends $\langle x \rangle$ to the recursive result when keeping</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The step that processes one element and calls the function again on the remainder.">recursive case</span>: decompose into <span class="vocab" data-def="head-tail decomposition — splits a non-empty sequence into its first element x and the remaining tail s">&langle;x&rangle; &frown; s</span>. Check <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">x.3</span>: if $yes$, <span class="vocab" data-def="concatenation — joins two sequences end-to-end">concatenate</span> &langle;x&rangle; with the <span class="vocab" data-def="A definition where the function calls itself: a base case handles the simplest input, and a recursive case reduces towards it.">recursive</span> result; otherwise skip x and recurse on s:</p>
+<p>If $x.3 = yes$: prepend and recurse &rarr; $\langle x \rangle \frown \mathit{viewed}\; s$</p>
+<p>Otherwise: skip and recurse &rarr; $\mathit{viewed}\; s$</p>
+$$\mathit{viewed}\;(\langle x \rangle \frown s) = \begin{cases} \langle x \rangle \frown \mathit{viewed}\; s & \text{if } x.3 = yes \\ \mathit{viewed}\; s & \text{otherwise} \end{cases}$$
+</div>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<table>
+<tr><th>Step</th><th>Head $x$</th><th>$x.3$</th><th>Action</th><th>Building result</th></tr>
+<tr><td>1</td><td>$(t_1, 3, yes)$</td><td>$yes$</td><td>keep, recurse</td><td>$\langle(t_1,3,yes)\rangle \frown \ldots$</td></tr>
+<tr><td>2</td><td>$(t_2, 4, yes)$</td><td>$yes$</td><td>keep, recurse</td><td>$\langle(t_1,3,yes),(t_2,4,yes)\rangle \frown \ldots$</td></tr>
+<tr><td>3</td><td>$(t_1, 5, no)$</td><td>$no$</td><td>skip, recurse</td><td>$\langle(t_1,3,yes),(t_2,4,yes)\rangle \frown \ldots$</td></tr>
+<tr><td>4</td><td>&mdash;</td><td>&mdash;</td><td>base case</td><td>$\langle(t_1,3,yes),(t_2,4,yes)\rangle$ &check;</td></tr>
+</table>
+</div>
+
+<hr>
+<p><strong>Restriction <em>not_viewed</em>:</strong></p>
+
+<h4>Build Step 4 &mdash; Type signature for not_viewed</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\mathit{not\_viewed}$</td><td>not_viewed &mdash; the restriction-based filter function</td><td>takes a sequence, returns only unviewed programmes</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares input and output types</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence &mdash; an ordered list</td><td>input and output are both sequences of triples</td></tr>
+<tr><td>$\times$</td><td>Cartesian product &mdash; combines types into tuples</td><td>builds the triple type</td></tr>
+<tr><td>$\to$</td><td>total function &mdash; a function defined for every possible input</td><td>$\mathit{not\_viewed}$ accepts any sequence</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the function <span class="vocab" data-def="The restriction-based filter function for unviewed programmes.">not_viewed</span>, with the same type signature as viewed &mdash; <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> in, <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> out, connected by <span class="vocab" data-def="total function — a function defined for every possible input">&rarr;</span>:</p>
+$$\mathit{not\_viewed} : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \to \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed})$$
+</div>
+
+<h4>Build Step 5 &mdash; Build the target set (all triples with $no$)</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\{\ \bullet\ \}$</td><td>set comprehension &mdash; builds a set by iterating and collecting</td><td>constructs the set of all possible unviewed triples</td></tr>
+<tr><td>$t$</td><td>bound variable &mdash; ranges over all titles</td><td>placeholder for any title</td></tr>
+<tr><td>$l$</td><td>bound variable &mdash; ranges over all lengths</td><td>placeholder for any length</td></tr>
+<tr><td>$no$</td><td>constant &mdash; the "not viewed" value from the free type Viewed</td><td>fixes the third component to $no$</td></tr>
+</table>
+<div class="walkthrough">
+<p>Build the set of every possible triple whose third component is <span class="vocab" data-def="The &quot;not viewed&quot; value from the free type Viewed.">no</span> using a <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span>. Any element matching this set is unviewed:</p>
+$$\{t : \mathit{Title};\ l : \mathit{Length}\ \bullet\ (t, l, no)\}$$
+</div>
+
+<h4>Build Step 6 &mdash; Apply restriction</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\upharpoonright$</td><td>sequence restriction &mdash; filters a sequence to elements belonging to a given set</td><td>keeps only elements that match the target set</td></tr>
+<tr><td>$s$</td><td>bound variable &mdash; the input sequence</td><td>the sequence being filtered</td></tr>
+<tr><td>$=$</td><td>equality &mdash; the left side equals the right side</td><td>defines the result</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="sequence restriction — filters a sequence to elements belonging to a given set">↾</span> to keep only elements from the target set:</p>
+$$\mathit{not\_viewed}\; s = s \upharpoonright \{t : \mathit{Title};\ l : \mathit{Length}\ \bullet\ (t, l, no)\}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+<p><strong>Recursive viewed:</strong></p>
+$$\mathit{viewed} : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \to \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed})$$
+$$\mathit{viewed}\;\langle\rangle = \langle\rangle$$
+$$\mathit{viewed}\;(\langle x \rangle \frown s) = \begin{cases} \langle x \rangle \frown \mathit{viewed}\; s & \text{if } x.3 = yes \\ \mathit{viewed}\; s & \text{otherwise} \end{cases}$$
+</div>
+<div class="schema-box">
+<p><strong>Restriction not_viewed:</strong></p>
+$$\begin{array}{|l}
+\mathit{not\_viewed} : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \to \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \\
+\hline
+\forall\, s : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \bullet \\
+\quad \mathit{not\_viewed}\; s = s \upharpoonright \{t : \mathit{Title};\ l : \mathit{Length}\ \bullet\ (t, l, no)\}
+\end{array}$$
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-d">Part (d) &mdash; Recursive <em>cumulative_total</em></h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define a <span class="key"><strong>recursive</strong> function</span> $\mathit{cumulative\_total}$ that returns the <span class="key">total length of all programmes</span> in a sequence.</p>
+<p><strong>Example:</strong> $\mathit{cumulative\_total}\;\langle(t_1,3,yes),(t_2,4,yes),(t_1,5,no)\rangle = 12$</p>
+</div>
+
+<h3 id="partd-vocab">Vocab for Part (d)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Recursive function</td><td>A function defined in terms of itself: a base case handles the simplest input, and a recursive case reduces towards it.</td></tr>
+<tr><td>Base case</td><td>The simplest input that can be answered directly without recursion (here, the empty sequence returns 0).</td></tr>
+<tr><td>Recursive case</td><td>The step that processes one element and calls the function again on the remainder.</td></tr>
+<tr><td>Accumulator</td><td>A value that builds up across recursive calls (here, the running sum of lengths).</td></tr>
+</table>
+
+<h3 id="partd-symbols">Symbols for Part (d)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence</td><td>a sequence with no elements</td></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition</td><td>splits a non-empty sequence into first element $x$ and tail $s$</td></tr>
+<tr><td>$x.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+<tr><td>$+$</td><td>addition</td><td>adds two numbers together</td></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined for every possible input</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers</td><td>the set $\{0, 1, 2, 3, \ldots\}$</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>an ordered list (function from $\{1,\ldots,n\}$ to values)</td></tr>
+<tr><td>$\times$</td><td>Cartesian product</td><td>combines types into tuples</td></tr>
+<tr><td>$:$</td><td>type declaration</td><td>"is of type" / "drawn from"</td></tr>
+<tr><td>$=$</td><td>equality</td><td>the left side equals the right side</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates declaration from expression in a quantifier</td></tr>
+</table>
+
+<h3 id="partd-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="A function defined in terms of itself: a base case handles the simplest input, and a recursive case reduces towards it.">recursive function</span> that sums all programme lengths in a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> and returns the total as a natural number.</p>
+</div>
+
+<h3 id="partd-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Every <span class="vocab" data-def="A function defined in terms of itself: a base case handles the simplest input, and a recursive case reduces towards it.">recursive function</span> on sequences follows the same skeleton:</p>
+<ul>
+<li><strong><span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns 0).">Base case</span>:</strong> what happens with <span class="vocab" data-def="empty sequence — a sequence with no elements">&langle;&rangle;</span>?</li>
+<li><strong><span class="vocab" data-def="The step that processes one element and calls the function again on the remainder.">Recursive case</span>:</strong> split <span class="vocab" data-def="head-tail decomposition — splits a non-empty sequence into first element x and tail s">&langle;x&rangle; &frown; s</span> into head x and tail s. Process x, recurse on s.</li>
+</ul>
+</div>
+
+<h3 id="partd-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong><span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns 0).">Base case</span>:</strong> the total of zero programmes is 0.</p>
+<p><strong><span class="vocab" data-def="The step that processes one element and calls the function again on the remainder.">Recursive case</span>:</strong> the head x is a triple. Its length is <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">x.2</span>. Add that to the recursive total of the tail. The sum is the <span class="vocab" data-def="A value that builds up across recursive calls (here, the running sum of lengths).">accumulator</span>.</p>
+</div>
+
+<h3 id="partd-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Type signature</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\mathit{cumulative\_total}$</td><td>cumulative_total &mdash; the recursive summing function we are defining</td><td>takes a sequence of triples, returns a natural number</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares the input and output types</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence &mdash; an ordered list (function from $\{1,\ldots,n\}$ to values)</td><td>the input is a sequence of programme triples</td></tr>
+<tr><td>$\times$</td><td>Cartesian product &mdash; combines types into tuples</td><td>builds the triple: $\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}$</td></tr>
+<tr><td>$\to$</td><td>total function &mdash; a function defined for every possible input</td><td>$\mathit{cumulative\_total}$ accepts any sequence</td></tr>
+<tr><td>$\mathbb{N}$</td><td>natural numbers &mdash; the set $\{0, 1, 2, 3, \ldots\}$</td><td>the output type (a count of minutes)</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the function <span class="vocab" data-def="The recursive summing function we are defining.">cumulative_total</span>, use <span class="vocab" data-def="type declaration — &quot;is of type&quot; / &quot;drawn from&quot;">:</span> to declare its type. Input is a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">seq</span> of triples built with <span class="vocab" data-def="Cartesian product — combines types into tuples">&times;</span>, output is <span class="vocab" data-def="natural numbers — the set {0, 1, 2, 3, ...}">N</span>, connected by <span class="vocab" data-def="total function — a function defined for every possible input">&rarr;</span>:</p>
+$$\mathit{cumulative\_total} : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \to \mathbb{N}$$
+</div>
+
+<h4>Build Step 2 &mdash; Base case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle\rangle$</td><td>empty sequence &mdash; a sequence with no elements</td><td>triggers the base case</td></tr>
+<tr><td>$=$</td><td>equality &mdash; the left side equals the right side</td><td>defines the result for the empty input</td></tr>
+<tr><td>$0$</td><td>zero &mdash; the additive identity</td><td>the total length of zero programmes</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The simplest input that can be answered directly without recursion (here, the empty sequence returns 0).">base case</span>: an <span class="vocab" data-def="empty sequence — a sequence with no elements">empty sequence</span> <span class="vocab" data-def="empty sequence — a sequence with no elements">&langle;&rangle;</span> has no programmes, so the total length is <span class="vocab" data-def="The additive identity.">0</span>:</p>
+$$\mathit{cumulative\_total}\;(\langle\rangle) = 0$$
+</div>
+
+<h4>Build Step 3 &mdash; Recursive case</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\langle x \rangle \frown s$</td><td>head-tail decomposition &mdash; splits a non-empty sequence into first element $x$ and tail $s$</td><td>splits off the first programme</td></tr>
+<tr><td>$x.2$</td><td>tuple projection &mdash; extracts the 2nd component (the length)</td><td>gets the length of the current programme</td></tr>
+<tr><td>$+$</td><td>addition &mdash; adds two numbers together</td><td>adds this length to the recursive total of the remaining programmes</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="The step that processes one element and calls the function again on the remainder.">recursive case</span>: decompose into <span class="vocab" data-def="head-tail decomposition — splits a non-empty sequence into first element x and tail s">&langle;x&rangle; &frown; s</span>. Extract the length with <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">x.2</span> and <span class="vocab" data-def="addition — adds two numbers together">add</span> it to the recursive call on the tail. The running sum is the <span class="vocab" data-def="A value that builds up across recursive calls (here, the running sum of lengths).">accumulator</span>:</p>
+$$\mathit{cumulative\_total}\;(\langle x \rangle \frown s) = x.2 + \mathit{cumulative\_total}\;(s)$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\begin{array}{|l}
+\mathit{cumulative\_total} : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \to \mathbb{N} \\
+\hline
+\mathit{cumulative\_total}\;(\langle\rangle) = 0 \\
+\forall\, x : \mathit{Title} \times \mathit{Length} \times \mathit{Viewed};\ s : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \bullet \\
+\quad \mathit{cumulative\_total}\;(\langle x \rangle \frown s) = x.2 + \mathit{cumulative\_total}\;(s)
+\end{array}$$
+</div>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<table>
+<tr><th>Call</th><th>Head $x$</th><th>$x.2$</th><th>Remaining</th><th>Running sum</th></tr>
+<tr><td>1</td><td>$(t_1, 3, yes)$</td><td>$3$</td><td>$\langle(t_2,4,yes),(t_1,5,no)\rangle$</td><td>$3 + \ldots$</td></tr>
+<tr><td>2</td><td>$(t_2, 4, yes)$</td><td>$4$</td><td>$\langle(t_1,5,no)\rangle$</td><td>$3 + 4 + \ldots$</td></tr>
+<tr><td>3</td><td>$(t_1, 5, no)$</td><td>$5$</td><td>$\langle\rangle$</td><td>$3 + 4 + 5 + \ldots$</td></tr>
+<tr><td>base</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>$3 + 4 + 5 + 0 = \mathbf{12}$ &check;</td></tr>
+</table>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-e">Part (e) &mdash; $\mu$-expression for Title of Longest Programme</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Give a <span class="vocab" data-def="(mu x : S | P . E) — the unique x in S satisfying P, return E. Only defined when exactly one such x exists.">&mu;-expression</span> for the <span class="key">title of the longest programme</span> in hd.</p>
+</div>
+
+<h3 id="parte-vocab">Vocab for Part (e)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Mu-expression</td><td>$(\mu\, x : S\ |\ P\ \bullet\ E)$ &mdash; "the unique $x$ in $S$ satisfying $P$, return $E$." Only defined when exactly one such $x$ exists.</td></tr>
+<tr><td>Definite description</td><td>An expression that picks out a single, uniquely determined element from a set.</td></tr>
+<tr><td>Unique element</td><td>The one and only element satisfying the given predicate; if zero or more than one exist, $\mu$ is undefined.</td></tr>
+</table>
+
+<h3 id="parte-symbols">Symbols for Part (e)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\mu$</td><td>mu (definite description)</td><td>"the unique element satisfying..."</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\neq$</td><td>not equal</td><td>two values are different</td></tr>
+<tr><td>$>$</td><td>strictly greater than</td><td>left side exceeds right side</td></tr>
+<tr><td>$p.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates constraint from expression in a quantifier</td></tr>
+<tr><td>$|$</td><td>filter bar</td><td>restricts which elements are considered</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function/sequence</td></tr>
+</table>
+
+<h3 id="parte-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a <span class="vocab" data-def="(mu x : S | P . E) — the unique x in S satisfying P, return E. Only defined when exactly one such x exists.">mu-expression</span> &mdash; a <span class="vocab" data-def="An expression that picks out a single, uniquely determined element from a set.">definite description</span> &mdash; that finds the title of the <span class="vocab" data-def="The one and only element satisfying the given predicate; if zero or more than one exist, mu is undefined.">unique</span> longest programme in hd.</p>
+</div>
+
+<h3 id="parte-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>A <span class="vocab" data-def="(mu x : S | P . E) — the unique x in S satisfying P, return E. Only defined when exactly one such x exists.">&mu;-expression</span> has three slots: (&mu; x : S | P <span class="vocab" data-def="spot — separates constraint from expression in a quantifier">&bull;</span> E). We need to fill each one:</p>
+<ul>
+<li><strong>Source $S$:</strong> where to draw elements from</li>
+<li><strong>Predicate $P$:</strong> what condition the element must satisfy</li>
+<li><strong>Output $E$:</strong> what to return</li>
+</ul>
+</div>
+
+<h3 id="parte-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong>Source:</strong> <span class="vocab" data-def="Bound variable — represents a candidate programme.">p</span> : <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> hd (the stored programme triples).</p>
+<p><strong><span class="vocab" data-def="A statement that is either true or false.">Predicate</span> ("longest"):</strong> for every other q, p's length exceeds q's: <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> q : <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> hd <span class="vocab" data-def="filter bar — restricts which elements are considered">|</span> p <span class="vocab" data-def="not equal — two values are different">&ne;</span> q <span class="vocab" data-def="spot — separates constraint from expression in a quantifier">&bull;</span> <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.2</span> <span class="vocab" data-def="strictly greater than — left side exceeds right side">&gt;</span> <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">q.2</span>.</p>
+<p><strong>Output:</strong> <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.1</span> (the title).</p>
+</div>
+
+<h3 id="parte-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Start with the $\mu$ skeleton</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\mu$</td><td>mu &mdash; "the unique element satisfying..."</td><td>selects the single longest programme</td></tr>
+<tr><td>$p$</td><td>bound variable &mdash; represents a candidate programme</td><td>stands for the programme we are testing</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "drawn from"</td><td>says $p$ comes from the source set</td></tr>
+<tr><td>$\text{ran}$</td><td>range &mdash; the set of output values of a function/sequence</td><td>gives the stored programme triples</td></tr>
+</table>
+<div class="walkthrough">
+<p>Open the <span class="vocab" data-def="(mu x : S | P . E) — the unique x in S satisfying P, return E. Only defined when exactly one such x exists.">&mu;-expression</span>, declare <span class="vocab" data-def="Bound variable — represents a candidate programme.">p</span> <span class="vocab" data-def="Type declaration — drawn from.">:</span> <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> hd, leaving <span class="vocab" data-def="A statement that is either true or false.">predicate</span> and output as placeholders:</p>
+$$(\mu\, p : \text{ran}\; hd\ |\ \ldots\ \bullet\ \ldots)$$
+</div>
+
+<h4>Build Step 2 &mdash; Fill in the "longest" predicate</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>condition must hold for every other programme</td></tr>
+<tr><td>$q$</td><td>bound variable &mdash; represents each comparison programme</td><td>the programme we compare $p$ against</td></tr>
+<tr><td>$|$</td><td>filter bar &mdash; restricts which elements are considered</td><td>introduces the condition $p \neq q$</td></tr>
+<tr><td>$\neq$</td><td>not equal &mdash; two values are different</td><td>excludes $p$ itself from comparison</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates constraint from expression</td><td>separates the filter from the condition</td></tr>
+<tr><td>$p.2$</td><td>tuple projection &mdash; extracts the 2nd component (length)</td><td>gets $p$'s length for comparison</td></tr>
+<tr><td>$q.2$</td><td>tuple projection &mdash; extracts the 2nd component (length)</td><td>gets $q$'s length for comparison</td></tr>
+<tr><td>$>$</td><td>strictly greater than &mdash; left side exceeds right side</td><td>$p$'s length must beat every other</td></tr>
+</table>
+<div class="walkthrough">
+<p>The <span class="vocab" data-def="A statement that is either true or false.">predicate</span> says "p is longer than every other programme." Use <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> over <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> hd, <span class="vocab" data-def="filter bar — restricts which elements are considered">filter</span> to exclude p itself with <span class="vocab" data-def="not equal — two values are different">&ne;</span>, then require <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.2</span> <span class="vocab" data-def="strictly greater than — left side exceeds right side">&gt;</span> <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">q.2</span>:</p>
+$$(\mu\, p : \text{ran}\; hd\ |\ (\forall\, q : \text{ran}\; hd\ |\ p \neq q\ \bullet\ p.2 > q.2)\ \bullet\ \ldots)$$
+</div>
+
+<h4>Build Step 3 &mdash; Fill in the output ($p.1$ = title)</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$p.1$</td><td>tuple projection &mdash; extracts the 1st component (the title)</td><td>returns the title of the longest programme</td></tr>
+</table>
+<div class="walkthrough">
+<p>After the outer <span class="vocab" data-def="spot — separates constraint from expression in a quantifier">&bull;</span>, return the title with <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.1</span>:</p>
+$$(\mu\, p : \text{ran}\; hd\ |\ (\forall\, q : \text{ran}\; hd\ |\ p \neq q\ \bullet\ p.2 > q.2)\ \bullet\ p.1)$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$(\mu\, p : \text{ran}\; hd\ |\ (\forall\, q : \text{ran}\; hd\ |\ p \neq q\ \bullet\ p.2 > q.2)\ \bullet\ p.1)$$
+</div>
+<p><em>Assumes a <span class="vocab" data-def="The one and only element satisfying the given predicate; if zero or more than one exist, mu is undefined.">unique</span> longest programme. If two programmes tie for longest, <span class="vocab" data-def="mu (definite description) — &quot;the unique element satisfying...&quot;">&mu;</span> is undefined.</em></p>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-f">Part (f) &mdash; Mapping Titles to Cumulative Lengths</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define a function <span class="key">mapping each programme title</span> to the <span class="key">total length across all its appearances</span>.</p>
+<p><strong>Example:</strong> $f\;\langle(t_1,3,yes),(t_2,4,yes),(t_1,5,no)\rangle = \{t_1 \mapsto 8,\; t_2 \mapsto 4\}$</p>
+<p>($t_1$ appears twice: $3 + 5 = 8$)</p>
+</div>
+
+<h3 id="partf-vocab">Vocab for Part (f)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Partial function</td><td>A function that is not necessarily defined for every element of its source type.</td></tr>
+<tr><td>Maplet</td><td>A pair $a \mapsto b$ meaning "$a$ maps to $b$" &mdash; one entry in a function.</td></tr>
+<tr><td>Set comprehension</td><td>An expression $\{\ \text{decl}\ |\ \text{filter}\ \bullet\ \text{output}\ \}$ that builds a set by iterating, filtering, and collecting.</td></tr>
+<tr><td>Sequence restriction</td><td>$s \upharpoonright A$ keeps only elements of $s$ that belong to set $A$, preserving order.</td></tr>
+</table>
+
+<h3 id="partf-symbols">Symbols for Part (f)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\nrightarrow$</td><td>partial function</td><td>a function not defined for every input</td></tr>
+<tr><td>$\mapsto$</td><td>maplet</td><td>"$a$ maps to $b$"</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier</td><td>"there exists at least one"</td></tr>
+<tr><td>$\upharpoonright$</td><td>sequence restriction</td><td>filter a sequence to elements in a set</td></tr>
+<tr><td>$\{|\ \bullet\ \}$</td><td>set comprehension</td><td>iterate, filter, collect</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>an ordered list (function from $\{1,\ldots,n\}$ to values)</td></tr>
+<tr><td>$\times$</td><td>Cartesian product</td><td>combines types into tuples</td></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined for every possible input</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function/sequence</td></tr>
+<tr><td>$\bullet$</td><td>spot</td><td>separates constraint from expression in quantifiers</td></tr>
+</table>
+
+<h3 id="partf-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a function that takes a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> of programme triples and returns a <span class="vocab" data-def="A function that is not necessarily defined for every element of its source type.">partial function</span> from titles to lengths. Each title that appears in the sequence gets a <span class="vocab" data-def="A pair a &mapsto; b meaning &quot;a maps to b&quot; — one entry in a function.">maplet</span> pairing it with the sum of all its lengths.</p>
+</div>
+
+<h3 id="partf-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Use a <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span> to build a set of <span class="vocab" data-def="A pair a &mapsto; b meaning &quot;a maps to b&quot; — one entry in a function.">maplets</span>. For each distinct title t that appears in the <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span>, create one <span class="vocab" data-def="A pair a &mapsto; b meaning &quot;a maps to b&quot; — one entry in a function.">maplet</span> t <span class="vocab" data-def="maplet — &quot;a maps to b&quot;">&mapsto;</span> total. To compute the total for a single title, use <span class="vocab" data-def="s ↾ A keeps only elements of s that belong to set A, preserving order.">sequence restriction</span> <span class="vocab" data-def="sequence restriction — filter a sequence to elements in a set">↾</span> to isolate that title's entries, then sum with <span class="vocab" data-def="Helper function — sums the length fields of every programme.">cumulative_total</span>.</p>
+</div>
+
+<h3 id="partf-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong>Type signature:</strong> input is a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> of triples, output is a <span class="vocab" data-def="A function that is not necessarily defined for every element of its source type.">partial function</span> <span class="vocab" data-def="partial function — a function not defined for every input">&#x21F8;</span> from Title to Length.</p>
+<p><strong>Filter titles:</strong> use <span class="vocab" data-def="existential quantifier — &quot;there exists at least one&quot;">&exist;</span> to check that title t actually appears in <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> s.</p>
+<p><strong>Sum for one title:</strong> restrict s to entries with title t using <span class="vocab" data-def="sequence restriction — filter a sequence to elements in a set">↾</span>, then apply <span class="vocab" data-def="Helper function — sums the length fields of every programme.">cumulative_total</span>.</p>
+<p><strong>Create <span class="vocab" data-def="A pair a &mapsto; b meaning &quot;a maps to b&quot; — one entry in a function.">maplet</span>:</strong> t <span class="vocab" data-def="maplet — &quot;a maps to b&quot;">&mapsto;</span> cumulative_total(s <span class="vocab" data-def="sequence restriction — filter a sequence to elements in a set">↾</span> ...).</p>
+</div>
+
+<h3 id="partf-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Type signature</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$f$</td><td>function name &mdash; the mapping function we are defining</td><td>the function we are defining</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares what type $f$ has</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence &mdash; an ordered list (function from $\{1,\ldots,n\}$ to values)</td><td>input is a sequence of programme triples</td></tr>
+<tr><td>$\times$</td><td>Cartesian product &mdash; combines types into tuples</td><td>builds the triple: $\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}$</td></tr>
+<tr><td>$\to$</td><td>total function &mdash; a function defined for every possible input</td><td>$f$ accepts any sequence</td></tr>
+<tr><td>$\nrightarrow$</td><td>partial function &mdash; a function not defined for every input</td><td>not every possible title need appear in the result</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the function <span class="vocab" data-def="The mapping function we are defining.">f</span>, use <span class="vocab" data-def="&quot;Is of type&quot; — declares the input and output types.">:</span> to declare its type. Input is a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">seq</span> of triples built with <span class="vocab" data-def="Cartesian product — combines types into tuples">&times;</span>, connected by <span class="vocab" data-def="total function — a function defined for every possible input">&rarr;</span> to the output, which is a <span class="vocab" data-def="partial function — a function not defined for every input">partial function</span> <span class="vocab" data-def="partial function — a function not defined for every input">&#x21F8;</span> from Title to Length:</p>
+$$f : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \to (\mathit{Title} \nrightarrow \mathit{Length})$$
+</div>
+
+<h4>Build Step 2 &mdash; Set comprehension: declare and filter titles</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$s$</td><td>bound variable &mdash; the input sequence parameter</td><td>stands for the sequence passed to $f$</td></tr>
+<tr><td>$\{\ |\ \bullet\ \}$</td><td>set comprehension &mdash; iterate, filter, collect</td><td>builds the set of maplets</td></tr>
+<tr><td>$t$</td><td>bound variable &mdash; represents each title</td><td>iterates over all possible titles</td></tr>
+<tr><td>$\exists$</td><td>existential quantifier &mdash; "there exists at least one"</td><td>checks that title $t$ actually appears in $s$</td></tr>
+<tr><td>$p$</td><td>bound variable &mdash; represents each programme triple</td><td>used inside $\exists$ to search the sequence</td></tr>
+<tr><td>$\text{ran}$</td><td>range &mdash; the set of output values of a function/sequence</td><td>gives the stored programme triples</td></tr>
+<tr><td>$p.1$</td><td>tuple projection &mdash; extracts the 1st component</td><td>gets the title from a triple</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates constraint from expression</td><td>divides the filter from the output</td></tr>
+</table>
+<div class="walkthrough">
+<p>Open the <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span>. Declare <span class="vocab" data-def="Bound variable — represents each title.">t</span> drawn from Title. Use <span class="vocab" data-def="existential quantifier — &quot;there exists at least one&quot;">&exist;</span> to ensure <span class="vocab" data-def="Bound variable — represents each title.">t</span> actually appears &mdash; there must be some <span class="vocab" data-def="Bound variable — represents each programme triple.">p</span> in <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> s whose first component <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.1</span> matches:</p>
+$$f\;s = \{t : \mathit{Title}\ |\ (\exists\, p : \text{ran}\; s \bullet p.1 = t)\ \bullet\ \ldots\}$$
+</div>
+
+<h4>Build Step 3 &mdash; Build the restriction set for title $t$</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$l$</td><td>bound variable &mdash; represents each possible length value</td><td>ranges over all lengths</td></tr>
+<tr><td>$v$</td><td>bound variable &mdash; represents each possible viewed status</td><td>ranges over $yes$ and $no$</td></tr>
+<tr><td>$(t, l, v)$</td><td>triple &mdash; a programme entry with title $t$</td><td>any triple whose first component is $t$</td></tr>
+</table>
+<div class="walkthrough">
+<p>We build the set of all triples whose first component is <span class="vocab" data-def="Bound variable — represents each title.">t</span>. Declare <span class="vocab" data-def="Bound variable — represents each possible length value.">l</span> from Length and <span class="vocab" data-def="Bound variable — represents each possible viewed status.">v</span> from Viewed, and collect the triple:</p>
+$$\{l : \mathit{Length};\ v : \mathit{Viewed}\ \bullet\ (t, l, v)\}$$
+<p>This is the set of all triples whose first component is t. It will be used to <span class="vocab" data-def="s ↾ A keeps only elements of s that belong to set A, preserving order.">restrict</span> the <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span>.</p>
+</div>
+
+<h4>Build Step 4 &mdash; Restrict and sum, create the maplet</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\upharpoonright$</td><td>sequence restriction &mdash; filter a sequence to elements in a set</td><td>keeps only entries for title $t$</td></tr>
+<tr><td>$\mathit{cumulative\_total}$</td><td>helper function &mdash; sums all programme lengths (defined in part d)</td><td>sums the lengths after restriction</td></tr>
+<tr><td>$\mapsto$</td><td>maplet &mdash; "$a$ maps to $b$"</td><td>pairs title $t$ with its total length</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="s ↾ A keeps only elements of s that belong to set A, preserving order.">sequence restriction</span> <span class="vocab" data-def="sequence restriction — filter a sequence to elements in a set">↾</span> to keep only entries for <span class="vocab" data-def="Bound variable — represents each title.">t</span>, then feed the result to <span class="vocab" data-def="Helper function — sums the length fields of every programme.">cumulative_total</span>. Pair the title with this sum using <span class="vocab" data-def="maplet — &quot;a maps to b&quot;">&mapsto;</span>:</p>
+$$t \mapsto \mathit{cumulative\_total}\;(s \upharpoonright \{l : \mathit{Length};\ v : \mathit{Viewed}\ \bullet\ (t, l, v)\})$$
+<p>Substituting into the comprehension:</p>
+$$f\;s = \{t : \mathit{Title}\ |\ (\exists\, p : \text{ran}\; s \bullet p.1 = t)\ \bullet\ t \mapsto \mathit{cumulative\_total}\;(s \upharpoonright \{l : \mathit{Length};\ v : \mathit{Viewed}\ \bullet\ (t, l, v)\})\}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\begin{array}{|l}
+f : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \to (\mathit{Title} \nrightarrow \mathit{Length}) \\
+\hline
+\forall\, s : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \bullet \\
+\quad f\;s = \{t : \mathit{Title}\ |\ (\exists\, p : \text{ran}\; s \bullet p.1 = t)\ \bullet \\
+\qquad\qquad t \mapsto \mathit{cumulative\_total}\;(s \upharpoonright \{l : \mathit{Length};\ v : \mathit{Viewed}\ \bullet\ (t, l, v)\})\}
+\end{array}$$
+</div>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p>Input: $\langle(t_1,3,yes),(t_2,4,yes),(t_1,5,no)\rangle$</p>
+<table>
+<tr><th>Title $t$</th><th>Appears?</th><th>Restricted sequence</th><th>Sum</th><th>Maplet</th></tr>
+<tr><td>$t_1$</td><td>$\exists$: $(t_1,3,yes).1 = t_1$ &check;</td><td>$\langle(t_1,3,yes),(t_1,5,no)\rangle$</td><td>$3 + 5 = 8$</td><td>$t_1 \mapsto 8$</td></tr>
+<tr><td>$t_2$</td><td>$\exists$: $(t_2,4,yes).1 = t_2$ &check;</td><td>$\langle(t_2,4,yes)\rangle$</td><td>$4$</td><td>$t_2 \mapsto 4$</td></tr>
+</table>
+<p>Result: $\{t_1 \mapsto 8,\; t_2 \mapsto 4\}$ &check;</p>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-g">Part (g) &mdash; Removing the Longest Viewed Programme</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define a function that <span class="key">removes the longest viewed programme</span> from a sequence.</p>
+<p><strong>Example:</strong> $g\;\langle(t_1,3,yes),(t_2,4,yes),(t_1,5,no)\rangle = \langle(t_1,3,yes),(t_1,5,no)\rangle$</p>
+<p>($(t_2,4,yes)$ removed &mdash; longest among viewed. $(t_1,5,no)$ is longer but not viewed.)</p>
+</div>
+
+<h3 id="partg-vocab">Vocab for Part (g)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Helper function</td><td>A separately defined function used as a building block inside another definition.</td></tr>
+<tr><td>Mu-expression</td><td>$(\mu\, x : S\ |\ P)$ &mdash; "the unique $x$ in $S$ satisfying $P$." Only defined when exactly one such $x$ exists.</td></tr>
+<tr><td>Sequence restriction</td><td>$s \upharpoonright A$ keeps only elements of $s$ that belong to set $A$, preserving order.</td></tr>
+<tr><td>Conjunction</td><td>Logical "and" ($\wedge$) &mdash; both conditions must hold simultaneously.</td></tr>
+</table>
+
+<h3 id="partg-symbols">Symbols for Part (g)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\mu$</td><td>mu (definite description)</td><td>"the unique element satisfying..."</td></tr>
+<tr><td>$\wedge$</td><td>conjunction</td><td>"and" &mdash; both sides must be true</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\neq$</td><td>not equal</td><td>standard inequality</td></tr>
+<tr><td>$p.n$</td><td>tuple projection</td><td>extracts the $n$th component of a tuple</td></tr>
+<tr><td>$\upharpoonright$</td><td>sequence restriction</td><td>filter a sequence to elements in a set</td></tr>
+<tr><td>$\{\ |\ \}$</td><td>set comprehension (filter only)</td><td>builds a set by filtering</td></tr>
+<tr><td>$\text{ran}$</td><td>range</td><td>the set of output values of a function/sequence</td></tr>
+</table>
+
+<h3 id="partg-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a function that takes a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> of programme triples and returns the same sequence with the longest <em>viewed</em> programme removed. A <span class="vocab" data-def="A separately defined function used as a building block inside another definition.">helper function</span> will identify the target, and then <span class="vocab" data-def="s ↾ A keeps only elements of s that belong to set A, preserving order.">sequence restriction</span> <span class="vocab" data-def="sequence restriction — filter a sequence to elements in a set">↾</span> will remove it. Unviewed programmes are ignored when finding the longest.</p>
+</div>
+
+<h3 id="partg-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>Two sub-problems:</p>
+<ol>
+<li><strong>Identify the target:</strong> use a <span class="vocab" data-def="(mu x : S | P) — &quot;the unique x in S satisfying P.&quot; Only defined when exactly one such x exists.">mu-expression</span> <span class="vocab" data-def="mu (definite description) — &quot;the unique element satisfying...&quot;">&mu;</span> to find the <span class="vocab" data-def="The one and only element satisfying the given predicate; if zero or more than one exist, mu is undefined.">unique</span> programme that is viewed AND longer than every other viewed programme.</li>
+<li><strong>Remove it:</strong> use <span class="vocab" data-def="s ↾ A keeps only elements of s that belong to set A, preserving order.">sequence restriction</span> <span class="vocab" data-def="sequence restriction — filter a sequence to elements in a set">↾</span> with a set that excludes the target.</li>
+</ol>
+<p>We define a <span class="vocab" data-def="A separately defined function used as a building block inside another definition.">helper function</span> $\mathit{longest\_viewed}$ first, then use it in $g$.</p>
+</div>
+
+<h3 id="partg-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong>Find target:</strong> <span class="vocab" data-def="mu (definite description) — &quot;the unique element satisfying...&quot;">&mu;</span> selects the <span class="vocab" data-def="The one and only element satisfying the given predicate; if zero or more than one exist, mu is undefined.">unique</span> <span class="vocab" data-def="Bound variable — represents a candidate programme.">p</span> where <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.3</span> = yes <span class="vocab" data-def="Logical &quot;and&quot; (∧) — both conditions must hold simultaneously.">and</span> <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.2</span> beats every other viewed programme's length.</p>
+<p><strong>Keep set:</strong> build {x : <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> s | x <span class="vocab" data-def="not equal — standard inequality">&ne;</span> target} &mdash; every element except the one to remove.</p>
+<p><strong>Remove it:</strong> s <span class="vocab" data-def="sequence restriction — filter a sequence to elements in a set">↾</span> keep set filters the <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span>, preserving order.</p>
+</div>
+
+<h3 id="partg-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Define the helper $\mathit{longest\_viewed}$ using $\mu$</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\mathit{longest\_viewed}$</td><td>helper function &mdash; finds the longest viewed programme</td><td>the helper we are defining</td></tr>
+<tr><td>$s$</td><td>bound variable &mdash; the input sequence parameter</td><td>stands for the sequence passed to the helper</td></tr>
+<tr><td>$\mu$</td><td>mu &mdash; "the unique element satisfying..."</td><td>selects the single longest viewed programme</td></tr>
+<tr><td>$p$</td><td>bound variable &mdash; represents each programme triple</td><td>candidate for the longest viewed</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "drawn from"</td><td>says $p$ comes from ran $s$</td></tr>
+<tr><td>$\text{ran}$</td><td>range &mdash; the set of output values of a function/sequence</td><td>gives the stored programme triples</td></tr>
+<tr><td>$p.3$</td><td>tuple projection &mdash; extracts the 3rd component</td><td>checks the viewed status of $p$</td></tr>
+<tr><td>$=$</td><td>equality &mdash; standard comparison</td><td>tests $p.3 = yes$</td></tr>
+<tr><td>$\wedge$</td><td>conjunction &mdash; "and"</td><td>combines the viewed check with the longest check</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>compares $p$ against every other viewed programme</td></tr>
+<tr><td>$q$</td><td>bound variable &mdash; represents each other programme</td><td>the comparison target</td></tr>
+<tr><td>$\neq$</td><td>not equal &mdash; standard inequality</td><td>excludes $p$ itself from comparison</td></tr>
+<tr><td>$q.3$</td><td>tuple projection &mdash; extracts the 3rd component</td><td>only compare against other <em>viewed</em> programmes</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates constraint from expression</td><td>connects "for all $q$" to the condition</td></tr>
+<tr><td>$p.2$</td><td>tuple projection &mdash; extracts the 2nd component</td><td>gets the length of $p$</td></tr>
+<tr><td>$>$</td><td>strictly greater than &mdash; standard numeric comparison</td><td>$p$'s length must beat every other viewed programme</td></tr>
+<tr><td>$q.2$</td><td>tuple projection &mdash; extracts the 2nd component</td><td>gets the length of $q$ for comparison</td></tr>
+</table>
+<div class="walkthrough">
+<p>Define the <span class="vocab" data-def="A separately defined function used as a building block inside another definition.">helper</span> <span class="vocab" data-def="Finds the longest viewed programme.">longest_viewed</span>. Source: draw <span class="vocab" data-def="Bound variable — candidate for the longest viewed.">p</span> from <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> s. The <span class="vocab" data-def="A statement that is either true or false.">predicate</span> has two parts joined by <span class="vocab" data-def="conjunction — &quot;and&quot; — both sides must be true">&and;</span>:</p>
+<ol>
+<li><span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.3</span> = yes &mdash; the programme is viewed</li>
+<li><span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> <span class="vocab" data-def="Bound variable — the comparison target.">q</span> : <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> s <span class="vocab" data-def="filter bar — restricts which elements are considered">|</span> p <span class="vocab" data-def="not equal — standard inequality">&ne;</span> q <span class="vocab" data-def="conjunction — &quot;and&quot; — both sides must be true">&and;</span> <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">q.3</span> = yes <span class="vocab" data-def="spot — separates constraint from expression">&bull;</span> <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.2</span> &gt; <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">q.2</span> &mdash; p is longer than every other viewed programme</li>
+</ol>
+$$\mathit{longest\_viewed}\; s = (\mu\, p : \text{ran}\; s\ |\ p.3 = yes \wedge (\forall\, q : \text{ran}\; s\ |\ p \neq q \wedge q.3 = yes\ \bullet\ p.2 > q.2))$$
+</div>
+
+<h4>Build Step 2 &mdash; Build the "keep everything except target" set</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\{\ |\ \}$</td><td>set comprehension (filter only) &mdash; builds a set by filtering</td><td>builds the set of elements to keep</td></tr>
+<tr><td>$x$</td><td>bound variable &mdash; represents each programme triple</td><td>iterates over all elements in the sequence</td></tr>
+<tr><td>$\neq$</td><td>not equal &mdash; standard inequality</td><td>excludes the target from the keep set</td></tr>
+</table>
+<div class="walkthrough">
+<p>Build the keep set using a <span class="vocab" data-def="An expression {decl | filter . output} that builds a set by iterating, filtering, and collecting.">set comprehension</span>: every element <span class="vocab" data-def="Bound variable — represents each programme triple.">x</span> from <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> s that is <span class="vocab" data-def="not equal — standard inequality">&ne;</span> the target:</p>
+$$\{x : \text{ran}\; s\ |\ x \neq \mathit{longest\_viewed}\; s\}$$
+</div>
+
+<h4>Build Step 3 &mdash; Apply restriction to build $g$</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$g$</td><td>function name &mdash; the removal function we are defining</td><td>the function we are defining</td></tr>
+<tr><td>$\upharpoonright$</td><td>sequence restriction &mdash; filter a sequence to elements in a set</td><td>keeps only elements in the keep set, removing the target</td></tr>
+</table>
+<div class="walkthrough">
+<p>Apply <span class="vocab" data-def="s ↾ A keeps only elements of s that belong to set A, preserving order.">sequence restriction</span> <span class="vocab" data-def="sequence restriction — filter a sequence to elements in a set">↾</span> to keep everything except the target:</p>
+$$g\; s = s \upharpoonright \{x : \text{ran}\; s\ |\ x \neq \mathit{longest\_viewed}\; s\}$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\begin{array}{|l}
+g : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \to \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \\
+\hline
+\forall\, s : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \bullet \\
+\quad g\;s = s \upharpoonright \{x : \text{ran}\; s\ |\ x \neq \mathit{longest\_viewed}\; s\}
+\end{array}$$
+</div>
+<p>where <span class="vocab" data-def="Finds the longest viewed programme.">longest_viewed</span> s = (<span class="vocab" data-def="mu (definite description) — &quot;the unique element satisfying...&quot;">&mu;</span> p : <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> s | <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.3</span> = yes <span class="vocab" data-def="conjunction — &quot;and&quot; — both sides must be true">&and;</span> (<span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> q : <span class="vocab" data-def="range — the set of output values of a function/sequence">ran</span> s | p <span class="vocab" data-def="not equal — standard inequality">&ne;</span> q <span class="vocab" data-def="conjunction — &quot;and&quot; — both sides must be true">&and;</span> <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">q.3</span> = yes <span class="vocab" data-def="spot — separates constraint from expression">&bull;</span> <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">p.2</span> &gt; <span class="vocab" data-def="tuple projection — extracts the nth component of a tuple">q.2</span>))</p>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p>Input: $\langle(t_1,3,yes),(t_2,4,yes),(t_1,5,no)\rangle$</p>
+<table>
+<tr><th>Step</th><th>What happens</th><th>Result</th></tr>
+<tr><td>1. Find viewed</td><td>$(t_1,3,yes)$: viewed, length 3. $(t_2,4,yes)$: viewed, length 4. $(t_1,5,no)$: not viewed &mdash; ignored.</td><td>Candidates: $(t_1,3,yes)$, $(t_2,4,yes)$</td></tr>
+<tr><td>2. Apply $\mu$</td><td>$(t_2,4,yes)$: $4 > 3$ &check; &mdash; beats the only other viewed</td><td>$\mathit{longest\_viewed} = (t_2,4,yes)$</td></tr>
+<tr><td>3. Build keep set</td><td>$\{x : \text{ran}\;s\ |\ x \neq (t_2,4,yes)\}$</td><td>$\{(t_1,3,yes),\;(t_1,5,no)\}$</td></tr>
+<tr><td>4. Restrict</td><td>$s \upharpoonright \{(t_1,3,yes),\;(t_1,5,no)\}$</td><td>$\langle(t_1,3,yes),(t_1,5,no)\rangle$ &check;</td></tr>
+</table>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2 id="part-h">Part (h) &mdash; Sorting by Programme Length</h2>
+
+<div class="practice">
+<p><strong>Task:</strong> Define a function that <span class="key">sorts a sequence</span> by <span class="key">programme length, longest first</span>.</p>
+<p><strong>Example:</strong> $s\;\langle(t_1,3,yes),(t_2,4,yes),(t_1,5,no)\rangle = \langle(t_1,5,no),(t_2,4,yes),(t_1,3,yes)\rangle$</p>
+</div>
+
+<h3 id="parth-vocab">Vocab for Part (h)</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Specification</td><td>A declarative description of <em>what</em> the result must look like, not <em>how</em> to compute it.</td></tr>
+<tr><td>Permutation</td><td>A rearrangement of elements &mdash; same elements, possibly different order.</td></tr>
+<tr><td>Descending order</td><td>Each element is greater than or equal to the next: $a_1 \geq a_2 \geq \ldots \geq a_n$.</td></tr>
+<tr><td>Bag (multiset)</td><td>A collection where duplicates are counted &mdash; $\text{items}$ converts a sequence to a bag.</td></tr>
+</table>
+
+<h3 id="parth-symbols">Symbols for Part (h)</h3>
+<table>
+<tr><th>Symbol</th><th>Name</th><th>Plain English</th></tr>
+<tr><td>$\text{items}$</td><td>bag conversion</td><td>converts a sequence to a multiset (bag)</td></tr>
+<tr><td>$\text{dom}$</td><td>domain</td><td>the set of indices of a sequence</td></tr>
+<tr><td>$\Rightarrow$</td><td>implication</td><td>"if ... then ..."</td></tr>
+<tr><td>$\geq$</td><td>greater than or equal</td><td>standard numeric comparison</td></tr>
+<tr><td>$\wedge$</td><td>conjunction</td><td>"and" &mdash; both sides must be true</td></tr>
+<tr><td>$\forall$</td><td>universal quantifier</td><td>"for all"</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence</td><td>an ordered list (function from $\{1,\ldots,n\}$ to values)</td></tr>
+<tr><td>$\to$</td><td>total function</td><td>a function defined for every possible input</td></tr>
+</table>
+
+<h3 id="parth-step1">Step 1 &mdash; Understand the task</h3>
+<div class="walkthrough">
+<p>We need a function that takes a <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">sequence</span> of programme triples and returns the same elements rearranged so that lengths are in <span class="vocab" data-def="Each element is greater than or equal to the next: a1 ≥ a2 ≥ ... ≥ an.">descending order</span>. This is a <span class="vocab" data-def="A declarative description of what the result must look like, not how to compute it.">specification</span> &mdash; we describe <em>what</em> the result must look like, not <em>how</em> to sort.</p>
+</div>
+
+<h3 id="parth-step2">Step 2 &mdash; Identify the approach</h3>
+<div class="walkthrough">
+<p>A <span class="vocab" data-def="A declarative description of what the result must look like, not how to compute it.">specification</span>-style sort uses two properties:</p>
+<ol>
+<li><strong><span class="vocab" data-def="A rearrangement of elements — same elements, possibly different order.">Permutation</span>:</strong> the output contains exactly the same elements as the input (checked via <span class="vocab" data-def="A collection where duplicates are counted — items converts a sequence to a bag.">bag</span> equality using <span class="vocab" data-def="bag conversion — converts a sequence to a multiset (bag)">items</span>).</li>
+<li><strong><span class="vocab" data-def="Each element is greater than or equal to the next: a1 ≥ a2 ≥ ... ≥ an.">Descending order</span>:</strong> for any two positions i &lt; j, the length at position i is <span class="vocab" data-def="greater than or equal — standard numeric comparison">&ge;</span> the length at position j.</li>
+</ol>
+</div>
+
+<h3 id="parth-step3">Step 3 &mdash; Plan the components</h3>
+<div class="walkthrough">
+<p><strong><span class="vocab" data-def="A rearrangement of elements — same elements, possibly different order.">Permutation</span>:</strong> <span class="vocab" data-def="bag conversion — converts a sequence to a multiset (bag)">items</span>(s x) = <span class="vocab" data-def="bag conversion — converts a sequence to a multiset (bag)">items</span>(x) &mdash; same <span class="vocab" data-def="A collection where duplicates are counted — items converts a sequence to a bag.">bag</span> means same elements with same multiplicities.</p>
+<p><strong>Ordering:</strong> <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">&forall;</span> i, j : <span class="vocab" data-def="domain — the set of indices of a sequence">dom</span>(s x) <span class="vocab" data-def="spot — separates constraint from expression">&bull;</span> i &lt; j <span class="vocab" data-def="implication — &quot;if ... then ...&quot;">&rArr;</span> ((s x) i).2 <span class="vocab" data-def="greater than or equal — standard numeric comparison">&ge;</span> ((s x) j).2. Use <span class="vocab" data-def="greater than or equal — standard numeric comparison">&ge;</span> (not &gt;) to allow ties.</p>
+<p><strong>Combine:</strong> join both properties with <span class="vocab" data-def="conjunction — &quot;and&quot; — both sides must be true">&and;</span>.</p>
+</div>
+
+<h3 id="parth-solution">Solution</h3>
+
+<details>
+<summary>Click to reveal</summary>
+
+<h4>Build Step 1 &mdash; Type signature</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$s$</td><td>function name &mdash; the sorting function we are defining</td><td>the function we are defining</td></tr>
+<tr><td>$:$</td><td>type declaration &mdash; "is of type"</td><td>declares what type $s$ has</td></tr>
+<tr><td>$\text{seq}$</td><td>sequence &mdash; an ordered list (function from $\{1,\ldots,n\}$ to values)</td><td>input and output are both sequences of triples</td></tr>
+<tr><td>$\times$</td><td>Cartesian product &mdash; combines types into tuples</td><td>builds the triple: $\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}$</td></tr>
+<tr><td>$\to$</td><td>total function &mdash; a function defined for every possible input</td><td>$s$ accepts any sequence</td></tr>
+</table>
+<div class="walkthrough">
+<p>Name the function <span class="vocab" data-def="The sorting function we are defining.">s</span>, use <span class="vocab" data-def="&quot;Is of type&quot; — declares the input and output types.">:</span> to declare its type. Input and output are both <span class="vocab" data-def="sequence — an ordered list (function from {1,...,n} to values)">seq</span> of triples built with <span class="vocab" data-def="Cartesian product — combines types into tuples">&times;</span>, connected by <span class="vocab" data-def="total function — a function defined for every possible input">&rarr;</span>:</p>
+$$s : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \to \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed})$$
+</div>
+
+<h4>Build Step 2 &mdash; Write the permutation condition</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$x$</td><td>bound variable &mdash; the input sequence parameter</td><td>stands for the sequence passed to $s$</td></tr>
+<tr><td>$\text{items}$</td><td>bag conversion &mdash; converts a sequence to a multiset</td><td>checks output is a permutation of input</td></tr>
+<tr><td>$=$</td><td>equality &mdash; standard comparison</td><td>the two bags must be identical</td></tr>
+</table>
+<div class="walkthrough">
+<p>Convert both input and output to <span class="vocab" data-def="A collection where duplicates are counted — items converts a sequence to a bag.">bags</span> using <span class="vocab" data-def="bag conversion — converts a sequence to a multiset (bag)">items</span> and require equality. This guarantees the output is a <span class="vocab" data-def="A rearrangement of elements — same elements, possibly different order.">permutation</span> of the input:</p>
+$$\text{items}(s\;x) = \text{items}(x)$$
+</div>
+
+<h4>Build Step 3 &mdash; Write the ordering condition</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\forall$</td><td>universal quantifier &mdash; "for all"</td><td>the ordering must hold for every pair of positions</td></tr>
+<tr><td>$i$</td><td>bound variable &mdash; an index position</td><td>the earlier position in the output</td></tr>
+<tr><td>$j$</td><td>bound variable &mdash; an index position</td><td>the later position in the output</td></tr>
+<tr><td>$\text{dom}$</td><td>domain &mdash; the set of indices of a sequence</td><td>gives the valid positions in the output</td></tr>
+<tr><td>$\bullet$</td><td>spot &mdash; separates constraint from expression</td><td>connects "for all $i,j$" to the condition</td></tr>
+<tr><td>$<$</td><td>strictly less than &mdash; standard numeric comparison</td><td>$i$ comes before $j$</td></tr>
+<tr><td>$\Rightarrow$</td><td>implication &mdash; "if ... then ..."</td><td>only enforce ordering when $i < j$</td></tr>
+<tr><td>$((s\;x)\;i).2$</td><td>tuple projection &mdash; extracts the 2nd component</td><td>gets the length at position $i$</td></tr>
+<tr><td>$\geq$</td><td>greater than or equal &mdash; standard numeric comparison</td><td>allows equal lengths in adjacent positions</td></tr>
+<tr><td>$((s\;x)\;j).2$</td><td>tuple projection &mdash; extracts the 2nd component</td><td>gets the length at position $j$</td></tr>
+</table>
+<div class="walkthrough">
+<p>For <span class="vocab" data-def="universal quantifier — &quot;for all&quot;">every</span> pair of indices <span class="vocab" data-def="Bound variable — the earlier position.">i</span> and <span class="vocab" data-def="Bound variable — the later position.">j</span> drawn from <span class="vocab" data-def="domain — the set of indices of a sequence">dom</span>(s x): if i &lt; j, then (<span class="vocab" data-def="implication — &quot;if ... then ...&quot;">&rArr;</span>) the length at position i must be <span class="vocab" data-def="greater than or equal — standard numeric comparison">&ge;</span> the length at position j. This enforces <span class="vocab" data-def="Each element is greater than or equal to the next: a1 ≥ a2 ≥ ... ≥ an.">descending order</span>:</p>
+$$\forall\, i, j : \text{dom}(s\;x) \bullet i < j \Rightarrow ((s\;x)\;i).2 \geq ((s\;x)\;j).2$$
+</div>
+
+<h4>Build Step 4 &mdash; Combine with $\wedge$</h4>
+<table>
+<tr><th>Symbol</th><th>Plain English</th><th>What it does here</th></tr>
+<tr><td>$\wedge$</td><td>conjunction &mdash; "and"</td><td>both permutation and ordering must hold simultaneously</td></tr>
+</table>
+<div class="walkthrough">
+<p>Join the <span class="vocab" data-def="A rearrangement of elements — same elements, possibly different order.">permutation</span> condition and the <span class="vocab" data-def="Each element is greater than or equal to the next: a1 ≥ a2 ≥ ... ≥ an.">ordering</span> condition with <span class="vocab" data-def="conjunction — &quot;and&quot; — both sides must be true">&and;</span>. Both must hold for the result to be a valid sort:</p>
+$$\text{items}(s\;x) = \text{items}(x) \;\wedge\; \forall\, i, j : \text{dom}(s\;x) \bullet i < j \Rightarrow ((s\;x)\;i).2 \geq ((s\;x)\;j).2$$
+</div>
+
+<h4>Complete answer</h4>
+<div class="schema-box">
+$$\begin{array}{|l}
+s : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \to \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \\
+\hline
+\forall\, x : \text{seq}(\mathit{Title} \times \mathit{Length} \times \mathit{Viewed}) \bullet \\
+\quad \text{items}(s\;x) = \text{items}(x) \\
+\quad \wedge \\
+\quad \forall\, i, j : \text{dom}(s\;x) \bullet i < j \Rightarrow ((s\;x)\;i).2 \geq ((s\;x)\;j).2
+\end{array}$$
+</div>
+
+<h4>Verify &mdash; Trace</h4>
+<div class="walkthrough">
+<p>Input: $\langle(t_1,3,yes),(t_2,4,yes),(t_1,5,no)\rangle$. Output: $\langle(t_1,5,no),(t_2,4,yes),(t_1,3,yes)\rangle$.</p>
+<table>
+<tr><th>Check</th><th>Detail</th><th>Result</th></tr>
+<tr><td>Permutation</td><td>$\text{items}$: both contain $(t_1,3,yes)$, $(t_2,4,yes)$, $(t_1,5,no)$ exactly once each</td><td>&check;</td></tr>
+<tr><td>Order: $i=1, j=2$</td><td>$1 < 2 \Rightarrow 5 \geq 4$</td><td>&check;</td></tr>
+<tr><td>Order: $i=1, j=3$</td><td>$1 < 3 \Rightarrow 5 \geq 3$</td><td>&check;</td></tr>
+<tr><td>Order: $i=2, j=3$</td><td>$2 < 3 \Rightarrow 4 \geq 3$</td><td>&check;</td></tr>
+</table>
+<p>All index pairs satisfy descending order: $5 \geq 4 \geq 3$ &check;</p>
+</div>
+</details>
+
+
+<!-- ============================================================ -->
+<h2>Summary</h2>
+
+<table>
+<tr><th>Part</th><th>What it models</th><th>Key technique</th></tr>
+<tr><td>(a)</td><td>System state + constraints</td><td>Axiomatic definition</td></tr>
+<tr><td>(b)</td><td>Query: "which shows are long?"</td><td>Set comprehension</td></tr>
+<tr><td>(c)</td><td>Filter by viewed status</td><td>Recursive definition / $\upharpoonright$</td></tr>
+<tr><td>(d)</td><td>Aggregation: total time</td><td>Recursive function</td></tr>
+<tr><td>(e)</td><td>Selection: longest title</td><td>$\mu$-expression</td></tr>
+<tr><td>(f)</td><td>Per-title aggregation</td><td>Set comprehension + $\upharpoonright$ + recursion</td></tr>
+<tr><td>(g)</td><td>Deletion: free up space</td><td>$\mu$ + $\upharpoonright$</td></tr>
+<tr><td>(h)</td><td>Sorting for display</td><td>$\text{items}$ + ordering predicate</td></tr>
+</table>
+
+<footer>Exercise 40 &mdash; TV Recording System &mdash; Software Engineering Mathematics</footer>
+
+<script>
+function toggleDropdown(el) {
+  var item = el.closest('.nav-item');
+  var wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  if (!wasOpen) item.classList.add('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item.open').forEach(function(n){n.classList.remove('open');});
+  }
+});
+</script>
+</body>
+</html>
